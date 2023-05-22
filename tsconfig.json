@@ -17,8 +17,32 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": ["*.stories.tsx"],
+  "references": [{ "path": "./tsconfig.node.json" }],
+
+  "ts-node": {
+    "esm": true,
+    "transpileOnly": true,
+    "compilerOptions": {
+      "moduleResolution": "node16",
+      "lib": ["DOM", "DOM.Iterable", "ESNext"],
+      "types": ["node"],
+      "typeRoots": ["node_modules/@types"]
+    }
+  }
 }

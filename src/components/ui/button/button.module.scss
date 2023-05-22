@@ -1,0 +1,69 @@
+.root {
+  @apply
+  flex px-4 py-1 items-center justify-center
+  border border-solid rounded
+  cursor-pointer transition;
+}
+
+/* Variants */
+
+.__tonal {
+  @apply bg@3 text@12 border@5;
+  &:hover {
+    @apply bg@4 border@6;
+  }
+  &:active {
+    @apply bg@5 border@6;
+  }
+  &:focus {
+    @apply border@7;
+  }
+}
+
+.__contained {
+  @apply bg@9 text@1 border@10;
+  &:hover {
+    @apply bg@10 border@10;
+  }
+  &:active {
+    @apply bg@11 border@11;
+  }
+  &:focus {
+    @apply border@11;
+  }
+}
+
+.__text {
+  @apply bg-transparent text@11 border-transparent;
+  &:hover {
+    @apply bg@4 border@4;
+  }
+  &:active {
+    @apply bg@5 border@5;
+  }
+  &:focus {
+    @apply border@5;
+  }
+}
+
+/* Tints */
+
+@function getThemeColor($name, $scale, $opacity: 1) {
+  @return theme("colors.#{$name}.#{$scale}");
+}
+
+$tints: primary, neutral;
+
+@each $tint in $tints {
+  .__#{$tint} {
+    @for $i from 1 through 12 {
+      --h-color-#{$i}: #{getThemeColor($tint, $i, 1)};
+    }
+  }
+}
+
+/* Children */
+
+.label {
+  @apply text-base font-semibold leading-6;
+}
