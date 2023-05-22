@@ -5,7 +5,6 @@ import {
   transformerDirectives,
   transformerVariantGroup,
 } from "unocss";
-// import { getUnoFiles } from "./scripts/uno-files";
 import { presetGrid } from './lib/unocss-preset-grid';
 import { createColorScaleGenerator } from "./scripts/color-scales-generate";
 
@@ -14,15 +13,9 @@ const generateColorScale = createColorScaleGenerator(
   (value) => `hsl(${value})`
 );
 
-// const unoFiles = (await getUnoFiles({ cwd: __dirname })) as {
-//   safelist?: string[] | string;
-// }[];
-
-import uiComponentsConfig from "./src/components/ui/safe-styles.dev";
-
 export default defineConfig({
   // safelist: [...unoFiles.flatMap((data) => data.safelist ?? [])],
-  safelist: [...uiComponentsConfig.safelist],
+  safelist: [],
   rules: [
     [/^bg@([\w-]+)$/, ([, name]) => ({ "background-color": `var(--h-color-${name})` })],
     [/^text@([\w-]+)$/, ([, name]) => ({ color: `var(--h-color-${name})` })],
