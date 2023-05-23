@@ -2,8 +2,8 @@ import clsx from "clsx";
 
 import * as $ from "./button.module.scss";
 
-import type { ComponentPropsWithoutRef, PropsWithChildren } from "react";
-import type { Variant, Tint } from "./button.types";
+import type { ComponentPropsWithoutRef, ElementType } from "react";
+import type { Size, Tint, Variant } from "./button.types";
 
 const variantClasses: Record<Variant, string> = {
   tonal: $.__tonal,
@@ -16,29 +16,45 @@ const tintClasses: Record<Tint, string> = {
   neutral: $.__neutral,
 };
 
-export interface ButtonProps extends ComponentPropsWithoutRef<"a"> {
+const sizeClasses: Record<Size, string|null> = {
+  sm: $.__sm,
+  md: null,
+  lg: $.__lg,
+};
+
+interface ButtonPropsPlain {
   variant?: Variant;
   tint?: Tint;
+  size?: Size;
 }
 
-export default function Button({
+export type ButtonProps<C extends ElementType> = ButtonPropsPlain & ComponentPropsWithoutRef<C> & {
+  as?: C,
+};
+
+export default function Button<C extends ElementType = 'button'>({
   className,
   children,
   variant = "tonal",
   tint = "neutral",
+  size = 'md',
+  as,
   ...restProps
-}: ButtonProps) {
+}: ButtonProps<C>) {
+  const ComponentRoot: ElementType = as || 'button';
+
   return (
-    <a
+    <ComponentRoot
       className={clsx(
         className,
         $.root,
         variantClasses[variant],
-        tintClasses[tint]
+        tintClasses[tint],
+        sizeClasses[size],
       )}
       {...restProps}
     >
       <span className={$.label}>{children}</span>
-    </a>
+    </ComponentRoot>
   );
 }

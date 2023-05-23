@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: ['react-refresh'],
   rules: {
+    "@typescript-eslint/no-empty-interface": "off",
     'react-refresh/only-export-components': 'warn'
   },
 };

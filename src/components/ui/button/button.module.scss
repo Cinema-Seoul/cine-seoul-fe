@@ -1,48 +1,50 @@
 .root {
   @apply
-  flex px-4 py-1 items-center justify-center
-  border border-solid rounded
+  flex items-center justify-center
+  outline outline-1 rounded
   cursor-pointer transition;
+
+  @extend %__md;
 }
 
 /* Variants */
 
 .__tonal {
-  @apply bg@3 text@12 border@5;
+  @apply bg@3 text@12 outline@5;
   &:hover {
-    @apply bg@4 border@6;
+    @apply bg@4 outline@6;
   }
   &:active {
-    @apply bg@5 border@6;
+    @apply bg@5 outline@6;
   }
   &:focus {
-    @apply border@7;
+    @apply outline@7;
   }
 }
 
 .__contained {
-  @apply bg@9 text@1 border@10;
+  @apply bg@9 text@1 outline@10;
   &:hover {
-    @apply bg@10 border@10;
+    @apply bg@10 outline@10;
   }
   &:active {
-    @apply bg@11 border@11;
+    @apply bg@11 outline@11;
   }
   &:focus {
-    @apply border@11;
+    @apply outline@11;
   }
 }
 
 .__text {
-  @apply bg-transparent text@11 border-transparent;
+  @apply bg-transparent text@11 outline-transparent;
   &:hover {
-    @apply bg@4 border@4;
+    @apply bg@4 outline@4;
   }
   &:active {
-    @apply bg@5 border@5;
+    @apply bg@5 outline@5;
   }
   &:focus {
-    @apply border@5;
+    @apply outline@5;
   }
 }
 
@@ -60,6 +62,21 @@ $tints: primary, neutral;
       --h-color-#{$i}: #{getThemeColor($tint, $i, 1)};
     }
   }
+}
+
+/* Sizes */
+
+.__sm {
+  @apply px-4 py-1;
+}
+
+// .__md is default
+%__md {
+  @apply px-6 py-2;
+} 
+
+.__lg {
+  @apply px-8 py-4;
 }
 
 /* Children */
