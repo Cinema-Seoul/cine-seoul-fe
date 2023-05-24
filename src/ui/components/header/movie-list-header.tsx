@@ -2,7 +2,7 @@ import { IoChevronUp } from "react-icons/io5";
 
 import { MouseEventHandler, useEffect, useState } from "react";
 import clsx from "clsx";
-import { redirect, useParams, useSearchParams } from "react-router-dom";
+import { createSearchParams, redirect, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const t = {
   "page-title": "영화",
@@ -34,14 +34,28 @@ const TabIndex = ({
 );
 
 export default function MovieListHeader() {
-  const [searchParams, setSearchParams] = useSearchParams({
-    watch: '0'
-  });
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [tabIndex, setTabIndex] = useState<number>(parseInt(searchParams.get('watch') ?? "0"));
+  const [tabIndex, setTabIndex] = useState<number>(parseInt(searchParams.get('watch') ?? '0'));
+
+  // useEffect(() => {
+  //   const watch = searchParams.get('watch');
+  //   if (watch && (watch >= '0') && (watch < '2')) {
+  //     setTabIndex(parseInt(watch));
+  //   } else {
+  //     navigate({
+  //       pathname: location.pathname,
+  //       search: '?watch=0',
+  //     }, {
+  //       replace: true,
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
-    setSearchParams({ watch: tabIndex.toString() })
+    setSearchParams(createSearchParams({ watch: `${tabIndex}` }), { replace: true });
   }, [tabIndex]);
 
   return (
