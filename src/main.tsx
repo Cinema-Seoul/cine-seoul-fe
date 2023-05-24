@@ -5,8 +5,8 @@ import { RouterProvider } from "react-router-dom";
 import router from "./ui/router";
 
 import "@unocss/reset/tailwind-compat.css";
-import "@/styles/global.css";
-import "@/styles/theme-colors.css";
+import "@/ui/styles/global.css";
+import "@/ui/styles/theme-colors.css";
 import "virtual:uno.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

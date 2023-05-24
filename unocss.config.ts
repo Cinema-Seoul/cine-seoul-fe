@@ -20,6 +20,7 @@ export default defineConfig({
   safelist: [],
   shortcuts: [
     ["out-1", "outline outline-1"],
+    ["pressable-opacity", "transition cursor-pointer hover:(opacity-60) active:(opacity-45)"],
   ],
   rules: [
     [

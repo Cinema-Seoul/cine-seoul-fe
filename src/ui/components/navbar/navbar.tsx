@@ -1,10 +1,14 @@
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoMenu } from 'react-icons/io5';
 
 import { Button } from "../ui";
 
 import type { MainMenuItem } from "./navbar.types";
+import { useAuthService } from "@/services/auth";
+import useUserService from "@/services/user/user.service";
+import { useCallback, useState } from "react";
+import Loader from "../ui/loader";
 
 /* TODO: 임시 */
 const data = {
@@ -15,9 +19,10 @@ const mainMenuItems: MainMenuItem[] = [
   { label: "영화", href: "/movie" },
   {
     label: "극장",
-    href: (e) => {
-      alert("극장 클릭!");
-    },
+    // href: (e) => {
+    //   alert("극장 클릭!");
+    // },
+    href: "/theatre"
   },
   { label: "이벤트", href: "#" },
   { label: "바로 예매", href: "#", accent: true },
@@ -32,6 +37,56 @@ const Brand = ({ className }: BaseProps) => (
     </h4>
   </Link>
 );
+
+const UserSignMenu = ({ className }: BaseProps) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const authService = useAuthService();
+  const userService = useUserService();
+
+  const navigate = useNavigate();
+
+  const doSignOut = useCallback(() => {
+    setLoading(true);
+    authService.signOut().then(() => {
+      setLoading(false);
+      navigate("/");
+    });
+  }, [authService, navigate]);
+
+  const doSignIn = useCallback(() => {
+    setLoading(true);
+    authService.signIn("aaa", "bbb").then(() => {
+      setLoading(false);
+    });
+  }, [authService]);
+
+  const rootStyle = clsx(className, "rounded-full bg-neutral-3 flex flex-row h-8 out-1 outline-neutral-6 flex flex-row justify-center items-center px-4 space-x-4");
+
+  if (isLoading) {
+    return <div className={rootStyle}>
+      <Loader className="w-6 mx-4" />
+    </div>
+  }
+  
+  if (userService.currentUser) {
+    // Signed In
+    return (
+      <div className={rootStyle}>
+        <p>안녕하세요, <u>{userService.currentUser.name}</u>님!</p>
+        <a className="pressable-opacity" onClick={doSignOut}>로그아웃</a>
+      </div>
+    )
+  } else {
+    // Not Signed In
+    return (
+      <div className={rootStyle}>
+        <a className="pressable-opacity" onClick={doSignIn}>로그인</a>
+        <a className="pressable-opacity">회원가입</a>
+      </div>
+    )
+  }
+}
 
 const MenuExpandButton = () => (
   <>
@@ -91,8 +146,9 @@ export default function Navbar({ className }: NavbarProps) {
       )}
     >
       {/* Container Top */}
-      <div className="container flex flex-row items-center justify-center h-14">
-        <Brand />
+      <div className="container flex flex-row items-center justify-between h-14">
+        <Brand className="" />
+        <UserSignMenu className="justify-self-end" />
       </div>
 
       {/* Container Bottom */}

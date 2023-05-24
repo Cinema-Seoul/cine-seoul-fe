@@ -1,7 +1,7 @@
-import MovieListHeader from "@/components/header/movie-list-header";
+import MovieListHeader from "@/ui/components/header/movie-list-header";
 import MainLayout from "../_layouts/main-layout";
-import MovieCard from "@/components/movies/movie-card";
-import MovieCardWrap from "@/components/movies/movie-card-wrap";
+import MovieCard from "@/ui/components/movies/movie-card";
+import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
 
 export default function MovieListPage() {
   return (

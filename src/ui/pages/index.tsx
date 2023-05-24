@@ -1,7 +1,7 @@
-import HomeSubbar from "@/components/subbar/home-subbar";
+import HomeSubbar from "@/ui/components/subbar/home-subbar";
 import MainLayout from "./_layouts/main-layout";
-import MovieCard from "@/components/movies/movie-card";
-import MovieCardBoxOffice from "@/components/movies/movie-card-boxoffice";
+import MovieCard from "@/ui/components/movies/movie-card";
+import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
 
 export default function IndexPage() {
   return (
