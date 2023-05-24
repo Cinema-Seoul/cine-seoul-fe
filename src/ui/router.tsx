@@ -11,9 +11,10 @@ import MovieDetailPage from "./pages/movie/detail";
 
 import type { RouteObject } from "react-router-dom";
 import TheatreInfoPage from "./pages/theatre/theatre";
+import Root from "./pages/_root";
 
 const routes: RouteObject[] = createRoutesFromElements(
-  <Route path="/" errorElement={<A404Page />}>
+  <Route path="/" element={<Root />} errorElement={<A404Page />}>
     <Route index element={<IndexPage />} />
     <Route path="theatre" element={<TheatreInfoPage />} />
     <Route path="movie">
