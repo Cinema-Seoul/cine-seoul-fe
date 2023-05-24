@@ -18,6 +18,9 @@ const generateColorScale = createColorScaleGenerator(
 export default defineConfig({
   // safelist: [...unoFiles.flatMap((data) => data.safelist ?? [])],
   safelist: [],
+  shortcuts: [
+    ["out-1", "outline outline-1"],
+  ],
   rules: [
     [
       /^bg@([\w-]+)$/,

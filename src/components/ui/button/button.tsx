@@ -2,7 +2,7 @@ import clsx from "clsx";
 
 import * as $ from "./button.module.scss";
 
-import type { ComponentPropsWithoutRef, ElementType } from "react";
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import type { Size, Tint, Variant } from "./button.types";
 
 const variantClasses: Record<Variant, string> = {
@@ -26,6 +26,8 @@ interface ButtonPropsPlain {
   variant?: Variant;
   tint?: Tint;
   size?: Size;
+  iconStart?: ReactNode;
+  iconEnd?: ReactNode;
 }
 
 export type ButtonProps<C extends ElementType> = ButtonPropsPlain & ComponentPropsWithoutRef<C> & {
@@ -35,6 +37,8 @@ export type ButtonProps<C extends ElementType> = ButtonPropsPlain & ComponentPro
 export default function Button<C extends ElementType = 'button'>({
   className,
   children,
+  iconStart,
+  iconEnd,
   variant = "tonal",
   tint = "neutral",
   size = 'md',
@@ -54,7 +58,22 @@ export default function Button<C extends ElementType = 'button'>({
       )}
       {...restProps}
     >
-      <span className={$.label}>{children}</span>
+      {
+        iconStart && (
+          <span className={$.icon}>{iconStart}</span>
+        )
+      }
+      {
+        children && (
+
+          <span className={$.label}>{children}</span>
+          )
+      }
+      {
+        iconEnd && (
+          <span className={$.icon}>{iconEnd}</span>
+        )
+      }
     </ComponentRoot>
   );
 }

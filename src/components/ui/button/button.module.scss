@@ -1,6 +1,5 @@
 .root {
-  @apply
-  flex items-center justify-center
+  @apply flex items-center justify-center
   outline outline-1 rounded
   cursor-pointer transition;
 
@@ -67,20 +66,37 @@ $tints: primary, neutral;
 /* Sizes */
 
 .__sm {
-  @apply px-4 py-1;
+  --label-px: #{calc(3 / 4)}rem; // .75rem; // 3*4px
+  @apply p-1;
 }
 
 // .__md is default
 %__md {
-  @apply px-6 py-2;
-} 
+  --label-px: #{calc(4 / 4)}rem;// 1rem; // 4*4px
+  @apply p-2;
+}
 
 .__lg {
-  @apply px-8 py-4;
+  --label-px: #{calc(4 / 4)}rem; // 1rem; // 4*4px
+  @apply p-4;
 }
 
 /* Children */
 
 .label {
+  color: inherit;
   @apply text-base font-semibold leading-6;
+  padding-left: var(--label-px);
+  padding-right: var(--label-px);
+}
+
+.icon {
+  color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @apply
+  leading-6
+  w-6 h-6;
 }
