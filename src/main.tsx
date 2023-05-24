@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
-import router from "./router";
+import router from "./ui/router";
 
 import "@unocss/reset/tailwind-compat.css";
 import "@/styles/global.css";
