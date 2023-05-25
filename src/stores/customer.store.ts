@@ -1,9 +1,11 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 export type CustomerStore = {
-  test: string;
+  
 };
 
-export const useCustomerStore = create<CustomerStore>(set => ({
-  test: "helloworld",
-}));
+export const useCustomerStore = devtools(
+  create<CustomerStore>((set) => ({
+  }))
+);

@@ -1,5 +1,6 @@
+import { fakeApiFetch } from "@/services/api";
+
 import type { Movie } from "@/domains";
-import { fakeApiFetch } from "../api";
 
 const fakeMovies: Movie[] = [
   {
@@ -25,7 +26,3 @@ const fakeMovies: Movie[] = [
     runningTime: 148,
   },
 ];
-
-export async function fetchMovies(): Promise<Movie[]> {
-  return fakeApiFetch<Movie[]>([...fakeMovies, ...fakeMovies, ...fakeMovies]);
-}
