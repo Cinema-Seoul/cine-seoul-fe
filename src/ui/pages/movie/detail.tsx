@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
 import MainLayout from "../_layouts/main-layout";
 import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
+import { Button } from "@/ui/components/ui";
+import { IoHeart, IoShare, IoShareOutline, IoTicket } from "react-icons/io5";
 
 export type MovieDetailPageParams = {
   movieId: string;
 };
-
-
 
 export default function MovieDetailPage() {
   const { movieId } = useParams<MovieDetailPageParams>();
@@ -44,20 +44,70 @@ export default function MovieDetailPage() {
                   </p>
                 ))}
               </div>
-              <div className="flex flex-row">
-                <div className="col-3 py-4">
+              <div className="row">
+                <div className="col-4 pt-4">
                   <div className="text-sm text-center mb-4">관람객 평점</div>
                   <div className="text-lg text-center font-bold">4.5</div>
                 </div>
-                <div className="col-3 py-4">
+                <div className="col-4 pt-4">
+                  <div className="text-sm text-center mb-4">평론가 평점</div>
+                  <div className="text-lg text-center font-bold">4.5</div>
+                </div>
+                <div className="col-4 pt-4">
                   <div className="text-sm text-center mb-4">예매율</div>
-                  <div className="text-lg text-center font-bold">19.95%</div>
+                  <div
+                    className="text-lg text-center font-bold after:(content-[attr(data-rank)] absolute text-sm text-primary-11)"
+                    data-rank="1위"
+                  >
+                    19.95%
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className="row mt-6 pt-6 border-t border-solid border-neutral-6">
+            <div className="col-auto ms-a">
+              <Button
+                className="w-full"
+                variant="text"
+                tint="primary"
+                iconStart={<IoShareOutline />}
+              >
+                공유
+              </Button>
+            </div>
+            <div className="col-auto">
+              <Button
+                className="w-full"
+                variant="text"
+                tint="primary"
+                iconStart={<IoHeart />}
+              >
+                찜
+              </Button>
+            </div>
+            <div className="col-4">
+              <Button
+                className="w-full"
+                variant="contained"
+                tint="primary"
+                iconStart={<IoTicket />}
+              >
+                예매하기
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
+      <section className="pt-6">
+        <div className="container mt-12">
+          <h4>werwerw</h4>
+          <div>
+            <p>werwerwerwerwerwerew</p>
+          </div>
+        </div>
+      </section>
+      <section style={{ height: "150vh" }} />
     </MainLayout>
   );
 }

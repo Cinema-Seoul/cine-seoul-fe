@@ -16,7 +16,7 @@ const tintClasses: Record<Tint, string> = {
   neutral: $.__neutral,
 };
 
-const sizeClasses: Record<Size, string|null> = {
+const sizeClasses: Record<Size, string | null> = {
   sm: $.__sm,
   md: null,
   lg: $.__lg,
@@ -30,22 +30,39 @@ interface ButtonPropsPlain {
   iconEnd?: ReactNode;
 }
 
-export type ButtonProps<C extends ElementType> = ButtonPropsPlain & ComponentPropsWithoutRef<C> & {
-  as?: C,
-};
+export type ButtonProps<C extends ElementType> = ButtonPropsPlain &
+  ComponentPropsWithoutRef<C> & {
+    as?: C;
+  };
 
-export default function Button<C extends ElementType = 'button'>({
+export default function Button<C extends ElementType = "button">({
   className,
   children,
   iconStart,
   iconEnd,
   variant = "tonal",
   tint = "neutral",
-  size = 'md',
+  size = "md",
   as,
   ...restProps
 }: ButtonProps<C>) {
-  const ComponentRoot: ElementType = as || 'button';
+  const ComponentRoot: ElementType = as || "button";
+
+  const withChildren = {
+    children: (
+      <>
+        {iconStart && <span className={$.icon}>{iconStart}</span>}
+        {children && <span className={$.label}>{children}</span>}
+        {iconEnd && <span className={$.icon}>{iconEnd}</span>}
+      </>
+    ),
+  };
+
+  const withLabel = {
+    label: children
+  };
+
+  const provideContent = as === 'input' ? withLabel : withChildren;
 
   return (
     <ComponentRoot
@@ -54,26 +71,10 @@ export default function Button<C extends ElementType = 'button'>({
         $.root,
         variantClasses[variant],
         tintClasses[tint],
-        sizeClasses[size],
+        sizeClasses[size]
       )}
+      {...provideContent}
       {...restProps}
-    >
-      {
-        iconStart && (
-          <span className={$.icon}>{iconStart}</span>
-        )
-      }
-      {
-        children && (
-
-          <span className={$.label}>{children}</span>
-          )
-      }
-      {
-        iconEnd && (
-          <span className={$.icon}>{iconEnd}</span>
-        )
-      }
-    </ComponentRoot>
+    />
   );
 }

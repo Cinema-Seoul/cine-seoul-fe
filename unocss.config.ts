@@ -38,13 +38,13 @@ export default defineConfig({
       ([, name]) => ({ "outline-color": `var(--h-color-${name})` }),
     ],
   ],
-  presets: [presetUno(),presetGrid(), presetTypography()], //Container는 PresetUno 걸 이용할 것이므로 순서 유의!
+  presets: [presetGrid(), presetUno(), presetTypography()], //Container는 PresetUno 걸 이용할 것이므로 순서 유의!
   theme: {
     colors: {
       transprent: "transparent",
       current: "currentColor",
-      primary: { ...generateColorScale("teal") },
-      neutral: { ...generateColorScale("sage") },
+      primary: { ...generateColorScale("orange") },
+      neutral: { ...generateColorScale("sand") },
     },
     container: {
       center: true,

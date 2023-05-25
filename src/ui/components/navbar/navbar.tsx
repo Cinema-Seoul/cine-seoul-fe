@@ -26,6 +26,7 @@ const mainMenuItems: MainMenuItem[] = [
   },
   { label: "이벤트", href: "#" },
   { label: "바로 예매", href: "#", accent: true },
+  { label: "티켓 조회", href: "#", accent: true },
 ];
 
 // ===
@@ -54,12 +55,14 @@ const UserSignMenu = ({ className }: BaseProps) => {
     });
   }, [authService, navigate]);
 
-  const doSignIn = useCallback(() => {
-    setLoading(true);
-    authService.signIn("aaa", "bbb").then(() => {
-      setLoading(false);
-    });
-  }, [authService]);
+  const doSignIn = () => navigate('/signin');
+
+  // const doSignIn = useCallback(() => {
+  //   setLoading(true);
+  //   authService.signIn("aaa", "bbb").finally(() => {
+  //     setLoading(false);
+  //   });
+  // }, [authService]);
 
   const rootStyle = clsx(className, "rounded-full bg-neutral-3 flex flex-row h-8 out-1 outline-neutral-6 flex flex-row justify-center items-center px-4 space-x-4");
 
