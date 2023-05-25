@@ -9,6 +9,7 @@ import {
 } from "unocss";
 import { presetGrid } from "./lib/unocss-preset-grid";
 import { createColorScaleGenerator } from "./scripts/color-scales-generate";
+import transformerMultiStateValues from "./lib/unocss-multi-state-values";
 
 const generateColorScale = createColorScaleGenerator(
   // (value) => `hsl(${value} / <alpha-value>)`
@@ -37,7 +38,7 @@ export default defineConfig({
       ([, name]) => ({ "outline-color": `var(--h-color-${name})` }),
     ],
   ],
-  presets: [presetGrid(), presetUno(), presetTypography()], //Container는 PresetUno 걸 이용할 것이므로 순서 유의!
+  presets: [presetUno(),presetGrid(), presetTypography()], //Container는 PresetUno 걸 이용할 것이므로 순서 유의!
   theme: {
     colors: {
       transprent: "transparent",
@@ -60,6 +61,16 @@ export default defineConfig({
     },
   },
   transformers: [
+    transformerMultiStateValues({
+      brackets: ["{{", "}}"],
+      split: ' ',
+      variants: [null, "hover", "active", "focus"],
+    }),
+    transformerMultiStateValues({
+      brackets: ["@media{", "}"],
+      split: ',',
+      variants: [null, "lt-md", "md"],
+    }),
     transformerCompileClass(),
     transformerVariantGroup(),
     transformerDirectives(),

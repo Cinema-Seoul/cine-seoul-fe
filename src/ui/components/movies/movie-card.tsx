@@ -22,11 +22,13 @@ export default function MovieCard({ className }: MovieCardProps) {
     <div
       className={clsx(
         className,
-        "out-1 outline-neutral-6 rounded overflow-hidden"
+        "out-1 outline-neutral-6 rounded overflow-hidden",
+        "group"
       )}
     >
-      <div>
-        <img src={data.postUrl} />
+      <div className="relative">
+        <img className="transition group-hover:opacity-50" src={data.postUrl} />
+        <div className="absolute "></div>
       </div>
       <div className="p-4">
         <div className="flex flex-row">
