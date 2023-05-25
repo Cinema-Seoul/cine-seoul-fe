@@ -9,6 +9,7 @@ import {
 } from "unocss";
 import { presetGrid } from "./lib/unocss-preset-grid";
 import { createColorScaleGenerator } from "./scripts/color-scales-generate";
+import transformerMultiStateValues from "./lib/unocss-multi-state-values";
 
 const generateColorScale = createColorScaleGenerator(
   // (value) => `hsl(${value} / <alpha-value>)`
@@ -20,6 +21,7 @@ export default defineConfig({
   safelist: [],
   shortcuts: [
     ["out-1", "outline outline-1"],
+    ["pressable-opacity", "transition cursor-pointer hover:(opacity-60) active:(opacity-45)"],
   ],
   rules: [
     [
@@ -41,8 +43,8 @@ export default defineConfig({
     colors: {
       transprent: "transparent",
       current: "currentColor",
-      primary: { ...generateColorScale("teal") },
-      neutral: { ...generateColorScale("sage") },
+      primary: { ...generateColorScale("orange") },
+      neutral: { ...generateColorScale("sand") },
     },
     container: {
       center: true,
@@ -59,6 +61,16 @@ export default defineConfig({
     },
   },
   transformers: [
+    transformerMultiStateValues({
+      brackets: ["{{", "}}"],
+      split: ' ',
+      variants: [null, "hover", "active", "focus"],
+    }),
+    transformerMultiStateValues({
+      brackets: ["@media{", "}"],
+      split: ',',
+      variants: [null, "lt-md", "md"],
+    }),
     transformerCompileClass(),
     transformerVariantGroup(),
     transformerDirectives(),

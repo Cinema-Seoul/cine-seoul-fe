@@ -15,7 +15,7 @@ export function presetGrid(options: GridOptions = {}): Preset<any> {
   const columns = options?.columns ?? 12;
 
   const prefix = options?.prefix ?? 'cq-';
-
+  
   // Default Breakpoints
   const piece = options?.piece ?? "60px";
   const breakpoints = options?.breakpoints ?? {
