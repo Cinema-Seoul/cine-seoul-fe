@@ -11,7 +11,7 @@ export default function transformerMultiStateValues({
   variants?: (string | null)[];
 } = {}): SourceCodeTransformer {
   const regex = new RegExp(
-    `(?<=["'\`].*?)([^\\s]*)${escapeRegExp(brackets[0])}([^\\s]*)${escapeRegExp(brackets[1])}([^'"\`\\s]*)`,
+    `(?<=["'\`].*?)([^\\s]*)${escapeRegExp(brackets[0])}(.*?)${escapeRegExp(brackets[1])}([^'"\`\\s]*)`,
     "g"
   );
 
