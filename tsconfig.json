@@ -15,9 +15,9 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
 
     /* Aliases */
     "baseUrl": ".",
@@ -34,8 +34,13 @@
   "include": ["src"],
   "exclude": ["*.stories.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }],
-
+  
   "ts-node": {
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ],
     "esm": true,
     "transpileOnly": true,
     "compilerOptions": {

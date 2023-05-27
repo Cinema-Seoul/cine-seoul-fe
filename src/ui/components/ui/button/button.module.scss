@@ -4,6 +4,11 @@
   cursor-pointer transition;
 
   @extend %__md;
+
+  &:disabled {
+    cursor: not-allowed !important;
+    filter: saturate(0) opacity(.5);
+  }
 }
 
 /* Variants */

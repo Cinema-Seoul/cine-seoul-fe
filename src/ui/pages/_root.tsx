@@ -11,8 +11,8 @@ export default function Root() {
   }, [location]);
   
   return <AnimatePresence mode="wait">
-    <motion.div key={location.pathname}>
+    <Fragment key={location.pathname}>
       <AnimatedOutlet />
-    </motion.div>
+    </Fragment>
   </AnimatePresence>
 }

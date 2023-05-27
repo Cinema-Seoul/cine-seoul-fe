@@ -39,8 +39,8 @@ export default function MovieCard({ className, data }: MovieCardProps) {
         <div
           className={clsx(
             "absolute top-0 bottom-0 left-0 right-0",
-            "flex-col justify-between",
-            "hidden group-hover:flex"
+            "flex flex-col justify-between",
+            "invisible group-hover:visible"
           )}
         >
           <div className="p-4 flex-1 overflow-y-hidden text-base text-neutral-12">
@@ -54,7 +54,7 @@ export default function MovieCard({ className, data }: MovieCardProps) {
             {data.movie.info}
             {data.movie.info}
           </div>
-          <div className="p-4 flex-shrink-0 text-sm border-t border-solid border-neutral-6">
+          <div className="p-4 flex-shrink-0 text-sm border-t border-solid border-neutral-11 border-opacity-20">
             <span className="font-normal me-2">관람객 평점</span>
             <span className="font-bold">4.5</span>
           </div>
@@ -79,7 +79,10 @@ export default function MovieCard({ className, data }: MovieCardProps) {
                 })}
             iconStart={<IoHeart />}
           />
-          <Button className="flex-1" variant="tonal" tint="neutral">
+          <Button className="flex-1" variant="tonal" tint="neutral" onClick={(e) => {
+            e.stopPropagation();
+            alert("예매");
+          }}>
             예매
           </Button>
         </div>

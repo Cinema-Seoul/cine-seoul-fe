@@ -25,7 +25,7 @@ const mainMenuItems: MainMenuItem[] = [
     href: "/theatre"
   },
   { label: "이벤트", href: "#" },
-  { label: "바로 예매", href: "#", accent: true },
+  { label: "바로 예매", href: "/ticketing", accent: true },
   { label: "티켓 조회", href: "#", accent: true },
 ];
 
@@ -145,7 +145,7 @@ export default function Navbar({ className }: NavbarProps) {
       className={clsx(
         className,
         "relative block sticky top-0 w-full z-24",
-        "bg-neutral-1/80 backdrop-blur border-b border-solid border-neutral-6"
+        "bg-neutral-1 bg-opacity-90 backdrop-blur border-b border-solid border-neutral-6"
       )}
     >
       {/* Container Top */}
