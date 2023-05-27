@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import MainLayout from "../_layouts/main-layout";
+import MainLayout from "../../_layouts/main-layout";
 import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
 import { Button } from "@/ui/components/ui";
 import { IoHeart, IoShare, IoShareOutline, IoTicket } from "react-icons/io5";

@@ -1,38 +1,32 @@
 import {
   Route,
+  Routes,
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
 
-import IndexPage from "./pages/index";
-import A404Page from "./pages/404";
-import MovieListPage from "./pages/movie/list";
-import MovieDetailPage from "./pages/movie/detail";
+import ClientRoutes from "./pages/client.router";
+import AdminRoutes from "./pages/admin.router";
 
 import type { RouteObject } from "react-router-dom";
-import TheatreInfoPage from "./pages/theatre/theatre";
-import Root from "./pages/_root";
-import SignInPage from "./pages/sign-in";
-import TicketingPage from "./pages/ticketing";
+import ClientErrorPage from "./pages/client/_error";
+import AdminErrorPage from "./pages/admin/_error";
 
-const routes: RouteObject[] = createRoutesFromElements(
-  <Route path="/" element={<Root />} errorElement={<A404Page />}>
-    <Route index element={<IndexPage />} />
-    <Route path="theatre" element={<TheatreInfoPage />} />
-    <Route path="movie">
-      <Route index element={<MovieListPage />} />
-      <Route path=":movieId" element={<MovieDetailPage />} />
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route
+        path="admin/*"
+        Component={AdminRoutes}
+        errorElement={<AdminErrorPage />}
+      />
+      <Route
+        path="*"
+        Component={ClientRoutes}
+        errorElement={<ClientErrorPage />}
+      />
     </Route>
-    <Route path="signin" element={<SignInPage />} />
-    <Route path="ticketing" element={<TicketingPage />} />
-    {/* <Route path='ticket' />
-    <Route path='info' />
-    <Route path='user' />
-    <Route path='signup' />
-  <Route path='signin' /> */}
-  </Route>
+  )
 );
-
-const router = createBrowserRouter(routes);
 
 export default router;

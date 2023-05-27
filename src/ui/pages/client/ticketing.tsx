@@ -5,7 +5,7 @@ import {
   IoClose,
   IoExit,
 } from "react-icons/io5";
-import { Button } from "../components/ui";
+import { Button } from "@/ui/components/ui";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, type Variants, motion } from "framer-motion";
 import clsx from "clsx";

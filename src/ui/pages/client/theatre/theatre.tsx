@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 
-import MainLayout from "../_layouts/main-layout";
+import MainLayout from "../../_layouts/main-layout";
 
 const infoContent = `
   # 시네마 서울

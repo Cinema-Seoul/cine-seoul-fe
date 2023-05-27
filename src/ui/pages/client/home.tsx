@@ -1,10 +1,9 @@
-import HomeSubbar from "@/ui/components/subbar/home-subbar";
-import MainLayout from "./_layouts/main-layout";
-import MovieCard from "@/ui/components/movies/movie-card";
-import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
 import { useFetchApi } from "@/services/api";
 import { fetchMovies } from "@/services/movie/movie.service";
-import Loader from "../components/ui/loader/loader";
+import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
+import HomeSubbar from "@/ui/components/subbar/home-subbar";
+import { Loader } from "@/ui/components/ui";
+import MainLayout from "../_layouts/main-layout";
 
 export default function IndexPage() {
   const [movies, loading] = useFetchApi(fetchMovies());

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button } from "../components/ui";
-import MainLayout from "./_layouts/main-layout";
+import { Button } from "@/ui/components/ui";
+import MainLayout from "../_layouts/main-layout";
 
 export default function SignInPage() {
   return (

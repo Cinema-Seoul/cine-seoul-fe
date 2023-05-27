@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import MovieListHeader from "@/ui/components/header/movie-list-header";
-import MainLayout from "../_layouts/main-layout";
+import MainLayout from "../../_layouts/main-layout";
 import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
 import Loader from "@/ui/components/ui/loader";
 
