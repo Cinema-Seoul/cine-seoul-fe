@@ -1,4 +1,7 @@
 import "virtual:uno.css";
+import "@unocss/reset/tailwind-compat.css";
+import "../src/ui/styles/global.css";
+import "../src/ui/styles/theme-colors.css";
 
 import type { Preview } from "@storybook/react";
 
