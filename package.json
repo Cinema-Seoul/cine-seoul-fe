@@ -16,6 +16,7 @@
     "@unocss/reset": "^0.51.13",
     "axios": "^1.4.0",
     "clsx": "^1.2.1",
+    "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
     "framer-motion": "^10.12.12",
     "react": "^18.2.0",
