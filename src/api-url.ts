@@ -1,1 +1,0 @@
-export const API_URL_auth = 'http://localhost:8080/api/v1/auth';

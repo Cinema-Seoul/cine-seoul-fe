@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import MovieListHeader from "@/ui/components/header/movie-list-header";
 import MainLayout from "../../_layouts/main-layout";
 import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
 import Loader from "@/ui/components/ui/loader";
 
-import type { Movie } from "@/domains";
-import { fetchMovies } from "@/services/movie/movie.service";
-import { useFetchApi } from "@/services/api";
+import { useGetMovies } from "@/services/movie/movie.application";
 
-function MovieList({ items }: { items: Movie[] }) {
+import type { MovieListEntry } from "@/domains";
+import { useNavigate } from "react-router-dom";
+
+function MovieList({ items }: { items: MovieListEntry[] }) {
+  const navigate = useNavigate();
+
   return (
     <ul className="row gy-6">
       {items.map((item, index) => (
@@ -16,7 +19,13 @@ function MovieList({ items }: { items: Movie[] }) {
           <MovieCardWrap
             className="w-full"
             headInfo="예매율 16.6%"
-            data={{ movie: item }}
+            data={{
+              title: item.title,
+              grade: "12",
+              imageUrl: "https://image.tmdb.org/t/p/w500/ySLgOnBTgt7a3Sv1qTVJUDMZJvu.jpg",
+              summary: "",
+             }}
+            onClick={() => { navigate(`/movie/${item.movieNum}`); }}
           />
         </li>
       ))}
@@ -25,14 +34,19 @@ function MovieList({ items }: { items: Movie[] }) {
 }
 
 export default function MovieListPage() {
-  const [movies, isLoading] = useFetchApi(fetchMovies());
+  const {
+    data: movies,
+    loading,
+    page,
+    setPage,
+  } = useGetMovies();
 
   return (
     <MainLayout>
       <section>
         <MovieListHeader />
         <div className="container pt-12">
-          {isLoading ? (
+          {loading ? (
             <Loader className="w-16 mx-a mt-12" />
             ) : movies ? (
             <MovieList items={movies} />

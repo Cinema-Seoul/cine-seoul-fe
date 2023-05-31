@@ -1,8 +1,4 @@
-export enum SeatGrade {
-  TOP = 50,
-  MIDDLE = 30,
-  LOW = 10,
-}
+export type SeatGrade = 'A' | 'B' | 'C';
 
 export type Seat = {
   seatNum: number;

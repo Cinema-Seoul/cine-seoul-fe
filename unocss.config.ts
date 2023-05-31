@@ -61,16 +61,16 @@ export default defineConfig({
     },
   },
   transformers: [
-    transformerMultiStateValues({
-      brackets: ["{{", "}}"],
-      split: ' ',
-      variants: [null, "hover", "active", "focus"],
-    }),
-    transformerMultiStateValues({
-      brackets: ["@media{", "}"],
-      split: ',',
-      variants: [null, "lt-md", "md"],
-    }),
+    // transformerMultiStateValues({
+    //   brackets: ["{{", "}}"],
+    //   split: ' ',
+    //   variants: [null, "hover", "active", "focus"],
+    // }),
+    // transformerMultiStateValues({
+    //   brackets: ["@media{", "}"],
+    //   split: ',',
+    //   variants: [null, "lt-md", "md"],
+    // }),
     transformerCompileClass(),
     transformerVariantGroup(),
     transformerDirectives(),

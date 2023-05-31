@@ -1,4 +1,23 @@
 import { useEffect, useState } from "react";
+import axios from 'axios';
+
+export function initApiFetcher() {
+  // axios.defaults.baseURL = 'http://localhost:8080';
+  axios.defaults.baseURL = '/api';
+  // axios.defaults.withCredentials = true;
+  // axios.defaults.headers.common['Accept'] = '*';
+  // axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
+}
+
+export function setDefaultHeader({
+  accessToken
+}: {
+  accessToken: string;
+}) {
+  axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+}
+
+//
 
 export async function fakeApiFetch<T extends object>(
   res: T,
@@ -49,18 +68,37 @@ export const wrapPromise = <T>(promise: Promise<T>) => {
   };
 };
 
+//
+
 export function useFetchApi<T>(promise: Promise<T>) {
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const invalidate = () => {
     setLoading(true);
     promise
       .then((d) => setData(d))
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    invalidate();
   }, []);
 
-  return [data, loading] as const;
+  return [data, loading, invalidate] as const;
+}
+
+export function useFetchApiWithPagination<T>(fetchAction: ((page: number) => Promise<T>)) {
+  const [page, setPage] = useState<number>(1);
+  const [data ,loading, invalidate] = useFetchApi(fetchAction(page));
+
+  return {
+    data, 
+    loading, 
+    invalidate,
+    page,
+    setPage,
+  } as const;
 }

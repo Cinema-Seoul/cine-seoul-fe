@@ -11,9 +11,12 @@ import "virtual:uno.css";
 import AdminRouter from "./ui/pages/admin.router";
 import ClientRouter from "./ui/pages/client.router";
 import AdminRoutes from "./ui/pages/admin.router";
+import MainWrapper from "./main.wrap";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <MainWrapper>
+      <RouterProvider router={router} />
+    </MainWrapper>
   </React.StrictMode>
 );

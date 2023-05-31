@@ -1,13 +1,11 @@
 import { useFetchApi } from "@/services/api";
-import { fetchMovies } from "@/services/movie/movie.service";
 import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
 import HomeSubbar from "@/ui/components/subbar/home-subbar";
 import { Loader } from "@/ui/components/ui";
 import MainLayout from "../_layouts/main-layout";
 
 export default function IndexPage() {
-  const [movies, loading] = useFetchApi(fetchMovies());
-
+  
   return (
     <MainLayout>
       <section className="bg-neutral-5">
@@ -19,7 +17,7 @@ export default function IndexPage() {
           박스오피스
         </h2>
         <div className="container">
-          {loading ? (
+          {/* {loading ? (
             <Loader className="w-16 mx-a" />
           ) : movies ? (
             <ul className="lt-md:(px-6 space-x-6 w-full overflow-x-scroll flex flex-row flex-nowrap) md:(row gy-8)">
@@ -31,7 +29,7 @@ export default function IndexPage() {
             </ul>
           ) : (
             <p>ERROR</p>
-          )}
+          )} */}
         </div>
       </section>
 
