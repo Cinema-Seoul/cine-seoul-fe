@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Navbar } from "@/ui/components";
 
 import type { PropsWithChildren } from "react";
+import MainFooter from "@/ui/components/footer/main-footer";
 
 export interface MainLayoutProps extends PropsWithChildren {
   insideClass?: string;
@@ -22,6 +23,7 @@ export default function MainLayout({ insideClass, children }: MainLayoutProps) {
       >
         {children}
       </motion.main>
+      <MainFooter />
     </>
   );
 }
