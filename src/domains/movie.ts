@@ -23,4 +23,6 @@ export type MovieListEntry = {
   isShowing: Api.TrueOrFalse;
   runningTime: number;
   releaseDate: Api.ReleaseDate;
+  poster: string; // URL
+  info: string;
 };
