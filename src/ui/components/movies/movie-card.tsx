@@ -35,13 +35,14 @@ export default function MovieCard({
     >
       <Suspense fallback={<Loader />}>
         <div className="relative">
-          <img
+          <div
             className={clsx(
-              "transition group-hover:opacity-25 object-cover",
-              ":uno: w-full before:(content-none pt-125% float-left) after:(content-none block clear-both)"
+              "transition group-hover:opacity-25",
+              ":uno: w-full before:(content-none pt-150% float-left) after:(content-none block clear-both) [&>img]:(absolute top-0 bottom-0 left-0 right-0 w-full h-full)"
             )}
-            src={data.imageUrl}
-          />
+          >
+            <img className="object-cover" src={data.imageUrl} />
+          </div>
           <div
             className={clsx(
               "absolute top-0 bottom-0 left-0 right-0",
@@ -61,7 +62,9 @@ export default function MovieCard({
         </div>
         <div className="p-4">
           <div className="flex flex-row">
-            <h6 className="flex-1 text-lg leading-6 font-bold h-12 overflow-hidden text-ellipsis">{data.title}</h6>
+            <h6 className="flex-1 text-lg leading-6 font-bold h-12 overflow-hidden text-ellipsis max-">
+              {data.title}
+            </h6>
             <MovieGradeBadge className="flex-none" grade={data.grade} />
           </div>
           <div className="mt-4 flex flex-row">
