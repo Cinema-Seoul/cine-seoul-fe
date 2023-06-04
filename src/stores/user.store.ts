@@ -1,10 +1,16 @@
 import { create } from "zustand";
 
-import type { User } from '@/domains/user';
+type SignedUser = {
+  userNum: number;
+  userId: string;
+  name?: string;
+  isMember: boolean;
+  accessToken: string;
+};
 
 export type UserStore = {
-  currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
+  currentUser: SignedUser | null;
+  setCurrentUser: (user: SignedUser | null) => void;
 };
 
 export const useUserStore = create<UserStore>((set) => ({

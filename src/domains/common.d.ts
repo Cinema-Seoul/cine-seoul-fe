@@ -8,7 +8,7 @@ declare module "api:domain" {
     export type TrueOrFalse = YN;
     export type TicketState = YNC;
     export type PayState = YNC;
-    
+
     export type ReleaseDate = string;
   }
 }

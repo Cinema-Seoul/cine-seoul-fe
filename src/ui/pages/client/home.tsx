@@ -14,7 +14,7 @@ export default function IndexPage() {
       <HomeSubbar />
       <section about="Box Office" className="">
         <h2 className="text-7 leading-8 font-bold text-center pt-18 pb-6">
-          박스오피스
+          예매량 TOP
         </h2>
         <div className="container">
           {/* {loading ? (

@@ -40,20 +40,6 @@ export default function MovieListHeader() {
 
   const [tabIndex, setTabIndex] = useState<number>(parseInt(searchParams.get('watch') ?? '0'));
 
-  // useEffect(() => {
-  //   const watch = searchParams.get('watch');
-  //   if (watch && (watch >= '0') && (watch < '2')) {
-  //     setTabIndex(parseInt(watch));
-  //   } else {
-  //     navigate({
-  //       pathname: location.pathname,
-  //       search: '?watch=0',
-  //     }, {
-  //       replace: true,
-  //     });
-  //   }
-  // }, []);
-
   useEffect(() => {
     setSearchParams(createSearchParams({ watch: `${tabIndex}` }), { replace: true });
   }, [tabIndex]);

@@ -84,8 +84,7 @@ const UserSignMenu = ({ className }: BaseProps) => {
     // Not Signed In
     return (
       <div className={rootStyle}>
-        <a className="pressable-opacity" onClick={doSignIn}>로그인</a>
-        <a className="pressable-opacity">회원가입</a>
+        <a className="pressable-opacity" onClick={doSignIn}>로그인/회원가입</a>
       </div>
     )
   }

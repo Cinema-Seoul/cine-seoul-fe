@@ -2,12 +2,10 @@ import clsx from 'clsx';
 
 import { base } from './movie-grade-badge.module.scss';
 
-import type { MovieGrade } from 'cs:movie';
-
 export interface MovieGradeBadgeProps extends BaseProps {
-  grade: MovieGrade;
+  gradeCode?: string;
 }
 
-export default function MovieGradeBadge({ className, grade }: MovieGradeBadgeProps) {
-  return <span className={clsx(className, base, `--${grade}`)} />
+export default function MovieGradeBadge({ className, gradeCode }: MovieGradeBadgeProps) {
+  return <span className={clsx(className, base, `--${gradeCode}`)} />
 }

@@ -7,10 +7,12 @@ import { Button } from "../ui";
 import Loader from "../ui/loader";
 import MovieGradeBadge from "./movie-grade-badge";
 
+const DEFAULT_IMG = "https://placehold.co/100x200/FFF1E7/BD4B00?text=CinemaSeoul&font=Playfair%20Display"
+
 type MovieCardData = {
   title: string;
   summary: string;
-  grade: MovieGrade;
+  grade: string;
   imageUrl: string;
 };
 
@@ -41,7 +43,7 @@ export default function MovieCard({
               ":uno: w-full before:(content-none pt-150% float-left) after:(content-none block clear-both) [&>img]:(absolute top-0 bottom-0 left-0 right-0 w-full h-full)"
             )}
           >
-            <img className="object-cover" src={data.imageUrl} />
+            <img className="object-cover" src={data.imageUrl.length > 0 ? data.imageUrl : DEFAULT_IMG} onError={(e) => e.currentTarget.src = DEFAULT_IMG} />
           </div>
           <div
             className={clsx(
@@ -65,7 +67,7 @@ export default function MovieCard({
             <h6 className="flex-1 text-lg leading-6 font-bold h-12 overflow-hidden text-ellipsis max-">
               {data.title}
             </h6>
-            <MovieGradeBadge className="flex-none" grade={data.grade} />
+            <MovieGradeBadge className="flex-none" gradeCode={data.grade} />
           </div>
           <div className="mt-4 flex flex-row">
             {/* <Button

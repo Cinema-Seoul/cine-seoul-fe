@@ -14,7 +14,8 @@
   }
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
   scroll-behavior: smooth;
 }
@@ -25,18 +26,44 @@ html, body {
 
 /* Fonts */
 
-
 html {
-  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif !important;
+  font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif !important;
 }
 
 /* Inputs */
 
-input[type=text],
-input[type=search],
-input[type=password] {
+input[type="text"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="password"] {
   @apply rounded px-2
   bg-neutral-2
   out-1 outline-neutral-6
   focus:outline-primary-7 focus:outline-2;
+}
+
+/* Data Table */
+
+table.hq-data-table {
+  border-collapse: collapse;
+}
+
+table.hq-data-table thead {
+  border-bottom: 2px solid theme("colors.neutral.6");
+}
+
+table.hq-data-table th,
+table.hq-data-table td {
+  border-bottom: 1px solid theme("colors.neutral.6");
+  padding: 8px;
+}
+
+table.hq-data-table th:not(:last-child),
+table.hq-data-table td:not(:last-child) {
+  border-right: 1px solid theme("colors.neutral.6");
+  border-right-style: dashed;
 }

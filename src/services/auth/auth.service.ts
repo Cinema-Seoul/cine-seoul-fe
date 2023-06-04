@@ -1,5 +1,4 @@
 import { useUserStore } from "@/stores/user.store";
-import { fakeApiFetch } from "../api";
 import { UserRole } from "@/domains/user";
 
 import type { User } from "@/domains/user";
@@ -47,17 +46,16 @@ async function signIn(
 
   const fakeToken = "this_is_fake_jwt";
 
-  return fakeApiFetch(
-    {
+  return new Promise((res) => {
+    res({
       user: fakeUser,
       accessToken: fakeToken,
-    },
-    !userId || !password
-  );
+    });
+  });
 }
 
 async function signOut(): Promise<void> {
-  return fakeApiFetch({}).then(() => {
-    return;
+  return new Promise((res) => {
+    res();
   });
 }

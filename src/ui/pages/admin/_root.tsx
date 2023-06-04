@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import AnimatedOutlet from "../_layouts/animated-outlet";
+import AdminLayout from "../_layouts/admin-layout";
 
 export default function AdminRoot() {
   const location = useLocation();
@@ -13,10 +14,9 @@ export default function AdminRoot() {
 
   return (
     <AnimatePresence>
-      <div>ADMIN</div>
-      <Fragment key={location.pathname}>
-        <AnimatedOutlet />
-      </Fragment>
+      <AdminLayout>
+        <AnimatedOutlet key={location.pathname} />
+      </AdminLayout>
     </AnimatePresence>
   );
 }
