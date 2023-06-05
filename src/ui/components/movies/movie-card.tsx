@@ -43,7 +43,7 @@ export default function MovieCard({
               ":uno: w-full before:(content-none pt-150% float-left) after:(content-none block clear-both) [&>img]:(absolute top-0 bottom-0 left-0 right-0 w-full h-full)"
             )}
           >
-            <img className="object-cover" src={data.imageUrl.length > 0 ? data.imageUrl : DEFAULT_IMG} onError={(e) => e.currentTarget.src = DEFAULT_IMG} />
+            <img className="object-cover" src={data.imageUrl?.length > 0 ? data.imageUrl : DEFAULT_IMG} onError={(e) => e.currentTarget.src = DEFAULT_IMG} />
           </div>
           <div
             className={clsx(
