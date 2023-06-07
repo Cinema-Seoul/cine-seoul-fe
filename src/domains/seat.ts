@@ -1,4 +1,8 @@
-export type SeatGrade = 'A' | 'B' | 'C';
+export enum SeatGrade {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+}
 
 export type Seat = {
   seatNum: number;

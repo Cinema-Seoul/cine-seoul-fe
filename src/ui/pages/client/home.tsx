@@ -1,4 +1,4 @@
-import { useFetchApi } from "@/services/api";
+import { useGetApi } from "@/services/api";
 import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
 import HomeSubbar from "@/ui/components/subbar/home-subbar";
 import { Loader } from "@/ui/components/ui";

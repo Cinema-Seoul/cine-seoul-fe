@@ -1,32 +1,43 @@
-import { Api } from "api:domain";
-import { Genre, Grade } from "./code-domain";
-import { Actor, Director } from "./person";
+import { ActorListEntry, DirectorListEntry, Genre, Grade, Is } from ".";
 
 export type MovieDetail = {
-  actorList: Actor[];
-  directorList: Director[];
+  actorList: ActorListEntry[];
+  directorList: DirectorListEntry[];
   distName: string[];
   genreList: Genre[];
   gradeName: Grade;
   info: string;
-  isShowing: Api.TrueOrFalse;
+  isShowing: Is;
   movieNum: number;
-  releaseDate: Api.ReleaseDate;
+  releaseDate: Is;
   runningTime: number;
   poster: string; // URL
   title: string;
 };
 
 export type MovieListEntry = {
-  movieNum: Api.UniqueNum;
+  movieNum: number;
   title: string;
   gradeName: string;
   genreList: Genre[];
   distName: string;
-  isShowing: Api.TrueOrFalse;
+  isShowing: Is;
   runningTime: number;
-  releaseDate: Api.ReleaseDate;
+  releaseDate: string;
   poster: string; // URL
   info: string;
   ticketCount: number;
+};
+
+export type MovieCreation = {
+  actorNumList: number[];
+  directorNumList: number[];
+  distNum: number;
+  genreCodeList: string[];
+  gradeCode: string;
+  info: string;
+  isShowing: Is;
+  releaseDate: string;
+  runningTime: number;
+  title: string;
 };

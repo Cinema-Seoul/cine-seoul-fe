@@ -10,8 +10,9 @@ import clsx from "clsx";
 import type { Movie } from "@/domains";
 import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
 import { IoRemove } from "react-icons/io5";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate, useNavigation } from "react-router-dom";
 
 const MovieItem = ({
   className,
@@ -22,10 +23,13 @@ const MovieItem = ({
   onClickRemove: MouseEventHandler;
 } & BaseProps) => (
   <motion.div
-    className={clsx(className, "rounded out-1 outline-neutral-7 flex flex-row h-24")}
-    initial={{ opacity: 0, transform: 'scale(1)', transformOrigin: '0 0' }}
-    animate={{ opacity: 1, transform: 'scale(1)' }}
-    exit={{ opacity: 0, transform: 'scale(0)', height: 0 }}
+    className={clsx(
+      className,
+      "rounded out-1 outline-neutral-7 flex flex-row h-24"
+    )}
+    initial={{ opacity: 0, transform: "scale(1)", transformOrigin: "0 0" }}
+    animate={{ opacity: 1, transform: "scale(1)" }}
+    exit={{ opacity: 0, transform: "scale(0)", height: 0 }}
   >
     <img className="flex-none h-full" src={movie.poster} />
     <div className="flex-1 p-4">
@@ -59,8 +63,14 @@ export default function MovieSelectSubpage({ className }: BaseProps) {
     removeSelectedMovie,
   } = useTicketingStore();
 
+  const navigate = useNavigate();
+
+  const doOnClickAddButton = useCallback(() => {
+    navigate("/movie");
+  }, [navigate]);
+
   return (
-    <StepSection title="영화 고르기" className={className} bodyClass="p-4">
+    <StepSection title="영화" className={className} bodyClass="p-4">
       <ul className="mt--2">
         <AnimatePresence>
           {selectedMovies.map((m, i) => (
@@ -74,19 +84,9 @@ export default function MovieSelectSubpage({ className }: BaseProps) {
           ))}
         </AnimatePresence>
       </ul>
-      <div>
-        <Button
-          onClick={() => {
-            fakeMovies.forEach((m) => {
-              try {
-                addSelectedMovie(m);
-              } catch (e: any) {
-                alert(e.message);
-              }
-            });
-          }}
-        >
-          ADD MOVIE
+      <div className="mt-4">
+        <Button className="w-full" onClick={doOnClickAddButton}>
+          영화 더 추가하기
         </Button>
       </div>
     </StepSection>

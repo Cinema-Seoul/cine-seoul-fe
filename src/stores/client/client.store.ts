@@ -1,31 +1,28 @@
 import { create } from "zustand";
 
-import {
-  QueryGenre,
-  QueryType,
-  SortMovieBy,
-} from "@/services/movie/movie.service";
+import { GetMoviesSortBy, GetMoviesType } from "@/services/movie/movie.service";
 import { SortDirection } from "@/services/api";
+import { Genre } from "@/domains";
 
 export type MovieListStoreState = {
-  type: QueryType;
-  sortBy: SortMovieBy;
+  type: GetMoviesType;
+  sortBy: GetMoviesSortBy;
   sortDir: SortDirection;
-  genre?: QueryGenre;
+  genre?: Genre;
 };
 
 export type MovieListStoreActions = {
-  updateType: (t: QueryType) => void;
-  updateSortBy: (t: SortMovieBy, resetDir?: boolean) => void;
+  updateType: (t: GetMoviesType) => void;
+  updateSortBy: (t: GetMoviesSortBy, resetDir?: boolean) => void;
   updateSortDir: (t: SortDirection) => void;
   switchSortDir: () => void;
-  updateGenre: (t: QueryGenre) => void;
+  updateGenre: (t: Genre) => void;
   reset: () => void;
 };
 
 const initialMovieListStore: MovieListStoreState = {
-  type: "all",
-  sortBy: SortMovieBy.releaseDate,
+  type: GetMoviesType.all,
+  sortBy: GetMoviesSortBy.releaseDate,
   sortDir: SortDirection.desc,
   genre: undefined,
 };

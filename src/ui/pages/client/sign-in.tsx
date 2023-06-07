@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/ui/components/ui";
 import MainLayout from "../_layouts/main-layout";
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from "react";
-import { useFetchApi } from "@/services/api";
+import { useGetApi } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { useForm } from "@/hooks/form";
 import { useUserStore } from "@/stores/user.store";

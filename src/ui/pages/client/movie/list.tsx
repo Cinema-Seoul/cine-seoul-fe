@@ -1,36 +1,17 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import MovieListHeader from "@/ui/components/header/movie-list-header";
 import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
 import Loader from "@/ui/components/ui/loader";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import MainLayout from "../../_layouts/main-layout";
 
-import { useGetMovies } from "@/services/movie/movie.application";
-
 import type { MovieListEntry } from "@/domains";
-import {
-  MouseEventHandler,
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import clsx from "clsx";
-import { IoChevronUp } from "react-icons/io5";
-import PaginationBar from "@/ui/components/pagination/pagination-bar";
+import { SortDirection, useGetApiWithPagination } from "@/services/api";
+import { GetMoviesSortBy, GetMoviesType, getMovies } from "@/services/movie/movie.service";
 import { useMovieListStore } from "@/stores/client/client.store";
-import { QueryType, SortMovieBy } from "@/services/movie/movie.service";
-
-/* Constants */
-
-const TAB_ITEM: {
-  code: QueryType;
-  displayName: string;
-}[] = [
-  { code: "all", displayName: "모든 영화" },
-  { code: "showing", displayName: "개봉작만" },
-  { code: "upcomming", displayName: "개봉 예정" },
-];
+import PaginationBar from "@/ui/components/pagination/pagination-bar";
+import clsx from "clsx";
+import { MouseEventHandler, PropsWithChildren, useCallback, useEffect, useMemo } from "react";
+import { IoChevronUp } from "react-icons/io5";
+import { fmt, parse8DigitDateString } from "@/utils/date";
 
 /* Header */
 
@@ -63,11 +44,11 @@ function LocalTabIndex({
 
 function LocalHeaderFilter({
   active = false,
-  dir = "ASC",
+  dir = SortDirection.desc,
   onClick,
   children,
 }: {
-  dir: "ASC" | "DESC";
+  dir: SortDirection;
   active: boolean;
   onClick?: MouseEventHandler;
 } & PropsWithChildren) {
@@ -75,7 +56,7 @@ function LocalHeaderFilter({
     <a
       className={clsx(
         "inline-flex flex-row h-full items-center space-x-2 cursor-pointer",
-        dir === "DESC" && ":uno: [&>svg]:(rotate-180)"
+        dir === SortDirection.desc && ":uno: [&>svg]:(rotate-180)"
       )}
       onClick={onClick}
     >
@@ -85,17 +66,31 @@ function LocalHeaderFilter({
   );
 }
 
+const TYPE_ITEMS: {
+  code: GetMoviesType;
+  displayName: string;
+}[] = [
+  { code: GetMoviesType.all, displayName: "모든 영화" },
+  { code: GetMoviesType.showing, displayName: "개봉작만" },
+  { code: GetMoviesType.upcoming, displayName: "개봉 예정" },
+];
+
+const SORT_BY_ITEMS: {
+  code: GetMoviesSortBy;
+  displayName: string;
+}[] = [
+  {
+    code: GetMoviesSortBy.releaseDate,
+    displayName: "개봉일",
+  },
+  {
+    code: GetMoviesSortBy.ticketCount,
+    displayName: "예매량",
+  },
+];
+
 function LocalHeader({ title }: { title: string }) {
-  const {
-    type,
-    sortBy,
-    sortDir,
-    genre,
-    updateType,
-    updateGenre,
-    updateSortBy,
-    switchSortDir,
-  } = useMovieListStore();
+  const { type, sortBy, sortDir, genre, updateType, updateGenre, updateSortBy, switchSortDir } = useMovieListStore();
 
   const doOnClickSort = useCallback(
     (e: typeof sortBy) => {
@@ -119,20 +114,18 @@ function LocalHeader({ title }: { title: string }) {
     <header className="bg-neutral-2">
       <div className="container pt-36">
         {/* Title Field */}
-        <div className="row py-6">
-          <h2 className="col text-2xl font-bold text-primary-11">{title}</h2>
-          <input
-            className="lt-md:(col-12 mt-2) md:(col-6)"
-            type="text"
-            placeholder="영화를 검색해보세요"
-          />
-        </div>
+        <form>
+          <div className="row py-6">
+            <h2 className="col text-2xl font-bold text-primary-11">{title}</h2>
+            <input className="lt-md:(col-12 mt-2) md:(col-6)" type="text" placeholder="영화를 검색해보세요" />
+          </div>
+        </form>
         {/* Tab */}
         <nav>
           <ul className="row">
-            {TAB_ITEM.map(({ code, displayName }, index) => (
+            {TYPE_ITEMS.map(({ code, displayName }, index) => (
               <LocalTabIndex
-                key={`maintab-${index}`}
+                key={index}
                 selected={type === code}
                 className="lt-md:(col-4) md:(col-2)"
                 label={displayName}
@@ -144,24 +137,11 @@ function LocalHeader({ title }: { title: string }) {
       </div>
       <div className="bg-primary-3 border-t border-primary-6 h-12">
         <div className="container h-full space-x-4 flex flex-row justify-end">
-          <LocalHeaderFilter
-            dir={sortDir}
-            active={sortBy === SortMovieBy.releaseDate}
-            onClick={() => {
-              doOnClickSort(SortMovieBy.releaseDate);
-            }}
-          >
-            개봉일
-          </LocalHeaderFilter>
-          <LocalHeaderFilter
-            dir={sortDir}
-            active={sortBy === SortMovieBy.ticketCount}
-            onClick={() => {
-              doOnClickSort(SortMovieBy.ticketCount);
-            }}
-          >
-            예매량
-          </LocalHeaderFilter>
+          {SORT_BY_ITEMS.map(({ code, displayName }, index) => (
+            <LocalHeaderFilter key={index} dir={sortDir} active={sortBy === code} onClick={() => doOnClickSort(code)}>
+              {displayName}
+            </LocalHeaderFilter>
+          ))}
         </div>
       </div>
     </header>
@@ -181,16 +161,20 @@ function MovieList({
   items: MovieListEntry[];
   onClickItem: (item: MovieListEntry, index: number) => void;
 }) {
-  const sortBy = useMovieListStore(s => s.sortBy);
+  const sortBy = useMovieListStore((s) => s.sortBy);
 
-  const headInfo = useCallback((d: MovieListEntry) => {
-    switch(sortBy) {
-      case SortMovieBy.releaseDate:
-        return `${d.releaseDate} 개봉`;
-      case SortMovieBy.ticketCount:
-        return `${d.ticketCount}장`;
-    }
-  }, [sortBy, items]);
+  const headInfo = useCallback(
+    ({ releaseDate: releaseDateRaw, ticketCount }: MovieListEntry) => {
+      const releaseDate = releaseDateRaw && parse8DigitDateString(releaseDateRaw);
+      switch (sortBy) {
+        case GetMoviesSortBy.releaseDate:
+          return releaseDate ? `${fmt(releaseDate, "P")} 개봉` : "개봉 미정";
+        case GetMoviesSortBy.ticketCount:
+          return `${ticketCount}장`;
+      }
+    },
+    [sortBy, items]
+  );
 
   return (
     <ul className="row gy-6">
@@ -201,7 +185,7 @@ function MovieList({
             headInfo={headInfo(item)}
             data={{
               title: item.title,
-              grade: "",/* TODO: Grade */
+              grade: "" /* TODO: Grade */,
               imageUrl: item.poster,
               summary: item.info,
             }}
@@ -221,49 +205,34 @@ export default function MovieListPage() {
 
   const { type, sortBy, sortDir, genre } = useMovieListStore();
 
+  const movies = useGetApiWithPagination(
+    (_p, _s) =>
+      getMovies({
+        page: _p,
+        size: _s,
+        sortBy,
+        sortDir,
+        type,
+        genre: genre?.genreCode,
+      }),
+    {
+      initialPage: 0,
+      pageSize: 12,
+    }
+  );
+
   useEffect(() => {
-    invalidate();
+    movies.invalidate();
   }, [sortBy, sortDir, type]);
-
-  // Tab
-
-  // const initialTabIndex: unknown = searchParams.get("watch");
-  // const [tabIndex, setTabIndex] = useState<TabItemCode>(
-  //   isTabItemCode(initialTabIndex) ? initialTabIndex : "all"
-  // );
-  // useEffect(() => {
-  //   setSearchParams((o) => ({
-  //     ...o,
-  //     watch: tabIndex,
-  //   }));
-  // }, [tabIndex]);
-
-  // Data Fetching
-
-  const {
-    data: movies,
-    loading,
-    invalidate,
-    page,
-    setPage,
-    error,
-  } = useGetMovies({
-    initialPage: 0,
-    pageSize: 12,
-    sortBy,
-    sortDir,
-    type,
-    genre,
-  });
 
   const NotFound = useMemo(
     () => (
       <div>
-        <h4>찾을 수 없어요 :(</h4>
-        <p>{error?.message}</p>
+        <h4>{"찾을 수 없어요 :("}</h4>
+        <p>{movies.error?.message}</p>
       </div>
     ),
-    [error?.message]
+    [movies.error?.message]
   );
 
   return (
@@ -272,21 +241,18 @@ export default function MovieListPage() {
         <LocalHeader title="영화" />
         {/* <MovieListHeader /> */}
         <div className="container pt-12 pb-12">
-          {loading ? (
+          {movies.loading ? (
             <LocalLoader />
-          ) : error ? (
+          ) : movies.error ? (
             NotFound
-          ) : movies ? (
+          ) : movies.data ? (
             <>
-              <MovieList
-                items={movies.list}
-                onClickItem={(item) => navigate(`/movie/${item.movieNum}`)}
-              />
+              <MovieList items={movies.data.list} onClickItem={(item) => navigate(`/movie/${item.movieNum}`)} />
               <PaginationBar
                 className="my-12"
-                currentPageIndex={page}
-                pageCount={movies.totalPages}
-                onPageSelected={setPage}
+                currentPageIndex={movies.page}
+                pageCount={movies.data.totalPages}
+                onPageSelected={movies.setPage}
               />
             </>
           ) : (

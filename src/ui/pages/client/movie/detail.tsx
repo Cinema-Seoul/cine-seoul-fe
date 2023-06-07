@@ -1,4 +1,3 @@
-import { useGetMovieDetail } from "@/services/movie/movie.application";
 import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
 import { Button, Loader } from "@/ui/components/ui";
 import { parse8DigitDateString } from "@/utils/date";
@@ -9,6 +8,8 @@ import { IoHeart, IoShareOutline, IoTicket } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import MainLayout from "../../_layouts/main-layout";
 import clsx from "clsx";
+import { useGetApi } from "@/services/api";
+import { getMovieDetail } from "@/services/movie/movie.service";
 
 function LocalLoader() {
   return <Loader className="w-16 mx-a py-24" />;
@@ -27,12 +28,18 @@ export default function MovieDetailPage() {
     throw Error("영화 고유 번호가 잘못되었습니다.");
   }
 
+  
   const {
     data: movieDetail,
     loading: movieDetailLoading,
+    error: movieDetailError,
     invalidate: movieDetailInvalidate,
-  } = useGetMovieDetail({ movieNum });
-
+  } = useGetApi(() => getMovieDetail(movieNum));
+  
+  if (movieDetailError) {
+    throw Error("문제가 발생하여 페이지를 불러올 수 없어요");
+  }
+  
   const specs = useMemo(() => {
     if (!movieDetail) return {};
 

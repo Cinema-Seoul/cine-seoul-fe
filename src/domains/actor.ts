@@ -1,11 +1,11 @@
-export type Actor = {
+export type ActorDetail = {
   actNum: number;
   imgUrl: string;
   name: string;
 };
 
-export type Director = {
-  dirNum: number;
+export type ActorListEntry = {
+  actNum: number;
   imgUrl: string;
   name: string;
-};
+}

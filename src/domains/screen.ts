@@ -1,4 +1,4 @@
-import type { Seat } from "./seat";
+import { Seat } from ".";
 
 export type Screen = {
   screenNum: number;

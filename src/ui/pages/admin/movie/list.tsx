@@ -1,25 +1,19 @@
-import { useGetMovies } from "@/services/movie/movie.application";
 import PaginationBar from "@/ui/components/pagination/pagination-bar";
 import Modal from "@/ui/components/ui/modal/modal";
 import { useState } from "react";
 import MovieEditModal from "./movie-edit-modal";
+import { useGetApi, useGetApiWithPagination } from "@/services/api";
+import { GetMoviesType, getMovies } from "@/services/movie/movie.service";
 
 export default function AdminMovieListPage() {
-  const {
-    data: movies,
-    loading,
-    invalidate,
-    page,
-    setPage,
-    error,
-  } = useGetMovies({
+  const movies = useGetApiWithPagination((_p, _s) => getMovies({ page: _p, size: _s, type: GetMoviesType.all }), {
     initialPage: 0,
     pageSize: 25,
   });
 
   const [isOpenEditor, setOpenEditor] = useState<boolean>(false);
 
-  return loading ? (
+  return movies.loading ? (
     <div>Loading...</div>
   ) : (
     <>
@@ -34,14 +28,11 @@ export default function AdminMovieListPage() {
           </tr>
         </thead>
         <tbody>
-          {movies?.list.map((item, index) => (
+          {movies.data?.list.map((item, index) => (
             <tr key={item.movieNum}>
               <th>{item.movieNum}</th>
               <td>
-                <a
-                  className="hover:underline"
-                  onClick={() => setOpenEditor(true)}
-                >
+                <a className="hover:underline" onClick={() => setOpenEditor(true)}>
                   {item.title}
                 </a>
               </td>
@@ -53,17 +44,11 @@ export default function AdminMovieListPage() {
         </tbody>
       </table>
       <div className="p-4">
-        {movies && (
-          <PaginationBar
-            currentPageIndex={page}
-            pageCount={movies.totalPages}
-            onPageSelected={(p) => setPage(p)}
-          />
+        {movies.data && (
+          <PaginationBar currentPageIndex={movies.page} pageCount={movies.data.totalPages} onPageSelected={(p) => movies.setPage(p)} />
         )}
       </div>
-      {isOpenEditor && (
-        <MovieEditModal movieNum={2} onClose={() => setOpenEditor((o) => !o)} />
-      )}
+      {isOpenEditor && <MovieEditModal movieNum={2} onClose={() => setOpenEditor((o) => !o)} />}
     </>
   );
 }

@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+
 /**
  * "YYYYMMDD" 형태의 날짜 데이터를 Date 객체로 변환한다
  * @param str 변환할 8-Digit DateString
@@ -24,4 +27,29 @@ export function parse8DigitDateString(str: string): Date | null {
     d !== date.getDate()
     ? null
     : date;
+}
+
+export function fmt(date: Date, form: string) {
+  if (date instanceof Date) {
+    return format(date, form, { locale: ko });
+  } else {
+    return null;
+  }
+}
+
+/** Date 타입으로 확실히 만들기 위해 / API 응답에서 Date가 number[7]으로 오는데, 그걸 처리 */
+export function date(src: any): Date | null {
+  if (src === null || src === undefined) {
+    return null;
+  } else if (src instanceof Date) {
+    return src;
+  }
+  
+  if (typeof src === 'number' || typeof src === 'string') {
+    return new Date(src);
+  } else if (Array.isArray(src)) {
+    return new Date(src[0], src[1], src[2], src[3], src[4], src[5], src[6]);
+  }
+
+  return null;
 }
