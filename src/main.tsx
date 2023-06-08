@@ -12,6 +12,11 @@ import AdminRouter from "./ui/pages/admin.router";
 import ClientRouter from "./ui/pages/client.router";
 import AdminRoutes from "./ui/pages/admin.router";
 import MainWrapper from "./main.wrap";
+import { initApiFetcher } from "./services/api";
+
+console.log("APP STARTED");
+
+initApiFetcher();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

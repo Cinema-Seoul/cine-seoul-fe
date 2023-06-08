@@ -22,21 +22,16 @@ export default defineConfig({
   shortcuts: [
     ["out-1", "outline outline-1"],
     ["pressable-opacity", "transition cursor-pointer hover:(opacity-60) active:(opacity-45)"],
+    ["pressable-tonal", "transition cursor-pointer bg-neutral-3 hover:bg-neutral-4 active:bg-neutral-5"],
+    ["card", "rounded out-1 outline-neutral-6 bg-neutral-2"],
+    ["card-pressable", "transition cursor-pointer hover:bg-neutral-3 active:bg-neutral-4"],
+    ["h-square", "before:(content-none pt-full float-left) after:(content-none block clear-both)"],
   ],
   rules: [
-    [
-      /^bg@([\w-]+)$/,
-      ([, name]) => ({ "background-color": `var(--h-color-${name})` }),
-    ],
+    [/^bg@([\w-]+)$/, ([, name]) => ({ "background-color": `var(--h-color-${name})` })],
     [/^text@([\w-]+)$/, ([, name]) => ({ color: `var(--h-color-${name})` })],
-    [
-      /^border@([\w-]+)$/,
-      ([, name]) => ({ "border-color": `var(--h-color-${name})` }),
-    ],
-    [
-      /^outline@([\w-]+)$/,
-      ([, name]) => ({ "outline-color": `var(--h-color-${name})` }),
-    ],
+    [/^border@([\w-]+)$/, ([, name]) => ({ "border-color": `var(--h-color-${name})` })],
+    [/^outline@([\w-]+)$/, ([, name]) => ({ "outline-color": `var(--h-color-${name})` })],
   ],
   presets: [presetGrid(), presetUno(), presetTypography()], //Container는 PresetUno 걸 이용할 것이므로 순서 유의!
   theme: {

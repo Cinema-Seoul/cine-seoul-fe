@@ -1,17 +1,19 @@
-import { useUserStore } from "@/stores/user.store";
+/* -------------------------------------------------------------------------- */
+/*                                    User                                    */
+/* -------------------------------------------------------------------------- */
 
-import type { User } from "@/domains/user";
+import { UserSignInMember, UserSignInNonmember } from "@/types";
+import axios from "axios";
 
-export interface UserService {
-  currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
+/** POST /user/login */
+
+export interface RequestSignInUserOptions {
+  isMember?: boolean;
 }
 
-export default function useUserService (): UserService {
-  const { currentUser, setCurrentUser } = useUserStore();
-
-  return {
-    currentUser,
-    setCurrentUser,
-  };
+export async function requestSignInUser(
+  body: UserSignInMember | UserSignInNonmember,
+  { isMember }: RequestSignInUserOptions
+): Promise<string> { // 토큰 반환
+  return axios.post("/user/login", { ...body }, { params: { isMember } }).then((res) => res.data);
 }

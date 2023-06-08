@@ -1,4 +1,4 @@
-import type { User } from "@/domains/user";
+import type { User } from "@/types/user";
 
 export type SignInApiResponse = {
   user: User;

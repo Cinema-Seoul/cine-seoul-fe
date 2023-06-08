@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { GetMoviesSortBy, GetMoviesType } from "@/services/movie/movie.service";
 import { SortDirection } from "@/services/api";
-import { Genre } from "@/domains";
+import { Genre } from "@/types";
 
 export type MovieListStoreState = {
   type: GetMoviesType;

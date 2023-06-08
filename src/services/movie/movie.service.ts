@@ -6,7 +6,7 @@ import {
   Grade,
   ListResponse,
   MovieCreation,
-} from "@/domains";
+} from "@/types";
 import { PagableRequest, SortableRequest } from "../api";
 
 /* -------------------------------------------------------------------------- */

@@ -1,4 +1,4 @@
-import { Genre } from "@/domains";
+import { Genre } from "@/types";
 import {
   PagableRequest,
   SortableRequest,

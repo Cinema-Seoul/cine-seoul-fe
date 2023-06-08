@@ -32,6 +32,9 @@ function useFetchApi<T, E>(fetchAction: () => Promise<T>) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<E | null>(null);
   const invalidate = useCallback(() => {
+    if (loading) {
+      return;
+    }
     console.log("API call is now invalidated!");
     setLoading(true);
     setError(null);

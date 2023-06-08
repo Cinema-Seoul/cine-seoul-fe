@@ -8,7 +8,7 @@ import {
   ScheduleDetail,
   ScheduleListEntry,
   ScheduleUpdating,
-} from "@/domains";
+} from "@/types";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Schedule                                  */

@@ -1,7 +1,7 @@
 import { useUserStore } from "@/stores/user.store";
-import { UserRole } from "@/domains/user";
+import { UserRole } from "@/types/user";
 
-import type { User } from "@/domains/user";
+import type { User } from "@/types/user";
 import type { SignInApiResponse } from "./auth.api";
 
 const JWT_TOKEN_STORAGE_KEY = "access-token";
