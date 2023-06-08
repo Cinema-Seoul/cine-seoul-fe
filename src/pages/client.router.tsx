@@ -15,6 +15,8 @@ import SignInPage from "./client/sign-in";
 import SignUpPage from "./client/sign-up";
 import TheatreInfoPage from "./client/theatre";
 import TicketingPage from "./client/ticketing";
+import MyProfileEditPage from "./client/mypage/edit-profile";
+import SearchMovieListPage from "./client/movie-list/search";
 
 const ClientRoutes = () => (
   <Suspense>
@@ -24,7 +26,8 @@ const ClientRoutes = () => (
         <Route path="theatre" element={<TheatreInfoPage />} />
         <Route path="movie">
           <Route index element={<MovieListPage />} />
-          <Route path=":movieNum" element={<MovieDetailPage />} />
+          <Route path="s" element={<SearchMovieListPage />} />
+          <Route path="d/:movieNum" element={<MovieDetailPage />} />
         </Route>
         <Route path="m/actor/:actorNum" element={<ActorDetailPage />} />
         <Route path="m/director/:dirNum" element={<DirectorDetailPage />} />
@@ -33,6 +36,7 @@ const ClientRoutes = () => (
         <Route path="signup" element={<SignUpPage />} />
         <Route path="my" element={<MyPage />} />
         <Route path="my/ticket" element={<MyTicketsPage />} />
+        <Route path="my/edit" element={<MyProfileEditPage />} />
         <Route path="ticketing/*" element={<TicketingPage />} />
         <Route path="*" element={<ClientErrorPage noRoute />} />
       </Route>

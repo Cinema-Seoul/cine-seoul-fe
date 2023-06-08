@@ -1,10 +1,12 @@
 import { ActorListEntry, DirectorListEntry, Genre, Grade, Is } from ".";
+import { Country } from "./country";
 
 export type MovieDetail = {
   actorList: ActorListEntry[];
   directorList: DirectorListEntry[];
   distName: string;
   genreList: Genre[];
+  countryList: Country[];
   gradeName: Grade;
   info: string;
   isShowing: Is;
@@ -42,17 +44,17 @@ export type MovieCreation = {
   title: string;
 };
 
-export type MovieSelectionState = Pick<MovieListEntry, "movieNum" | "title" | "releaseDate" | "poster" | "runningTime">;
+export type MovieSelectionState = MovieListEntry;
 
-export function toMovieSelectionState<T extends MovieSelectionState>({
-  movieNum,
-  poster,
-  releaseDate,
-  runningTime,
-  title,
-}: T): MovieSelectionState {
-  return { movieNum, poster, releaseDate, runningTime, title };
-}
+// export function toMovieSelectionState<T extends MovieSelectionState>({
+//   movieNum,
+//   poster,
+//   releaseDate,
+//   runningTime,
+//   title,
+// }: T): MovieSelectionState {
+//   return { movieNum, poster, releaseDate, runningTime, title };
+// }
 
 export function convertMovieDetailToMovieListEntry(detail: MovieDetail): MovieListEntry {
   const { movieNum, title, genreList, distName, isShowing, runningTime, releaseDate, poster, info } = detail;

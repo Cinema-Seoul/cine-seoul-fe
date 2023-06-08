@@ -1,12 +1,19 @@
-import { YNC } from "api:domain";
-
-export type PaymentMethod = `${"A" | "C" | "P"}${string}`;
-export type PaymentState = YNC;
+export enum PaymentMethod {
+  Account = "A",
+  Card = "C",
+  Point = "P",
+}
+export type PaymentMethodValue = `${PaymentMethod}${string}`;
+export enum PaymentState {
+  True = "Y",
+  False = "N",
+  Cancel = "C",
+}
 
 export type PaymentDetail = {
   approvalNum: string;
   createdAt: Date;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethodValue;
   paymentNum: number;
   price: number;
   state: PaymentState;
@@ -16,7 +23,7 @@ export type PaymentDetail = {
 export type PaymentListEntry = {
   approvalNum: string;
   createdAt: Date;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethodValue;
   paymentNum: number;
   price: number;
   state: PaymentState;

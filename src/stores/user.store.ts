@@ -1,4 +1,5 @@
 import { setDefaultHeader } from "@/services/api";
+import { UserRole } from "@/types";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -6,7 +7,7 @@ type SignedUser = {
   userNum: number;
   userId: string;
   name?: string;
-  isMember: boolean;
+  userRole: UserRole;
   accessToken: string;
 };
 

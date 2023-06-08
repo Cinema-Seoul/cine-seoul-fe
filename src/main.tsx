@@ -11,7 +11,7 @@ import "@unocss/reset/tailwind-compat.css";
 import "virtual:uno.css";
 
 import MainWrapper from "./main.wrap";
-import { initApiFetcher } from "./services/api";
+import { initApiFetcher, setDefaultHeader } from "./services/api";
 
 console.log("APP STARTED");
 

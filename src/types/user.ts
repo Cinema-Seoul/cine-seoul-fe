@@ -1,21 +1,26 @@
 export type UserNum = number;
 export enum UserRole {
-  member = 'M',
-  nonmember = 'N',
-  admin = 'D',
+  member = "M",
+  nonmember = "N",
+  admin = "D",
 }
 
 export type User = {
   userNum: UserNum;
-  id: string | null;
-  //password: string | null;
-  name: string | null;
-  // residentNum: string;
-  // TODO: 성인인지 판단?
+  createdAt: Date;
+  id: string;
+  name: string;
   phoneNum: string;
-  point: number | null;
+  residentNum: string;
+  point: number;
   role: UserRole;
 };
+
+export type UserEditing = {
+  name?: string;
+  phoneNum?: string;
+  pw?: string;
+}
 
 export type UserSignInMember = {
   id: string;

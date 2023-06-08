@@ -32,7 +32,7 @@ export default function MovieCardWrap({
     (e) => {
       onClickRaw && onClickRaw(e);
       if (linkToDetail && !e.isDefaultPrevented() && data?.movieNum) {
-        navigate(`/movie/${data.movieNum}`);
+        navigate(`/movie/d/${data.movieNum}`);
       }
     },
     [data.movieNum, linkToDetail, navigate, onClickRaw]

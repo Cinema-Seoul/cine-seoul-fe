@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from "react";
+import { KeyboardEventHandler, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { useModal } from "./modal-context";
 import { motion } from "framer-motion";
@@ -9,10 +9,19 @@ export interface DialogContainerProps extends PropsWithChildren {
 }
 
 export function DialogContainer({ dim = true, onCloseRequest, children }: DialogContainerProps) {
+  const doOnKeyDown: KeyboardEventHandler = useCallback(
+    (e) => {
+      if (onCloseRequest && e.key === "Escape") {
+        onCloseRequest();
+      }
+    },
+    [onCloseRequest]
+  );
+
   return (
     <motion.div
       className={clsx(
-        "fixed top-0 bottom-0 left-0 right-0 overflow-hidden",
+        "z-48 fixed top-0 bottom-0 left-0 right-0 overflow-hidden",
         "flex flex-col justify-center items-center",
         dim && "bg-neutral-11 bg-opacity-50"
       )}
@@ -20,8 +29,14 @@ export function DialogContainer({ dim = true, onCloseRequest, children }: Dialog
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div className="z-32 absolute top-0 bottom-0 left-0 right-0" onClick={onCloseRequest}></div>
-      <div className="z-48" style={{ maxWidth: '960px' }}>{children}</div>
+      <div
+        className="z-32 absolute top-0 bottom-0 left-0 right-0"
+        onClick={onCloseRequest}
+        onKeyDown={doOnKeyDown}
+      ></div>
+      <div className="z-48" style={{ maxWidth: "960px" }}>
+        {children}
+      </div>
     </motion.div>
   );
 }
@@ -29,7 +44,7 @@ export function DialogContainer({ dim = true, onCloseRequest, children }: Dialog
 export function DialogSheet({ children }: PropsWithChildren) {
   return (
     <motion.div
-      className="rounded-lg out-1 outline-neutral-6 shadow-xl bg-neutral-2"
+      className="rounded-lg out-1 outline-neutral-6 shadow-xl bg-neutral-2 max-w-148 min-w-48"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.6 }}
@@ -62,11 +77,13 @@ export function DialogHeader({ title, subtitle }: DialogHeaderProps) {
 }
 
 export function DialogBody({ className, children }: PropsWithChildren<BaseProps>) {
-  return <div className={clsx(className, "p-4 overflow-y-auto")}>{children}</div>;
+  return <div className={clsx(className, "px-4 py-6 overflow-y-auto")}>{children}</div>;
 }
 
-export function DialogFooter({ children }: PropsWithChildren) {
-  return <div className="p-4 overflow-y-auto border-t border-solid border-neutral-6">{children}</div>;
+export function DialogFooter({ className, children }: PropsWithChildren<BaseProps>) {
+  return (
+    <div className={clsx(className, "p-4 overflow-y-auto border-t border-solid border-neutral-6")}>{children}</div>
+  );
 }
 
 export interface DialogOptions {

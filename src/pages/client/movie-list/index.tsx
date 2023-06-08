@@ -1,6 +1,6 @@
 import MovieCardWrap from "@/components/movies/movie-card-wrap";
 import Loader from "@/components/ui/loader";
-import MainLayout from "../../_layouts/main-layout";
+import MainLayout from "@/pages/_layouts/main-layout";
 
 import PaginationBar from "@/components/pagination/pagination-bar";
 import { SortDirection, useGetApiWithPagination } from "@/services/api";
@@ -9,8 +9,12 @@ import { useMovieListStore } from "@/stores/client/client.store";
 import type { MovieListEntry } from "@/types";
 import { fmt, parse8DigitDateString } from "@/utils/date";
 import clsx from "clsx";
-import { MouseEventHandler, PropsWithChildren, useCallback, useMemo } from "react";
-import { IoChevronUp } from "react-icons/io5";
+import { MouseEventHandler, PropsWithChildren, useCallback, useMemo, useState } from "react";
+import { IoChevronForward, IoChevronUp } from "react-icons/io5";
+import MovieList from "./list";
+import useMovieSearch from "@/hooks/useMovieSearch";
+import GenreFilters from "./genre-filter";
+import { motion } from "framer-motion";
 
 /* Header */
 
@@ -109,14 +113,21 @@ function LocalHeader({ title }: { title: string }) {
     [updateType]
   );
 
+  const { onSubmitMovieSearch, movieSearchInputName } = useMovieSearch();
+
   return (
     <header className="bg-neutral-2">
       <div className="container pt-36">
         {/* Title Field */}
-        <form>
+        <form onSubmit={onSubmitMovieSearch}>
           <div className="row py-6">
             <h2 className="col text-2xl font-bold text-primary-11">{title}</h2>
-            <input className="lt-md:(col-12 mt-2) md:(col-6)" type="text" placeholder="영화를 검색해보세요" />
+            <input
+              className="lt-md:(col-12 mt-2) md:(col-6)"
+              name={movieSearchInputName}
+              type="text"
+              placeholder="영화를 검색해보세요"
+            />
           </div>
         </form>
         {/* Tab */}
@@ -153,36 +164,20 @@ function LocalLoader() {
   return <Loader className="w-16 mx-a my-24" />;
 }
 
-function MovieList({ items }: { items: MovieListEntry[] }) {
-  const sortBy = useMovieListStore((s) => s.sortBy);
-
-  const headInfo = useCallback(
-    ({ releaseDate: releaseDateRaw, ticketCount }: MovieListEntry) => {
-      const releaseDate = releaseDateRaw && parse8DigitDateString(releaseDateRaw);
-      switch (sortBy) {
-        case GetMoviesSortBy.releaseDate:
-          return releaseDate ? `${fmt(releaseDate, "P")} 개봉` : "개봉 미정";
-        case GetMoviesSortBy.ticketCount:
-          return `${ticketCount}장`;
-      }
-    },
-    [sortBy]
-  );
+function GenreFilterSection() {
+  const [expand, setExpand] = useState<boolean>(false);
 
   return (
-    <ul className="row gy-6">
-      {items.map((item) => (
-        <li key={item.movieNum} className="col-3">
-          <MovieCardWrap className="w-full" headInfo={headInfo(item)} data={item} linkToDetail linkToTicketing />
-        </li>
-      ))}
-    </ul>
+    <motion.div layout className="flex flex-row items-start border-b border-solid border-neutral-6 pb-4 mb-8">
+      <div className="py-3 flex-0 font-bold flex flex-row items-center"><span className="mr-2">장르별로 모아보기</span></div>
+      <GenreFilters className="flex-1" showOnlySelected />
+    </motion.div>
   );
 }
 
 /* Page */
 
-export default function MovieListPage() {
+export default function MainMovieListPage() {
   const { type, sortBy, sortDir, genre } = useMovieListStore();
 
   const movies = useGetApiWithPagination(
@@ -212,19 +207,33 @@ export default function MovieListPage() {
     [movies.error?.message]
   );
 
+  const listItemHeadContent = useCallback(
+    ({ releaseDate: releaseDateRaw, ticketCount }: MovieListEntry) => {
+      const releaseDate = releaseDateRaw && parse8DigitDateString(releaseDateRaw);
+      switch (sortBy) {
+        case GetMoviesSortBy.releaseDate:
+          return releaseDate ? `${fmt(releaseDate, "P")} 개봉` : "개봉 미정";
+        case GetMoviesSortBy.ticketCount:
+          return `${ticketCount}장`;
+      }
+    },
+    [sortBy]
+  );
+
   return (
     <MainLayout>
       <section>
         <LocalHeader title="영화" />
         {/* <MovieListHeader /> */}
-        <div className="container pt-12 pb-12">
+        <div className="container pt-6 pb-12">
+          <GenreFilterSection />
           {movies.loading ? (
             <LocalLoader />
           ) : movies.error ? (
             NotFound
           ) : movies.data ? (
             <>
-              <MovieList items={movies.data.list} />
+              <MovieList items={movies.data.list} itemHeadContent={listItemHeadContent} />
               <PaginationBar
                 className="my-12"
                 currentPageIndex={movies.page}

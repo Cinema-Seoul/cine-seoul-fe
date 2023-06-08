@@ -17,6 +17,7 @@ export type MovieListStoreActions = {
   updateSortDir: (t: SortDirection) => void;
   switchSortDir: () => void;
   updateGenre: (t: Genre) => void;
+  clearGenre: () => void;
   reset: () => void;
 };
 
@@ -27,18 +28,15 @@ const initialMovieListStore: MovieListStoreState = {
   genre: undefined,
 };
 
-export const useMovieListStore = create<
-  MovieListStoreState & MovieListStoreActions
->((set) => ({
+export const useMovieListStore = create<MovieListStoreState & MovieListStoreActions>((set) => ({
   ...initialMovieListStore,
   updateType: (t) => set({ type: t }),
   updateSortBy: (t, resetDir) =>
-    resetDir
-      ? set((o) => ({ sortBy: t, sortDir: initialMovieListStore.sortDir }))
-      : set({ sortBy: t }),
+    resetDir ? set((o) => ({ sortBy: t, sortDir: initialMovieListStore.sortDir })) : set({ sortBy: t }),
   updateSortDir: (t) => set({ sortDir: t }),
   switchSortDir: () =>
     set((o) => ({ sortDir: o.sortDir === SortDirection.asc ? SortDirection.desc : SortDirection.asc })),
   updateGenre: (t) => set({ genre: t }),
+  clearGenre: () => set({ genre: undefined }),
   reset: () => set(initialMovieListStore),
 }));

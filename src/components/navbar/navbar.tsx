@@ -5,7 +5,6 @@ import { IoMenu } from "react-icons/io5";
 import { Button } from "../ui";
 
 import type { MainMenuItem } from "./navbar.types";
-import { useAuthService } from "@/services/auth";
 import { useCallback, useState } from "react";
 import Loader from "../ui/loader";
 import { useUserActions } from "@/services/user/user.application";

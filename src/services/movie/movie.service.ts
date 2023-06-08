@@ -90,12 +90,11 @@ export interface GetMoviesQuery {
   title: string;
 }
 
-// TODO: 지금 하나만 반환하도록 되어 있는데, 리스트로 반환하는 게 더 맞지 않을까요?
 export async function getMoviesByQuery(
   query: GetMoviesQuery
-): Promise<MovieListEntry> {
+): Promise<MovieListEntry[]> {
   return axios
-    .get<MovieListEntry>("/movie/search", {
+    .get<MovieListEntry[]>("/movie/search", {
       params: { title: query.title },
     })
     .then((res) => res.data);
@@ -107,8 +106,8 @@ export async function getMoviesByQuery(
 
 /** GET /genre */
 
-export async function getGenres(): Promise<ListResponse<Genre>> {
-  return axios.get<ListResponse<Genre>>("/genre", {}).then((res) => res.data);
+export async function getGenres(): Promise<Genre[]> {
+  return axios.get<Genre[]>("/genre", {}).then((res) => res.data);
 }
 
 /** POST /genre => GenreCode */

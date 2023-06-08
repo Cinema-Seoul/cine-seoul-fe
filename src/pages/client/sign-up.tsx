@@ -4,7 +4,9 @@ import MainLayout from "../_layouts/main-layout";
 import { Button } from "@/components/ui";
 import Form, { FormInputPattern, FormRoot, FormRootProps } from "@/components/form/primitive";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
+import { useUser } from "@/services/user/user.application";
 
 type SignUpPageForm = {
   id: string;
@@ -37,7 +39,6 @@ const SIGN_UP_PAGE_FORM_PATTERNS: Partial<Record<keyof SignUpPageForm, FormInput
       errorMessage: "앞서 써주신 것과 달라요",
     },
   ],
-  residentNum: [],
   phoneNum: [
     {
       test: /^[^-]+$/,
@@ -48,73 +49,28 @@ const SIGN_UP_PAGE_FORM_PATTERNS: Partial<Record<keyof SignUpPageForm, FormInput
       errorMessage: "숫자로만 최대 11자리로 써주세요",
     },
   ],
+  residentNum: [
+    {
+      test: /^[0-9]{13}$/,
+      errorMessage: "숫자 13자리를 정확히 입력해주세요",
+    },
+  ],
 };
 
 export default function SignUpPage() {
-  // const {
-  //   inputValues,
-  //   inputErrors,
-  //   handleOnSubmit,
-  //   handleValueChanged,
-  //   loadingOnSubmit,
-  // } = useForm<SignUpPageForm>(
-  //   {
-  //     id: "",
-  //     pw: "",
-  //     pwConfirm: "",
-  //     name: "",
-  //     phoneNum: "",
-  //     residentNum: "",
-  //   },
-  //   (values) =>
-  //     axios
-  //       .post("/user", {
-  //         ...values,
-  //         // TODO: 현재 백엔드 오류로 인해 이름을 null로만 받음
-  //         name: null,
-  //         role: "M",
-  //       })
-  //       .catch((e: AxiosError<{ message: string }>) => {
-  //         alert(e.response?.data.message);
-  //       })
-  //       .then((res) => {
-  //         alert(res);
-  //       }),
-  //   (id, value) => {
-  //     console.log("Validate", id, value);
 
-  //     if (id === "id") {
-  //       const result = /^[A-Za-z]/.test(value);
-  //       console.log("RESULT: ", result);
-  //       return {
-  //         result: result ? "ok" : "reject",
-  //         message: result ? undefined : "아이디는 영문(a-z)으로 시작해야 해요.",
-  //       };
-  //     } else if (id === "pwConfirm") {
-  //       // const result = value === inputValues.pw;
-  //       // return {
-  //       //   result: result ? "ok" : "reject",
-  //       //   message: result ? undefined : "앞서 쓴 비밀번호와 달라요.",
-  //       // };
-  //     } else if (id === "phoneNum") {
-  //       const result = /^[0-9]{0,11}$/.test(value);
-  //       return {
-  //         result: result ? "ok" : "reject",
-  //         message: result
-  //           ? undefined
-  //           : "'-' 없이 숫자로만, 최대 11자리 입력해주세요.",
-  //       };
-  //     }
+  const currentUser = useUser();
 
-  //     return {
-  //       result: "ok",
-  //     };
-  //   }
-  // );
-
+  
   const [loading, setLoading] = useState<boolean>(false);
-
+  
+  const alertDialog = useAlertDialog();
+  
   const navigate = useNavigate();
+
+  if (currentUser) {
+    return <Navigate to="/" />
+  }
 
   const doOnSubmit: FormRootProps["onSubmit"] = (e, values) => {
     e.preventDefault();
@@ -122,16 +78,14 @@ export default function SignUpPage() {
     axios
       .post("/user", {
         ...values,
-        // TODO: 현재 백엔드 오류로 인해 이름을 null로만 받음
-        name: null,
         role: "M",
       })
       .then((res) => {
-        alert(res);
+        alertDialog("회원가입이 완료되었습니다!");
         navigate("/signin");
       })
       .catch((e: AxiosError<{ message: string }>) => {
-        alert("오류가 발생했어요\n" + (e.response?.data.message ?? e.response?.data));
+        alertDialog("" + e.response?.data.message, "오류");
       })
       .finally(() => {
         setLoading(false);
@@ -205,7 +159,13 @@ export default function SignUpPage() {
                 <label htmlFor="phoneNum">전화 번호</label>
               </td>
               <td>
-                <Form.Input type="tel" inputId="phoneNum" placeholder="01012345678" required />
+                <Form.Input
+                  type="tel"
+                  inputId="phoneNum"
+                  placeholder="010 1234 1234"
+                  patterns={SIGN_UP_PAGE_FORM_PATTERNS.phoneNum}
+                  required
+                />
               </td>
             </tr>
             <tr>
@@ -213,7 +173,12 @@ export default function SignUpPage() {
                 <label htmlFor="residentNum">주민등록번호</label>
               </td>
               <td>
-                <Form.Input type="number" inputId="residentNum" required />
+                <Form.Input
+                  type="text"
+                  inputId="residentNum"
+                  patterns={SIGN_UP_PAGE_FORM_PATTERNS.residentNum}
+                  required
+                />
               </td>
             </tr>
           </table>

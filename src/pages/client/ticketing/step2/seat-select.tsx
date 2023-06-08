@@ -1,10 +1,13 @@
 import ScreenSeats from "@/components/screen/screen-seats";
 import { StepSection } from "@/components/ticketing";
 import { Button, Loader } from "@/components/ui";
-import { useGetApi } from "@/services/api";
+import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
+import { useLoadingDialog } from "@/components/ui/modal/dialog-loading";
+import { useGetApi, useSetApi } from "@/services/api";
 import { getScheduleDetail } from "@/services/schedule/schedule.service";
+import { createTicket } from "@/services/ticket/ticket.service";
 import { useTicketingStore } from "@/stores/client";
-import { Seat } from "@/types";
+import { ScheduleDetail, Seat, TicketAudienceType } from "@/types";
 import { fmt } from "@/utils/date";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
@@ -15,13 +18,16 @@ import { useNavigate } from "react-router-dom";
 export default function SeatSelectSubpage({ className }: BaseProps) {
   const navigate = useNavigate();
 
+  const showLoading = useLoadingDialog();
+  const alertDialog = useAlertDialog();
+
   const { selectedSchedule, clearSelectedSchedule, selectedSeats, toggleSelectedSeat, removeSelectedSeat } =
     useTicketingStore();
 
   const schedule = useGetApi(() => getScheduleDetail(selectedSchedule?.schedNum as any), [selectedSchedule], {
     enabled: !!selectedSchedule,
   });
-  const netMoney: number = useMemo(
+  const stdPrice: number = useMemo(
     () => selectedSeats.reduce<number>((acc, seat) => acc + seat.seatPrice, 0),
     [selectedSeats]
   );
@@ -34,8 +40,36 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
   );
 
   const doOnClickNext = useCallback(() => {
-    navigate("/ticketing/payment");
-  }, []);
+    if (schedule.data) {
+      const closeLoading = showLoading();
+      createTicket({
+        audienceTypeDTOList: [
+          {
+            audienceType: TicketAudienceType.Disabled,
+            count: selectedSeats.length,
+          },
+        ],
+        schedNum: schedule.data.schedNum,
+        seatNumList: selectedSeats.map((s) => s.seatNum),
+        stdPrice: stdPrice,
+      })
+        .then(() => {
+          alertDialog("결제를 진행합니다.");
+          navigate("/ticketing/payment");
+        })
+        .catch((e) => {
+          alertDialog(
+            <>
+              오류가 발생했습니다.
+              <br />
+              <br />
+              {e.response?.data?.message}
+            </>
+          );
+          navigate("/ticketing/payment");
+        });
+    }
+  }, [alertDialog, navigate, schedule.data, stdPrice]);
 
   return (
     <StepSection
@@ -146,7 +180,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
                 <div className="flex-0 flex flex-col justify-end border-l border-solid border-neutral-7 pl-4 ml-4">
                   <div className="text-right py-2">
                     <span className="text-sm mr-2">예상 금액</span>
-                    <span className="font-bold">{netMoney.toLocaleString("ko-KR")}원</span>
+                    <span className="font-bold">{stdPrice.toLocaleString("ko-KR")}원</span>
                   </div>
                   <Button
                     className=""

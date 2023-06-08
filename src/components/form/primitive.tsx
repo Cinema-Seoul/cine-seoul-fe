@@ -3,22 +3,15 @@ import clsx from "clsx";
 import {
   ChangeEventHandler,
   ComponentPropsWithoutRef,
-  ExoticComponent,
   FormEvent,
   FormEventHandler,
-  Fragment,
   InputHTMLAttributes,
-  PropsWithChildren,
-  ReactElement,
   ReactNode,
-  Reducer,
   createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useReducer,
-  useRef,
   useState,
 } from "react";
 import { IoAlertCircle } from "react-icons/io5";
@@ -48,7 +41,7 @@ const FormContext = createContext<FormContext>({
 });
 
 export type FormConditionalProps = {
-  render?: (context: FormContext) => ReactElement;
+  render?: (context: FormContext) => ReactNode;
 };
 
 function FormConditional({ render }: FormConditionalProps) {
@@ -62,38 +55,55 @@ export type FormInputPattern = {
   errorMessage?: string;
 };
 
-export interface FormInputProps
-  extends BaseProps,
-    Omit<ComponentPropsWithoutRef<"input">, "defaultValue" | "pattern"> {
-  inputClass?: string;
-  label?: HTMLLabelElement | string;
+/* -------------------------------------------------------------------------- */
+/*                                    Base                                    */
+/* -------------------------------------------------------------------------- */
+
+export type FormInputBaseProps<T = Element> = {
   inputId: string;
-  type?: InputHTMLAttributes<HTMLInputElement>["type"];
   patterns?: FormInputPattern | FormInputPattern[];
-}
+  required?: boolean;
+  onChange?: ChangeEventHandler<T>;
+};
 
-function FormInput({
-  inputClass,
-  label,
-  className,
+function useFormInputBase<T = HTMLSelectElement | HTMLInputElement>({
   inputId,
-  type,
   patterns: patternsRaw,
-  onChange,
   required = false,
-
-  //@ts-ignore
-  defaultValue, //Omit
-  //@ts-ignore
-  pattern, //Omit
-  ...restProps
-}: FormInputProps) {
+  onChange,
+}: FormInputBaseProps<T>) {
   const formContext = useContext(FormContext);
 
   const [value, setValue] = useState<string>(formContext.values[inputId]);
-  const [error, setError] = useState<string | null>(
-    required ? "필수 항목이예요" : null
-  );
+  const [error, setError] = useState<string | null>(required ? "필수 항목이예요" : null);
+
+  const checkValidity = (value: string): { valid: boolean; message?: string } => {
+    if (value === "") {
+      return required
+        ? {
+            valid: false,
+            message: "필수 항목이예요",
+          }
+        : {
+            valid: true,
+          };
+    }
+
+    for (const { test, errorMessage } of patterns) {
+      const result = typeof test === "function" ? test(value, formContext.values) : test.test(value);
+
+      if (!result) {
+        return {
+          valid: false,
+          message: errorMessage,
+        };
+      }
+    }
+
+    return {
+      valid: true,
+    };
+  };
 
   useEffect(() => {
     const { valid, message = "잘못되었어요" } = checkValidity(value);
@@ -104,7 +114,7 @@ function FormInput({
     (value: string) => {
       formContext.updateValue(inputId, value);
     },
-    [inputId, formContext]
+    [formContext, inputId]
   );
 
   const updateContextError = useCallback(
@@ -127,17 +137,12 @@ function FormInput({
   }, [error]);
 
   const patterns: FormInputPattern[] = useMemo(
-    () =>
-      patternsRaw
-        ? Array.isArray(patternsRaw)
-          ? patternsRaw
-          : [patternsRaw]
-        : [],
+    () => (patternsRaw ? (Array.isArray(patternsRaw) ? patternsRaw : [patternsRaw]) : []),
     [patternsRaw]
   );
 
-  const doOnChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    const value = e.target.value;
+  const onChangeValue: ChangeEventHandler<T> = (e) => {
+    const value = (e.target as any)?.value;
     const { valid, message = "" } = checkValidity(value);
 
     setError(valid ? null : message);
@@ -146,46 +151,42 @@ function FormInput({
     onChange && onChange(e);
   };
 
-  const checkValidity = (
-    value: string
-  ): { valid: boolean; message?: string } => {
-    if (value === "") {
-      return required
-        ? {
-            valid: false,
-            message: "필수 항목이예요",
-          }
-        : {
-            valid: true,
-          };
-    }
+  return { onChangeValue, value, error };
+}
 
-    for (const { test, errorMessage } of patterns) {
-      const result =
-        typeof test === "function"
-          ? test(value, formContext.values)
-          : test.test(value);
+/* -------------------------------------------------------------------------- */
+/*                                    Input                                   */
+/* -------------------------------------------------------------------------- */
 
-      if (!result) {
-        return {
-          valid: false,
-          message: errorMessage,
-        };
-      }
-    }
+export interface FormInputProps
+  extends FormInputBaseProps,
+    BaseProps,
+    Omit<ComponentPropsWithoutRef<"input">, "defaultValue" | "pattern" | "onChange"> {
+  inputClass?: string;
+  label?: HTMLLabelElement | string;
+  type?: InputHTMLAttributes<HTMLInputElement>["type"];
+}
 
-    return {
-      valid: true,
-    };
-  };
+function FormInput({
+  inputClass,
+  label,
+  className,
+  inputId,
+  type,
+  patterns,
+  onChange,
+  required = false,
+
+  //@ts-ignore
+  defaultValue, //Omit
+  //@ts-ignore
+  pattern, //Omit
+  ...restProps
+}: FormInputProps) {
+  const { onChangeValue, value, error } = useFormInputBase({ inputId, patterns, required, onChange });
 
   const labelElement = useMemo(
-    () =>
-      typeof label === "string" ? (
-        <label htmlFor={inputId}>{label}</label>
-      ) : (
-        label
-      ),
+    () => (typeof label === "string" ? <label htmlFor={inputId}>{label}</label> : label),
     [label, inputId]
   );
 
@@ -197,7 +198,7 @@ function FormInput({
           {...restProps}
           className={clsx(inputClass, "h-8")}
           value={value}
-          onChange={doOnChange}
+          onChange={onChangeValue}
           name={inputId}
           type={type}
         />
@@ -214,25 +215,69 @@ function FormInput({
   );
 }
 
-interface FormRootPropsBase
-  extends Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> {
-  onSubmit: (
-    e: FormEvent<HTMLFormElement>,
-    values: Record<string, string>
-  ) => void;
-}
-export type FormRootProps<V extends string = string> = FormRootPropsBase & {
-  initialValues: Record<V, string>;
-};
+/* -------------------------------------------------------------------------- */
+/*                                   Select                                   */
+/* -------------------------------------------------------------------------- */
 
-function FormRoot<V extends string>({
+export interface FormSelectProps
+  extends FormInputBaseProps,
+    BaseProps,
+    Omit<ComponentPropsWithoutRef<"select">, "onChange"> {
+  selectClass?: string;
+}
+
+function FormSelect({
   className,
   children,
-  initialValues,
-  onSubmit,
+  onChange,
+  inputId,
+  required,
+  patterns,
+  selectClass,
   ...restProps
-}: FormRootProps<V>) {
-  const [values, setValues] = useState<Record<string, string>>({
+}: FormSelectProps) {
+  const { onChangeValue, value, error } = useFormInputBase({ inputId, onChange, patterns, required });
+
+  return (
+    <>
+      <div className={clsx(className, "flex flex-col justify-stretch relative")}>
+        <select
+          {...restProps}
+          className={clsx(selectClass, "h-8")}
+          onChange={onChangeValue}
+          name={inputId}
+          value={value}
+        >
+          {children}
+        </select>
+        {error && (
+          <div className="flex flex-row justify-start items-center absolute bottom-0 mb--6 mt-2 text-red-7 text-sm h-4">
+            <span className="text-4">
+              <IoAlertCircle />
+            </span>
+            <span className="ml-2">{error}</span>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  RootForm                                  */
+/* -------------------------------------------------------------------------- */
+
+export type FormSubmitFunc<T extends Record<string, string>> = (e: FormEvent<HTMLFormElement>, values: T) => void;
+
+type FormRootPropsBase<T extends Record<string, string>> = Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> & {
+  onSubmit: FormSubmitFunc<T>;
+};
+export type FormRootProps<T extends Record<string, string>> = FormRootPropsBase<T> & {
+  initialValues: T;
+};
+
+function FormRoot<T extends Record<string, string>>({ className, children, initialValues, onSubmit, ...restProps }: FormRootProps<T>) {
+  const [values, setValues] = useState<T>({
     ...initialValues,
   });
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -267,8 +312,9 @@ function FormRoot<V extends string>({
 
 const Form = Object.assign(FormRoot, {
   Input: FormInput,
+  Select: FormSelect,
   Conditional: FormConditional,
 });
 
 export default Form;
-export { FormRoot, FormInput, FormConditional };
+export { FormRoot, FormInput, FormSelect, FormConditional };

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui";
 import MainLayout from "../_layouts/main-layout";
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from "react";
@@ -6,8 +6,9 @@ import { useGetApi, useSetApi } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { useForm } from "@/hooks/form";
 import { useUserStore } from "@/stores/user.store";
-import { requestSignInUser } from "@/services/user/user.service";
 import { UserSignInMember } from "@/types";
+import { useUserActions } from "@/services/user/user.application";
+import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 
 const $ = {
   inputClasses: "block w-full bg-neutral-1 out-1 outline-neutral-7 leading-6 focus:outline-primary-8 rounded h-8 p-2",
@@ -15,33 +16,25 @@ const $ = {
 
 export default function SignInPage() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams({
+    redirect: "/",
+  });
+
+  const alertDialog = useAlertDialog();
+
   const { currentUser, setCurrentUser } = useUserStore();
+  const { signInMember, signInNonmember } = useUserActions();
 
   useEffect(() => {
     if (currentUser) {
-      navigate(-1);
+      navigate(searchParams.get("redirect") || "/");
     }
-  }, [currentUser]);
+  }, [currentUser, navigate, searchParams]);
 
-  const submitForm = async (values: UserSignInMember) => {
-    await axios
-      .post("/user/login", values, {
-        params: { isMember: true },
-      })
-      .then((res) => {
-        alert(res.data.message);
-        setCurrentUser({
-          accessToken: res.data.data,
-          isMember: true,
-          userId: values.id,
-          userNum: 0,
-          name: "",
-        });
-      })
-      .catch((e: AxiosError<{ message: string }>) => {
-        alert("로그인에 실패하였어요\n" + (e.response?.data.message ?? e.response?.data));
-      });
-  };
+  const submitForm = async ({ id, pw }: UserSignInMember) =>
+    signInMember(id, pw).catch((e) => {
+      alertDialog("로그인에 실패했어요. 아이디 또는 비밀번호를 확인해주세요.");
+    });
 
   const { inputValues, inputErrors, handleOnSubmit, handleValueChanged, loadingOnSubmit } = useForm<UserSignInMember>(
     {

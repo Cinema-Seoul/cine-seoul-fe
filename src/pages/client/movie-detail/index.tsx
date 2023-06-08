@@ -13,6 +13,8 @@ import { getMovieDetail } from "@/services/movie/movie.service";
 import { useTicketingStore } from "@/stores/client";
 import { convertMovieDetailToMovieListEntry } from "@/types";
 import { Link } from "react-router-dom";
+import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
+import ReviewListSection from "./review-list";
 
 function LocalLoader() {
   return <Loader className="w-16 mx-a py-24" />;
@@ -26,6 +28,8 @@ export default function MovieDetailPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams<MovieDetailPageParams>();
+
+  const alertDialog = useAlertDialog();
 
   const updateSelectedMovie = useTicketingStore((s) => s.updateSelectedMovie);
 
@@ -94,8 +98,22 @@ export default function MovieDetailPage() {
       ret["개봉"] = format(releaseDate, "PPP", { locale: ko });
     }
 
+    if (movieDetail.distName) {
+      ret["배급"] = movieDetail.distName;
+    }
+
+    if (movieDetail.countryList?.length) {
+      ret["국가"] = movieDetail.countryList.map(({ countryCode, name })=> (
+        <span key={countryCode}>{name}</span>
+      ));
+    }
+
     return ret;
-  }, [movieNum, movieDetail]);
+  }, [movieDetail]);
+
+  const doOnClickShare = useCallback(() => {
+    navigator.share({ title: "시네마서울 영화 정보", text: movieDetail?.title, url: window.location.href });
+  }, [movieDetail?.title]);
 
   return (
     <MainLayout insideClass="pb-24">
@@ -149,11 +167,17 @@ export default function MovieDetailPage() {
               </div>
             </div>
             <div className="row mt-6 pt-6 border-t border-solid border-neutral-6">
-              {/* <div className="col-auto ms-a">
-                <Button className="w-full" variant="text" tint="primary" iconStart={<IoShareOutline />}>
+              <div className="col-auto ms-a">
+                <Button
+                  className="w-full"
+                  variant="text"
+                  tint="primary"
+                  iconStart={<IoShareOutline />}
+                  onClick={doOnClickShare}
+                >
                   공유
                 </Button>
-              </div> */}
+              </div>
               {/* <div className="col-auto">
                 <Button
                   className="w-full"
@@ -194,14 +218,7 @@ export default function MovieDetailPage() {
           </div>
         )}
       </section>
-      {/* <section>
-        <h4>관람평</h4>
-        <div>
-          <ul>
-            <li></li>
-          </ul>
-        </div>
-      </section> */}
+      <ReviewListSection movieNum={movieNum} />
     </MainLayout>
   );
 }

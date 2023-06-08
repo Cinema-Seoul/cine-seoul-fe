@@ -1,6 +1,7 @@
 import { DependencyList, useCallback, useEffect, useState } from "react";
 import axios, { AxiosError, AxiosResponseTransformer } from "axios";
 import { useLocation, useSearchParams } from "react-router-dom";
+import { useUser } from "./user/user.application";
 
 export function initApiFetcher() {
   axios.defaults.baseURL = 'http://localhost:8080';
@@ -11,7 +12,7 @@ export function initApiFetcher() {
 }
 
 export function setDefaultHeader({ accessToken }: { accessToken: string }) {
-  axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+  axios.defaults.headers.common.Authorization = `${accessToken}`;
 }
 
 export enum SortDirection {
@@ -28,6 +29,15 @@ export type SortableRequest<SORT_BY> = {
 };
 
 function useFetchApi<T, E>(fetchAction: () => Promise<T>) {
+
+  /** Header Update */
+
+  const currentUser = useUser();
+
+  if(currentUser) {
+    setDefaultHeader({ accessToken: currentUser.accessToken });
+  }
+
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<E | null>(null);

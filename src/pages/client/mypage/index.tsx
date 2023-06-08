@@ -3,6 +3,11 @@ import MainLayout from "../../_layouts/main-layout";
 import { IoChevronForward, IoPencil } from "react-icons/io5";
 import { Button } from "@/components/ui";
 import { Link } from "react-router-dom";
+import { createContext, useContext } from "react";
+import { getUserDetail } from "@/services/user/user.service";
+import { useUser } from "@/services/user/user.application";
+import { useGetApi } from "@/services/api";
+import { User } from "@/types";
 
 function LocalHeader({ title }: { title: string }) {
   return (
@@ -17,19 +22,23 @@ function LocalHeader({ title }: { title: string }) {
 }
 
 function ProfileSection({ className }: BaseProps) {
+  const { UserDetail } = useContext(MyPageContext);
+
+  if(!UserDetail) return null;
+
   return (
     <section className={clsx(className, "rounded bg-primary-2 out-1 outline-primary-6")}>
       <div className="p-4 text-right text-2xl bg-primary-9 text-primary-1">
         <p>안녕하세요,</p>
         <p>
-          <strong>전호균</strong>님!
+          <strong>{UserDetail.data?.name ?? "고객"}</strong>님!
         </p>
       </div>
       <div className="p-4">
         <ul className="flex flex-col text-right items-end">
           <li className="col-12 md:col-6">
             <span className="float-left">포인트</span>
-            <span className="font-bold">1,000</span>원
+            <span className="font-bold">{UserDetail.data?.point.toLocaleString()}</span>원
           </li>
         </ul>
       </div>
@@ -89,9 +98,24 @@ function TicketsSection({ className }: BaseProps) {
   );
 }
 
+type MyPageContextProps = {
+  UserDetail?: ReturnType<typeof useGetApi<User>>
+}
+
+const MyPageContext = createContext<MyPageContextProps>({});
+
 export default function MyPage() {
+  const currentUser = useUser();
+
+  if (!currentUser) {
+    throw Error("로그인이 필요한 서비스예요");
+  }
+
+  const UserDetail = useGetApi(() => getUserDetail(currentUser.userNum));
+
   return (
     <MainLayout>
+      <MyPageContext.Provider value={{ UserDetail }}>
       <LocalHeader title="내 정보" />
       <main className="bg-neutral-1 py-6 border-t border-solid border-neutral-6">
         <div className="container">
@@ -106,6 +130,7 @@ export default function MyPage() {
           </div>
         </div>
       </main>
+      </MyPageContext.Provider>
     </MainLayout>
   );
 }
