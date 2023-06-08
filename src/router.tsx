@@ -1,30 +1,19 @@
-import {
-  Route,
-  Routes,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from "react-router-dom";
+import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
+import { lazy } from "react";
 
-import ClientRoutes from "./pages/client.router";
-import AdminRoutes from "./pages/admin.router";
+// import AdminRoutes from "./pages/admin.router";
+// import ClientRoutes from "./pages/client.router";
+const AdminRoutes = lazy(() => import("./pages/admin.router"));
+const ClientRoutes = lazy(() => import("./pages/client.router"));
 
-import type { RouteObject } from "react-router-dom";
-import ClientErrorPage from "./pages/client/_error";
 import AdminErrorPage from "./pages/admin/_error";
+import ClientErrorPage from "./pages/client/_error";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      <Route
-        path="admin/*"
-        Component={AdminRoutes}
-        errorElement={<AdminErrorPage />}
-      />
-      <Route
-        path="*"
-        Component={ClientRoutes}
-        errorElement={<ClientErrorPage />}
-      />
+    <Route >
+      <Route path="admin/*" Component={AdminRoutes} errorElement={<AdminErrorPage />} />
+      <Route path="*" Component={ClientRoutes} errorElement={<ClientErrorPage />} />
     </Route>
   )
 );

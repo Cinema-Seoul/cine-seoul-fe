@@ -1,6 +1,6 @@
 import { DayPicker } from "react-day-picker";
 import { useTicketingStore } from "@/stores/client";
-import { StepSection } from "@/ui/components/ticketing";
+import { StepSection } from "@/components/ticketing";
 import { ko } from "date-fns/locale";
 import { useMemo } from "react";
 import { format } from "date-fns";

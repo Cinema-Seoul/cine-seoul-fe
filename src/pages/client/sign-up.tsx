@@ -1,8 +1,8 @@
 import { useForm } from "@/hooks/form";
 import axios, { AxiosError } from "axios";
 import MainLayout from "../_layouts/main-layout";
-import { Button } from "@/ui/components/ui";
-import Form, { FormInputPattern, FormRoot, FormRootProps } from "@/ui/components/form/primitive";
+import { Button } from "@/components/ui";
+import Form, { FormInputPattern, FormRoot, FormRootProps } from "@/components/form/primitive";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

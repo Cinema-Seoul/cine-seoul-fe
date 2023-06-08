@@ -1,4 +1,4 @@
-import { StepSection } from "@/ui/components/ticketing";
+import { StepSection } from "@/components/ticketing";
 import { motion } from "framer-motion";
 
 export default function TicketingPaymentPage() {

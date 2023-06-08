@@ -1,7 +1,7 @@
 import { useGetApiWithPagination } from "@/services/api";
 import { GetMoviesType, getMovies } from "@/services/movie/movie.service";
-import PaginationBar from "@/ui/components/pagination/pagination-bar";
-import { useDialog } from "@/ui/components/ui/modal/dialog";
+import PaginationBar from "@/components/pagination/pagination-bar";
+import { useDialog } from "@/components/ui/modal/dialog";
 import { useState } from "react";
 import MovieEditDialog from "./edit";
 

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/ui/components/ui";
+import { Button } from "@/components/ui";
 import MainLayout from "../_layouts/main-layout";
 import { ChangeEventHandler, FormEventHandler, useEffect, useState } from "react";
 import { useGetApi, useSetApi } from "@/services/api";

@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import MainLayout from "../../_layouts/main-layout";
+import MainLayout from "../../../_layouts/main-layout";
 import { useGetApi, useGetApiWithPagination } from "@/services/api";
-import PaginationBar from "@/ui/components/pagination/pagination-bar";
-import { DialogBody, DialogFooter, DialogLayout, DialogSheet, useDialog } from "@/ui/components/ui/modal/dialog";
+import PaginationBar from "@/components/pagination/pagination-bar";
+import { DialogBody, DialogFooter, DialogLayout, DialogSheet, useDialog } from "@/components/ui/modal/dialog";
 import { useCallback } from "react";
-import { Button } from "@/ui/components/ui";
+import { Button } from "@/components/ui";
 
 function TicketDetailDialog() {
   return (

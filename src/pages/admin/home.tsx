@@ -2,5 +2,5 @@ import { useEffect } from "react";
 import AdminLayout from "../_layouts/admin-layout";
 
 export default function AdminIndexPage() {
-  return <div className="h-1000">He</div>;
+  return <div className="p-6">왼쪽 메뉴를 이용해주세요</div>;
 }

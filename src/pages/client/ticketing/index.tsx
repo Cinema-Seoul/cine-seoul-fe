@@ -1,8 +1,8 @@
-import { Button } from "@/ui/components/ui";
+import { Button } from "@/components/ui";
 import { IoClose } from "react-icons/io5";
 import { Navigate, Route, Routes, redirect, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
-import { Navbar } from "@/ui/components";
+import { Navbar } from "@/components";
 import { AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
 import TicketingPaymentPage from "./payment";

@@ -1,7 +1,7 @@
 import { useGetApi } from "@/services/api";
 import { getDirectorDetail } from "@/services/movie-meta/director.service";
-import { Loader } from "@/ui/components/ui";
-import MainLayout from "@/ui/pages/_layouts/main-layout";
+import { Loader } from "@/components/ui";
+import MainLayout from "@/pages/_layouts/main-layout";
 import clsx from "clsx";
 import { useParams, useSearchParams } from "react-router-dom";
 

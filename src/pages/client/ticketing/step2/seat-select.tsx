@@ -1,16 +1,15 @@
-import { Seat } from "@/types";
+import ScreenSeats from "@/components/screen/screen-seats";
+import { StepSection } from "@/components/ticketing";
+import { Button, Loader } from "@/components/ui";
 import { useGetApi } from "@/services/api";
 import { getScheduleDetail } from "@/services/schedule/schedule.service";
 import { useTicketingStore } from "@/stores/client";
-import ScreenSeats from "@/ui/components/screen/screen-seats";
-import { StepSection } from "@/ui/components/ticketing";
-import { Button, Loader } from "@/ui/components/ui";
+import { Seat } from "@/types";
 import { fmt } from "@/utils/date";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useMemo } from "react";
 import { IoChevronForward, IoRemove } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 export default function SeatSelectSubpage({ className }: BaseProps) {
@@ -34,7 +33,9 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
     [toggleSelectedSeat]
   );
 
-  const doOnClickNext = useCallback(() => {}, []);
+  const doOnClickNext = useCallback(() => {
+    navigate("/ticketing/payment");
+  }, []);
 
   return (
     <StepSection
@@ -153,7 +154,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
                     tint="primary"
                     iconEnd={<IoChevronForward />}
                     disabled={selectedSeats.length <= 0}
-                    // onClick={}
+                    onClick={doOnClickNext}
                   >
                     확인
                   </Button>

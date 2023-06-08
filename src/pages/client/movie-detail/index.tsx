@@ -1,5 +1,5 @@
-import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
-import { Button, Loader } from "@/ui/components/ui";
+import MovieGradeBadge from "@/components/movies/movie-grade-badge";
+import { Button, Loader } from "@/components/ui";
 import { parse8DigitDateString } from "@/utils/date";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";

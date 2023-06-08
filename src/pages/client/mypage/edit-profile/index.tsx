@@ -1,5 +1,5 @@
-import Form from "@/ui/components/form/primitive";
-import MainLayout from "../../_layouts/main-layout";
+import Form from "@/components/form/primitive";
+import MainLayout from "../../../_layouts/main-layout";
 import clsx from "clsx";
 
 function EditForm({ className }: BaseProps) {

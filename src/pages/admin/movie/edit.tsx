@@ -1,8 +1,8 @@
 import { useGetApi } from "@/services/api";
 import { getMovieDetail } from "@/services/movie/movie.service";
-import { Button, Loader } from "@/ui/components/ui";
-import { DialogBody, DialogHeader, DialogLayout, DialogSheet } from "@/ui/components/ui/modal/dialog";
-import Modal from "@/ui/components/ui/modal/modal";
+import { Button, Loader } from "@/components/ui";
+import { DialogBody, DialogHeader, DialogLayout, DialogSheet } from "@/components/ui/modal/dialog";
+import Modal from "@/components/ui/modal/modal";
 import { IoPencil } from "react-icons/io5";
 import { Link } from "react-router-dom";
 

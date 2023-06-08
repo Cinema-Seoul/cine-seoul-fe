@@ -1,17 +1,16 @@
-import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
-import Loader from "@/ui/components/ui/loader";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import MovieCardWrap from "@/components/movies/movie-card-wrap";
+import Loader from "@/components/ui/loader";
 import MainLayout from "../../_layouts/main-layout";
 
-import type { MovieListEntry } from "@/types";
+import PaginationBar from "@/components/pagination/pagination-bar";
 import { SortDirection, useGetApiWithPagination } from "@/services/api";
 import { GetMoviesSortBy, GetMoviesType, getMovies } from "@/services/movie/movie.service";
 import { useMovieListStore } from "@/stores/client/client.store";
-import PaginationBar from "@/ui/components/pagination/pagination-bar";
-import clsx from "clsx";
-import { MouseEventHandler, PropsWithChildren, useCallback, useEffect, useMemo } from "react";
-import { IoChevronUp } from "react-icons/io5";
+import type { MovieListEntry } from "@/types";
 import { fmt, parse8DigitDateString } from "@/utils/date";
+import clsx from "clsx";
+import { MouseEventHandler, PropsWithChildren, useCallback, useMemo } from "react";
+import { IoChevronUp } from "react-icons/io5";
 
 /* Header */
 
@@ -154,11 +153,7 @@ function LocalLoader() {
   return <Loader className="w-16 mx-a my-24" />;
 }
 
-function MovieList({
-  items,
-}: {
-  items: MovieListEntry[];
-}) {
+function MovieList({ items }: { items: MovieListEntry[] }) {
   const sortBy = useMovieListStore((s) => s.sortBy);
 
   const headInfo = useCallback(
@@ -178,13 +173,7 @@ function MovieList({
     <ul className="row gy-6">
       {items.map((item) => (
         <li key={item.movieNum} className="col-3">
-          <MovieCardWrap
-            className="w-full"
-            headInfo={headInfo(item)}
-            data={item}
-            linkToDetail
-            linkToTicketing
-          />
+          <MovieCardWrap className="w-full" headInfo={headInfo(item)} data={item} linkToDetail linkToTicketing />
         </li>
       ))}
     </ul>
@@ -194,7 +183,6 @@ function MovieList({
 /* Page */
 
 export default function MovieListPage() {
-
   const { type, sortBy, sortDir, genre } = useMovieListStore();
 
   const movies = useGetApiWithPagination(
@@ -236,7 +224,7 @@ export default function MovieListPage() {
             NotFound
           ) : movies.data ? (
             <>
-              <MovieList items={movies.data.list}/>
+              <MovieList items={movies.data.list} />
               <PaginationBar
                 className="my-12"
                 currentPageIndex={movies.page}

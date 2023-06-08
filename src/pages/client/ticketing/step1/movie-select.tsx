@@ -3,11 +3,11 @@ import { ko } from "date-fns/locale";
 
 import { fakeMovies } from "@/_fake";
 import { useTicketingStore } from "@/stores/client";
-import { StepSection } from "@/ui/components/ticketing";
-import { Button } from "@/ui/components/ui";
+import { StepSection } from "@/components/ticketing";
+import { Button } from "@/components/ui";
 import clsx from "clsx";
 
-import MovieGradeBadge from "@/ui/components/movies/movie-grade-badge";
+import MovieGradeBadge from "@/components/movies/movie-grade-badge";
 import { IoRemove } from "react-icons/io5";
 import { MouseEventHandler, useCallback, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";

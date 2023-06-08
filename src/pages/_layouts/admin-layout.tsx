@@ -1,4 +1,4 @@
-import { Button } from "@/ui/components/ui";
+import { Button } from "@/components/ui";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { PropsWithChildren } from "react";

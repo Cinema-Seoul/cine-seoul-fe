@@ -3,8 +3,8 @@ import axios, { AxiosError, AxiosResponseTransformer } from "axios";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 export function initApiFetcher() {
-  // axios.defaults.baseURL = 'http://localhost:8080';
-  axios.defaults.baseURL = "/api";
+  axios.defaults.baseURL = 'http://localhost:8080';
+  // axios.defaults.baseURL = "/api";
   // axios.defaults.withCredentials = true;
   // axios.defaults.headers.common['Accept'] = '*';
   // axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';

@@ -24,9 +24,9 @@ export enum GetMoviesType {
 export enum GetMoviesSortBy {
   genre = "genre",
   grade = "grade",
-  movieNum = "movieNum",
-  releaseDate = "releaseDate",
-  ticketCount = "ticketCount",
+  movieNum = "movie_num",
+  releaseDate = "release_date",
+  ticketCount = "ticket_count",
 }
 
 export interface GetMoviesOptions extends PagableRequest, SortableRequest<GetMoviesSortBy> {

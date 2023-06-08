@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 
-import { Navbar } from "@/ui/components";
+import { Navbar } from "@/components";
 
 import type { PropsWithChildren } from "react";
-import MainFooter from "@/ui/components/footer/main-footer";
+import MainFooter from "@/components/footer/main-footer";
 
 export interface MainLayoutProps extends PropsWithChildren {
   insideClass?: string;

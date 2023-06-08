@@ -1,10 +1,10 @@
 import { SortDirection, useGetApi } from "@/services/api";
-import MovieCardBoxOffice from "@/ui/components/movies/movie-card-boxoffice";
-import HomeSubbar from "@/ui/components/subbar/home-subbar";
-import { Loader } from "@/ui/components/ui";
+import MovieCardBoxOffice from "@/components/movies/movie-card-boxoffice";
+import HomeSubbar from "@/components/subbar/home-subbar";
+import { Loader } from "@/components/ui";
 import MainLayout from "../_layouts/main-layout";
 import { GetMoviesSortBy, GetMoviesType, getMovies } from "@/services/movie/movie.service";
-import MovieCardWrap from "@/ui/components/movies/movie-card-wrap";
+import MovieCardWrap from "@/components/movies/movie-card-wrap";
 import clsx from "clsx";
 
 export default function IndexPage() {

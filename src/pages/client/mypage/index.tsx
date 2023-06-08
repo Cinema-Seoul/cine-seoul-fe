@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import MainLayout from "../../_layouts/main-layout";
 import { IoChevronForward, IoPencil } from "react-icons/io5";
-import { Button } from "@/ui/components/ui";
+import { Button } from "@/components/ui";
 import { Link } from "react-router-dom";
 
 function LocalHeader({ title }: { title: string }) {
