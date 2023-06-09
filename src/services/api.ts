@@ -4,7 +4,7 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { useUser } from "./user/user.application";
 
 export function initApiFetcher() {
-  axios.defaults.baseURL = 'http://localhost:8080';
+  axios.defaults.baseURL = "http://localhost:8080";
   // axios.defaults.baseURL = "/api";
   // axios.defaults.withCredentials = true;
   // axios.defaults.headers.common['Accept'] = '*';
@@ -28,42 +28,47 @@ export type SortableRequest<SORT_BY> = {
   sortDir?: SortDirection;
 };
 
-function useFetchApi<T, E>(fetchAction: () => Promise<T>) {
-
+function useFetchApi<T, E>(fetchAction: (...args: any[]) => Promise<T>) {
   /** Header Update */
 
   const currentUser = useUser();
 
-  if(currentUser) {
+  if (currentUser) {
     setDefaultHeader({ accessToken: currentUser.accessToken });
   }
 
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<E | null>(null);
-  const invalidate = useCallback(() => {
-    if (loading) {
-      return;
-    }
-    console.log("API call is now invalidated!");
-    setLoading(true);
-    setError(null);
-    setData(undefined);
-    fetchAction()
-      ?.then((d) => {
-        setData(d);
-        return d;
-      })
-      .catch((e: E) => {
-        console.error(e);
-        setData(undefined);
-        setError(e);
-      })
-      .finally(() => {
-        console.log("HHH");
-        setLoading(false);
-      });
-  }, [fetchAction]);
+  const invalidate = useCallback(
+    (...args: Parameters<typeof fetchAction>) => {
+      if (loading) {
+        return;
+      }
+      console.log("API call is now invalidated!");
+      setLoading(true);
+      setError(null);
+      setData(undefined);
+      const promised = fetchAction(...args);
+
+      promised?.then((d) => {
+          setData(d);
+          return d;
+        })
+        .catch((e: E) => {
+          console.error(e);
+          setData(undefined);
+          setError(e);
+        })
+        .finally(() => {
+          console.log("HHH");
+          setLoading(false);
+        });
+
+      return promised;
+    },
+    [fetchAction]
+  );
 
   return { data, loading, error, invalidate } as const;
 }
@@ -97,7 +102,7 @@ export function useGetApiWithPagination<T, E = AxiosError>(
     pageSize: number;
   },
   deps?: DependencyList,
-  apiOptions?: UseGetApiOptions,
+  apiOptions?: UseGetApiOptions
 ) {
   const [page, setPage] = useState<number>(options.initialPage);
   const fetched = useGetApi<T, E>(() => fetchAction(page, options.pageSize), deps, apiOptions);
@@ -113,7 +118,7 @@ export function useGetApiWithPagination<T, E = AxiosError>(
   } as const;
 }
 
-export function useSetApi<T, E = AxiosError>(fetchAction: () => Promise<T>) {
+export function useSetApi<T, E = AxiosError>(fetchAction: (...args: any[]) => Promise<T>) {
   const { invalidate: apiAction, ...fetched } = useFetchApi<T, E>(fetchAction);
 
   return {

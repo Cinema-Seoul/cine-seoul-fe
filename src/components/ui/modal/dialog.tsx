@@ -1,6 +1,15 @@
-import { KeyboardEventHandler, PropsWithChildren, ReactNode, useCallback, useMemo, useState } from "react";
+import {
+  KeyboardEventHandler,
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import clsx from "clsx";
-import { useModal } from "./modal-context";
+import { ModalContext, useModal } from "./modal-context";
 import { motion } from "framer-motion";
 
 export interface DialogContainerProps extends PropsWithChildren {

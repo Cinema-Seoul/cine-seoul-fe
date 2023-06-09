@@ -1,14 +1,33 @@
 import { useRouteError } from "react-router-dom";
 import MainLayout from "../_layouts/main-layout";
+import { NeedSignError } from "@/services/user/user.application";
+import { IoLockClosed } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 interface ClientErrorPageProps {
   noRoute?: boolean;
 }
 
-export default function ClientErrorPage({
-  noRoute = false,
-}: ClientErrorPageProps) {
+export default function ClientErrorPage({ noRoute = false }: ClientErrorPageProps) {
   const error = useRouteError() as any;
+
+  if (error === NeedSignError) {
+    return (
+      <MainLayout>
+        <section className="container text-center py-16">
+          <div>
+            <div className="text-4xl flex justify-center">
+              <IoLockClosed />
+            </div>
+            <h4 className="text-2xl font-bold">로그인이 필요한 서비스예요</h4>
+          </div>
+          <div>
+            <Link to="/signin">로그인하러 가기</Link>
+          </div>
+        </section>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>

@@ -2,7 +2,7 @@ export type UserNum = number;
 export enum UserRole {
   member = "M",
   nonmember = "N",
-  admin = "D",
+  admin = "A",
 }
 
 export type User = {
@@ -16,11 +16,13 @@ export type User = {
   role: UserRole;
 };
 
+export type UserListEntry = User;
+
 export type UserEditing = {
   name?: string;
   phoneNum?: string;
   pw?: string;
-}
+};
 
 export type UserSignInMember = {
   id: string;

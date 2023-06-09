@@ -9,7 +9,7 @@ type ModalContextProps = {
   setElement: (s: ReactNode) => void;
 };
 
-const ModalContext = createContext<ModalContextProps>({
+export const ModalContext = createContext<ModalContextProps>({
   showing: false,
   setShowing: () => undefined,
   element: undefined,
@@ -26,9 +26,10 @@ export function useModal() {
       context.setShowing(true);
     },
     [context]
-  );
-
-  const closeModal = useCallback(() => {
+    );
+    
+    const closeModal = useCallback(() => {
+    console.log("modal closed");
     context.setShowing(false);
     context.setElement(null);
   }, [context]);

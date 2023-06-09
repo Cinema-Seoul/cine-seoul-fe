@@ -54,6 +54,8 @@ table.hq-data-table {
 
 table.hq-data-table thead {
   @apply border-b-2 border-solid border-neutral-6 p-2;
+  @apply bg-neutral-9 text-neutral-1 font-bold;
+  @apply sticky top-0;
 }
 
 table.hq-data-table th,
@@ -88,5 +90,4 @@ table.hq-form-table td {
 }
 
 table.hq-form-table select {
-
 }

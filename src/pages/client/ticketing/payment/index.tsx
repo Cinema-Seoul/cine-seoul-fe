@@ -4,7 +4,7 @@ import { Button } from "@/components/ui";
 import { useGetApi } from "@/services/api";
 import { deleteTicket } from "@/services/ticket/ticket.service";
 import { useUser } from "@/services/user/user.application";
-import { getUserDetail } from "@/services/user/user.service";
+import { getMe } from "@/services/user/user.service";
 import { useTicketingStore } from "@/stores/client";
 import { PaymentMethod } from "@/types";
 import clsx from "clsx";
@@ -22,7 +22,7 @@ function PaymentForm({ className }: BaseProps) {
     throw Error("잘못된 접근입니다. 사용자 인증 정보가 없습니다.");
   }
 
-  const UserDetail = useGetApi(() => getUserDetail(currentUser.userNum));
+  const UserDetail = useGetApi(() => getMe(currentUser.userNum));
 
   return (
     <Form

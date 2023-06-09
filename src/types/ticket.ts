@@ -9,7 +9,7 @@ export enum TicketState {
 export type TicketListEntry = {
   createdAt: Date;
   salePrice: number;
-  scheduleSeat: ScheduleSeat;
+  scheduleSeats: ScheduleSeat[];
   stdPrice: number;
   ticketNum: number;
   ticketState: TicketState;

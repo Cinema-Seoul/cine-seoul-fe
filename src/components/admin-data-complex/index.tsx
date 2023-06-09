@@ -1,13 +1,17 @@
 import { useGetApiWithPagination } from "@/services/api";
-import clsx from "clsx";
-import { ReactNode, useDeferredValue } from "react";
-import PaginationBar from "../pagination/pagination-bar";
 import { ListResponse } from "@/types";
-import { Loader } from "../ui";
+import clsx from "clsx";
+import { ReactNode, useCallback } from "react";
+import { IoAdd } from "react-icons/io5";
+import PaginationBar from "../pagination/pagination-bar";
+import { Button, Loader } from "../ui";
+import { useDetailDialog } from "./detail";
+import { useEditDialog } from "./edit";
 
 export type OnGetListFunc<T> = (page: number, size: number) => Promise<ListResponse<T>>;
-export type OnGetDetailFunc<T> = (id: number) => Promise<T>;
-export type OnGetEditable = () => EditableEntry[];
+export type OnGetDetailFunc<L, D> = (item: L) => Promise<D>;
+export type OnSetEdited<E, D> = (result: E, detail: D) => Promise<unknown>;
+export type OnSetCreated<C, D> = OnSetEdited<C, D>;
 
 export type EditableEntry = {
   label: string;
@@ -15,17 +19,106 @@ export type EditableEntry = {
   input?: ReactNode;
 };
 
-export type AdminDataComplexProps<L extends Record<string, any>, D extends Record<string, any>> = BaseProps & {
-  onGetList: OnGetListFunc<L>;
-  onGetDetail?: OnGetDetailFunc<D>;
-  onGetEditable?: () => EditableEntry[];
+export type ListHeadEntry<L extends object> = {
+  label: string;
+  key: keyof L;
+  value?: (item: L) => ReactNode;
+  sortBy?: string;
 };
 
-export default function AdminDataComplex<L extends Record<string, any>, D extends Record<string, any>>({
+export type DetailHeadEntry<D extends object> = {
+  label: string;
+  key: keyof D;
+  value?: (item: D) => ReactNode;
+  editable?: boolean;
+  editType?: "text" | "number" | "image_url" | { value: string; display: string }[];
+};
+
+export type CreationHeadEntry<C extends object> = DetailHeadEntry<C>;
+
+export type AdminDataComplexProps<
+  L extends object,
+  D extends object,
+  E extends object,
+  C extends object
+> = BaseProps & {
+  //List
+  listHead: ListHeadEntry<L>[];
+  onGetList: OnGetListFunc<L>;
+  onClickListItem?: (item: L) => void;
+
+  //DetailDialog
+  detailHead?: DetailHeadEntry<D>[];
+  onGetDetail?: OnGetDetailFunc<L, D>;
+
+  //Edit
+  onSubmitEdit?: OnSetEdited<E, D>;
+
+  //Create
+  creationHead?: CreationHeadEntry<C>[];
+  onSubmitCreate?: OnSetCreated<C, D>;
+};
+
+export default function AdminDataComplex<L extends object, D extends object, E extends object, C extends object>({
   className,
   onGetList,
-}: AdminDataComplexProps<L, D>) {
+  listHead,
+  onClickListItem,
+  detailHead,
+  onGetDetail,
+  onSubmitEdit,
+  creationHead,
+  onSubmitCreate,
+}: AdminDataComplexProps<L, D, E, C>) {
+  /* --------------------------------- Create --------------------------------- */
+
+  const showCreateRaw = useEditDialog<D, C>();
+
+  const showCreate = useCallback(() => {
+    if (creationHead && onSubmitCreate) {
+      showCreateRaw(creationHead, onSubmitCreate, {} as any);
+    }
+  }, [creationHead, onSubmitCreate, showCreateRaw]);
+
+  /* ---------------------------------- Edit ---------------------------------- */
+
+  const showEditRaw = useEditDialog<D, E>();
+
+  const showEdit = useCallback(
+    (item: D) => {
+      if (detailHead && onSubmitEdit) {
+        showEditRaw(detailHead, onSubmitEdit, { ...item } as any);
+      }
+    },
+    [detailHead, onSubmitEdit, showEditRaw]
+  );
+
+  /* --------------------------------- Detail --------------------------------- */
+
+  const showDetailRaw = useDetailDialog<L, D>(onSubmitEdit && showEdit);
+
+  const showDetail = useCallback(
+    (item: L) => {
+      if (!detailHead || !onGetDetail) {
+        return;
+      } else {
+        showDetailRaw(item, detailHead, onGetDetail, "상세 정보");
+      }
+    },
+    [detailHead, onGetDetail, showDetailRaw]
+  );
+
+  /* ---------------------------------- List ---------------------------------- */
+
   const List = useGetApiWithPagination(onGetList, { initialPage: 0, pageSize: 20 });
+
+  const doOnClickListItem = useCallback(
+    (item: L) => {
+      onClickListItem && onClickListItem(item);
+      detailHead && showDetail(item);
+    },
+    [detailHead, onClickListItem, showDetail]
+  );
 
   if (List.loading) {
     return (
@@ -44,25 +137,36 @@ export default function AdminDataComplex<L extends Record<string, any>, D extend
 
   return (
     <div className={className}>
+      {creationHead && onSubmitCreate && (
+        <div className="p-2">
+          <Button onClick={showCreate} className="ml-a" variant="contained" tint="primary" iconStart={<IoAdd />}>
+            추가
+          </Button>
+        </div>
+      )}
       <table className="hq-data-table flex-1 w-full h-full">
-        {/* <thead>
-          <th></th>
-        </thead> */}
-        <tbody>
+        <thead>
+          {listHead.map(({ key, label, sortBy }) => (
+            <th key={key.toString()}>{label}</th>
+          ))}
+        </thead>
+        <tbody className={clsx()}>
           {List.data?.list.map((item, i) => (
-            <tr key={i}>
-              {Object.entries(item).map(([key, value]) => (
-                <td key={key}>{value}</td>
+            <tr key={i} className="pressable-opacity" onClick={() => doOnClickListItem(item)}>
+              {listHead.map(({ key, value }) => (
+                <td key={key.toString()}>{value ? value(item) : `${item[key]}`}</td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      <PaginationBar
-        currentPageIndex={List.page}
-        pageCount={List.data?.totalPages ?? 0}
-        onPageSelected={List.setPage}
-      />
+      <div className="py-4">
+        <PaginationBar
+          currentPageIndex={List.page}
+          pageCount={List.data?.totalPages ?? 0}
+          onPageSelected={List.setPage}
+        />
+      </div>
     </div>
   );
 }

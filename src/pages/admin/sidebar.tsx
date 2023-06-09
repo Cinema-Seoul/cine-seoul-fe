@@ -10,12 +10,33 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 /* -------------------------------------------------------------------------- */
 
 const MenuItems: {
-  display: string;
-  path: string;
+  title?: string;
+  items: {
+    display: string;
+    path: string;
+  }[];
 }[] = [
-  { display: "영화 및 인물 관리", path: "/admin/movie" },
-  { display: "예매 관리", path: "/admin/ticketing" },
-  { display: "회원 관리", path: "/admin/user" },
+  {
+    title: "정보 관리",
+    items: [
+      { display: "영화 정보 관리", path: "/admin/movie" },
+      { display: "배우 정보 관리", path: "/admin/movie/actor" },
+      { display: "감독 정보 관리", path: "/admin/movie/director" },
+      { display: "배급사 정보 관리", path: "/admin/movie/distributor" },
+    ],
+  },
+  {
+    title: "극장 시설",
+    items: [{ display: "상영관 관리", path: "/admin/screen" }],
+  },
+  {
+    title: "극장 이용",
+    items: [
+      { display: "티켓 현황 관리", path: "/admin/ticket" },
+      { display: "결제 현황 관리", path: "/admin/payment" },
+      { display: "회원 관리", path: "/admin/user" },
+    ],
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -51,11 +72,24 @@ export default function AdminSidebar({ className }: BaseProps) {
   return (
     <aside className={clsx(className, "flex flex-col p-4 w-64 card")}>
       <ul className="flex-1 space-y-2">
-        {MenuItems.map(({ display, path }) => (
-          <li key={path}>
-            <Button as={Link} variant={pathname === path ? "contained" : "text"} tint="primary" to={path}>
-              {display}
-            </Button>
+        {MenuItems.map(({ items, title }, i) => (
+          <li key={i}>
+            {title && <h6 className="text-sm p-4 mt-2">{title}</h6>}
+            <ul>
+              {items.map(({ display, path }) => (
+                <li key={path}>
+                  <Button
+                    as={Link}
+                    className="justify-start"
+                    variant={pathname === path ? "contained" : "text"}
+                    tint="primary"
+                    to={path}
+                  >
+                    {display}
+                  </Button>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

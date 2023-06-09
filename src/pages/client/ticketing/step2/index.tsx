@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import SeatSelectSubpage from "./seat-select";
-import { useUser } from "@/services/user/user.application";
+import { useAuthGuard, useUser } from "@/services/user/user.application";
+import NeedSignPage from "./need-sign";
 
 export interface PageProps {}
 
@@ -9,7 +10,7 @@ export default function TicketingSecondaryPage() {
   const currentUser = useUser();
 
   if (!currentUser) {
-    
+    return <NeedSignPage />
   }
 
   return (

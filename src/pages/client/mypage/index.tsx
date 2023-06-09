@@ -4,7 +4,7 @@ import { IoChevronForward, IoPencil } from "react-icons/io5";
 import { Button } from "@/components/ui";
 import { Link } from "react-router-dom";
 import { createContext, useContext } from "react";
-import { getUserDetail } from "@/services/user/user.service";
+import { getMe } from "@/services/user/user.service";
 import { useUser } from "@/services/user/user.application";
 import { useGetApi } from "@/services/api";
 import { User } from "@/types";
@@ -111,7 +111,7 @@ export default function MyPage() {
     throw Error("로그인이 필요한 서비스예요");
   }
 
-  const UserDetail = useGetApi(() => getUserDetail(currentUser.userNum));
+  const UserDetail = useGetApi(() => getMe(currentUser.userNum));
 
   return (
     <MainLayout>

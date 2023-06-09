@@ -27,16 +27,22 @@ export async function getUsers({
     .then((res) => res.data);
 }
 
-/** PUT /user/auth */
-
-export async function editUserDetail(body: UserEditing): Promise<User> {
-  return axios.put("/user/auth", { ...body }).then((res) => res.data);
-}
-
-/** GET /user/auth/{num} */
+/** GET /user/admin/{num} */
 
 export async function getUserDetail(userNum: number): Promise<User> {
-  return axios.get(`/user/auth/${userNum}`).then((res) => res.data);
+  return axios.get(`/user/admin/${userNum}`).then((res) => res.data);
+}
+
+/** GET /user/auth */
+
+export async function getMe(): Promise<User> {
+  return axios.get("/user/auth").then((res) => res.data);
+}
+
+/** PUT /user/auth */
+
+export async function editMyDetail(body: UserEditing): Promise<User> {
+  return axios.put("/user/auth", { ...body }).then((res) => res.data);
 }
 
 /** POST /user/login */

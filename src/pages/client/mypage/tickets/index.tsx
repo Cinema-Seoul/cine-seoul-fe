@@ -5,6 +5,8 @@ import PaginationBar from "@/components/pagination/pagination-bar";
 import { DialogBody, DialogFooter, DialogLayout, DialogSheet, useDialog } from "@/components/ui/modal/dialog";
 import { useCallback } from "react";
 import { Button } from "@/components/ui";
+import { TicketListEntry } from "@/types";
+import clsx from "clsx";
 
 function TicketDetailDialog() {
   return (
@@ -41,8 +43,12 @@ function TicketDetailDialog() {
         </DialogBody>
         <DialogFooter>
           <div className="flex flex-row">
-            <Button className="flex-1" variant="text">예매 변경</Button>
-            <Button className="flex-1" variant="text">예매 취소</Button>
+            <Button className="flex-1" variant="text">
+              예매 변경
+            </Button>
+            <Button className="flex-1" variant="text">
+              예매 취소
+            </Button>
           </div>
         </DialogFooter>
       </DialogLayout>
@@ -50,7 +56,7 @@ function TicketDetailDialog() {
   );
 }
 
-function TicketItem() {
+function TicketItem({ ticket, className }: { ticket: TicketListEntry } & BaseProps) {
   const { showDialog } = useDialog();
 
   const doOnClickItem = useCallback(() => {
@@ -58,8 +64,8 @@ function TicketItem() {
   }, [showDialog]);
 
   return (
-    <a className="card card-pressable block p-4" onClick={doOnClickItem}>
-      <div className="text-lg font-bold">{"트랜짓"}</div>
+    <a className={clsx(className, "card card-pressable block p-4")} onClick={doOnClickItem}>
+      <div className="text-lg font-bold">{ticket.}</div>
       <div className="flex flex-row">
         <div className="flex-1 space-x-2">
           <span>{"상영시각"}</span>

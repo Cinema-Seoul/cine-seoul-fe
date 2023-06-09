@@ -29,3 +29,12 @@ export type PaymentListEntry = {
   state: PaymentState;
   ticketNum: number;
 };
+
+export type PaymentCreation = {
+  accountNum?: string;
+  cardNum?: string;
+  payedPoint: number;
+  paymentMethod: PaymentMethodValue;
+  price: number;
+  ticketNum: number;
+};

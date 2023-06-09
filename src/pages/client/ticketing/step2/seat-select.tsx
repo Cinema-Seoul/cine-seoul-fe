@@ -53,8 +53,10 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
         seatNumList: selectedSeats.map((s) => s.seatNum),
         stdPrice: stdPrice,
       })
+      .finally(() => {
+        closeLoading();
+      })
         .then(() => {
-          alertDialog("결제를 진행합니다.");
           navigate("/ticketing/payment");
         })
         .catch((e) => {
@@ -62,11 +64,9 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
             <>
               오류가 발생했습니다.
               <br />
-              <br />
               {e.response?.data?.message}
             </>
           );
-          navigate("/ticketing/payment");
         });
     }
   }, [alertDialog, navigate, schedule.data, stdPrice]);

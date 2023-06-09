@@ -3,7 +3,7 @@ import MainLayout from "../../../_layouts/main-layout";
 import clsx from "clsx";
 import { useUser } from "@/services/user/user.application";
 import { useGetApi, useSetApi } from "@/services/api";
-import { editUserDetail, getUserDetail } from "@/services/user/user.service";
+import { editMyDetail, getMe } from "@/services/user/user.service";
 
 function EditForm({ className }: BaseProps) {
   const currentUser = useUser();
@@ -14,7 +14,7 @@ function EditForm({ className }: BaseProps) {
 
   
 
-  const { apiAction } = useSetApi(() => editUserDetail({
+  const { apiAction } = useSetApi(() => editMyDetail({
     "name": "바꾼 이름",
   }))
 
