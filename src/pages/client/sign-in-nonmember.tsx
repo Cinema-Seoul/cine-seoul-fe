@@ -6,15 +6,16 @@ import { useGetApi, useSetApi } from "@/services/api";
 import axios, { AxiosError } from "axios";
 import { useForm } from "@/hooks/form";
 import { useUserStore } from "@/stores/user.store";
-import { UserSignInMember } from "@/types";
+import { UserSignInMember, UserSignInNonmember } from "@/types";
 import { useUserActions } from "@/services/user/user.application";
 import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
+import { signUpNonmember } from "@/services/user/user.service";
 
 const $ = {
   inputClasses: "block w-full bg-neutral-1 out-1 outline-neutral-7 leading-6 focus:outline-primary-8 rounded h-8 p-2",
 };
 
-export default function SignInPage() {
+export default function SignInNonmemberPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams({
     redirect: "/",
@@ -23,7 +24,7 @@ export default function SignInPage() {
   const alertDialog = useAlertDialog();
 
   const { currentUser, setCurrentUser } = useUserStore();
-  const { signInMember, signInUpNonmember: signInNonmember } = useUserActions();
+  const { signInUpNonmember } = useUserActions();
 
   useEffect(() => {
     if (currentUser) {
@@ -31,32 +32,39 @@ export default function SignInPage() {
     }
   }, [currentUser, navigate, searchParams]);
 
-  const submitForm = async ({ id, pw }: UserSignInMember) =>
-    signInMember(id, pw).catch((e) => {
-      alertDialog("로그인에 실패했어요. 아이디 또는 비밀번호를 확인해주세요.");
+  const submitForm = async ({ name, pw, phoneNum }: UserSignInNonmember) => {
+    await signInUpNonmember(name, pw, phoneNum).catch((e) => {
+      alertDialog("기존 등록된 정보가 있습니다. 전화번호 또는 비밀번호를 확인해주세요.");
     });
+  };
 
-  const { inputValues, inputErrors, handleOnSubmit, handleValueChanged, loadingOnSubmit } = useForm<UserSignInMember>(
-    {
-      id: "",
-      pw: "",
-    },
-    submitForm
-  );
+  const { inputValues, inputErrors, handleOnSubmit, handleValueChanged, loadingOnSubmit } =
+    useForm<UserSignInNonmember>(
+      {
+        name: "",
+        phoneNum: "",
+        pw: "",
+      },
+      submitForm
+    );
 
   return (
     <MainLayout>
       <div className="container py-24">
         <div className="out-1 outline-neutral-6 bg-neutral-2 mx-a rounded col-6">
           <div className="w-full p-6">
-            <h2 className="text-xl font-bold text-center">로그인</h2>
+            <h2 className="text-xl font-bold text-center">비회원 로그인</h2>
           </div>
           <div className="w-full p-6">
             <form onSubmit={handleOnSubmit}>
               <div className="max-w-96 mx-a space-y-2">
                 <p>
-                  <label htmlFor="id">아이디</label>
-                  <input type="text" name="id" onChange={handleValueChanged} className={$.inputClasses} />
+                  <label htmlFor="name">이름</label>
+                  <input type="text" name="name" onChange={handleValueChanged} className={$.inputClasses} />
+                </p>
+                <p>
+                  <label htmlFor="phoneNum">전화번호</label>
+                  <input type="text" name="phoneNum" onChange={handleValueChanged} className={$.inputClasses} />
                 </p>
                 <p>
                   <label htmlFor="pw">비밀번호</label>
@@ -83,9 +91,6 @@ export default function SignInPage() {
           <p className="space-x-4">
             <Link to="/signup" className="text-lg underline">
               회원 가입
-            </Link>
-            <Link to="/signin/nm" className="text-lg underline">
-              비회원으로 이용
             </Link>
           </p>
         </div>

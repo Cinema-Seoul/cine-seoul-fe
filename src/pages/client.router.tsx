@@ -17,6 +17,7 @@ import TheatreInfoPage from "./client/theatre";
 import TicketingPage from "./client/ticketing";
 import MyProfileEditPage from "./client/mypage/edit-profile";
 import SearchMovieListPage from "./client/movie-list/search";
+import SignInNonmemberPage from "./client/sign-in-nonmember";
 
 const ClientRoutes = () => (
   <Suspense>
@@ -33,6 +34,7 @@ const ClientRoutes = () => (
         <Route path="m/director/:dirNum" element={<DirectorDetailPage />} />
         <Route path="m/distributor/:distNum" element={<DistributorDetailPage />} />
         <Route path="signin" element={<SignInPage />} />
+        <Route path="signin/nm" element={<SignInNonmemberPage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="my" element={<MyPage />} />
         <Route path="my/ticket" element={<MyTicketsPage />} />

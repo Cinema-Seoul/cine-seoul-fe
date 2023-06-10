@@ -2,11 +2,13 @@ import { useForm } from "@/hooks/form";
 import axios, { AxiosError } from "axios";
 import MainLayout from "../_layouts/main-layout";
 import { Button } from "@/components/ui";
-import Form, { FormInputPattern, FormRoot, FormRootProps } from "@/components/form/primitive";
+import Form, { FormInputPattern, FormRoot, FormRootProps, FormSubmitFunc } from "@/components/form/primitive";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 import { useUser } from "@/services/user/user.application";
+import { signUpMember } from "@/services/user/user.service";
+import { UserCreation } from "@/types";
 
 type SignUpPageForm = {
   id: string;
@@ -58,29 +60,23 @@ const SIGN_UP_PAGE_FORM_PATTERNS: Partial<Record<keyof SignUpPageForm, FormInput
 };
 
 export default function SignUpPage() {
-
   const currentUser = useUser();
 
-  
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   const alertDialog = useAlertDialog();
-  
+
   const navigate = useNavigate();
 
   if (currentUser) {
-    return <Navigate to="/" />
+    return <Navigate to="/" />;
   }
 
-  const doOnSubmit: FormRootProps["onSubmit"] = (e, values) => {
+  const doOnSubmit: FormSubmitFunc<SignUpPageForm> = (e, values) => {
     e.preventDefault();
     setLoading(true);
-    axios
-      .post("/user", {
-        ...values,
-        role: "M",
-      })
-      .then((res) => {
+    signUpMember(values)
+      .then(() => {
         alertDialog("회원가입이 완료되었습니다!");
         navigate("/signin");
       })
@@ -102,6 +98,7 @@ export default function SignUpPage() {
             pwConfirm: "",
             name: "",
             phoneNum: "",
+            residentNum: "",
           }}
           onSubmit={doOnSubmit}
         >

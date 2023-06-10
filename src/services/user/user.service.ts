@@ -2,11 +2,21 @@
 /*                                    User                                    */
 /* -------------------------------------------------------------------------- */
 
-import { ListResponse, User, UserEditing, UserSignInMember, UserSignInNonmember } from "@/types";
+import { ListResponse, User, UserCreation, UserEditing, UserRole, UserSignInMember, UserSignInNonmember } from "@/types";
 import axios from "axios";
 import { PagableRequest, SortableRequest } from "../api";
 
 /** POST /user */
+
+export async function signUpMember(body: Omit<UserCreation, 'role'>): Promise<unknown> {
+  return axios.post('/user', { ...body, role: UserRole.member } as UserCreation).then(res => res.data); 
+}
+export async function signUpNonmember(body: UserSignInNonmember): Promise<unknown> {
+  return axios.post('/user', { ...body, role: UserRole.nonmember  }).then(res => res.data); 
+}
+export async function signUpAdmin(body: Omit<UserCreation, 'role'>): Promise<unknown> {
+  return axios.post('/user', { ...body, role: UserRole.admin } as UserCreation).then(res => res.data); 
+}
 
 /** GET /user/admin */
 
@@ -52,5 +62,5 @@ export async function requestSignInMember(body: UserSignInMember): Promise<strin
 }
 
 export async function requestSignInNonmember(body: UserSignInNonmember): Promise<string> {
-  return axios.post("/user/login/notmember", { ...body }).then((res) => res.data.data);
+  return axios.post("/user/login/notMember", { ...body }).then((res) => res.data.data);
 }

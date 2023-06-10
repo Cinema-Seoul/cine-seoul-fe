@@ -1,14 +1,10 @@
 import clsx from "clsx";
-import type { MovieGrade } from "cs:movie";
-import { MouseEventHandler, Suspense, useCallback } from "react";
-import { IoHeart } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { MouseEventHandler, Suspense } from "react";
 import { Button } from "../ui";
 import Loader from "../ui/loader";
 import MovieGradeBadge from "./movie-grade-badge";
 
-const DEFAULT_IMG =
-  "https://placehold.co/100x200/FFF1E7/BD4B00?text=CinemaSeoul&font=Playfair%20Display";
+const DEFAULT_IMG = "https://placehold.co/100x200/FFF1E7/BD4B00?text=CinemaSeoul&font=Playfair%20Display";
 
 type MovieCardData = {
   title: string;
@@ -24,14 +20,7 @@ export interface MovieCardProps extends BaseProps {
   onClickTicketing?: MouseEventHandler;
 }
 
-export default function MovieCard({
-  className,
-  onClick,
-  onClickTicketing,
-  noInteract = false,
-  data,
-}: MovieCardProps) {
-
+export default function MovieCard({ className, onClick, onClickTicketing, noInteract = false, data }: MovieCardProps) {
   return (
     <div
       className={clsx(
@@ -64,9 +53,7 @@ export default function MovieCard({
                 "invisible group-hover:visible"
               )}
             >
-              <div className="p-4 flex-1 overflow-y-hidden text-base text-neutral-12">
-                {data.summary}
-              </div>
+              <div className="p-4 flex-1 overflow-y-hidden text-base text-neutral-12">{data.summary}</div>
               <div className="p-4 flex-shrink-0 text-sm border-t border-solid border-neutral-11 border-opacity-20">
                 <span className="font-normal me-2">관람객 평점</span>
                 {/* <span className="font-bold">4.5</span> */}
@@ -77,9 +64,7 @@ export default function MovieCard({
         </div>
         <div className="p-4">
           <div className="flex flex-row">
-            <h6 className="flex-1 text-lg leading-6 font-bold h-12 overflow-hidden text-ellipsis max-">
-              {data.title}
-            </h6>
+            <h6 className="flex-1 text-lg leading-6 font-bold h-12 overflow-hidden text-ellipsis max-">{data.title}</h6>
             <MovieGradeBadge className="flex-none" gradeCode={data.grade} />
           </div>
           {noInteract || (

@@ -16,7 +16,7 @@ export default function NeedSignPage() {
       <div>
         <p className="text-center mb-2">혹은</p>
         <p>
-          <Button as={Link} className="col-4 mx-a" variant="text">비회원으로 예매하기</Button>
+          <Button as={Link} className="col-4 mx-a" variant="text" to="/signin/nm">비회원으로 예매하기</Button>
         </p>
       </div>
 

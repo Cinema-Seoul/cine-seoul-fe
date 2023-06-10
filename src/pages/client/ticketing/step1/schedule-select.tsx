@@ -1,15 +1,12 @@
-import { fakeSchedules } from "@/_fake";
-import type { MovieListEntry, ScheduleListEntry, Screen } from "@/types";
+import { StepSection } from "@/components/ticketing";
+import { Loader } from "@/components/ui";
 import { useGetApi } from "@/services/api";
 import { GetSchedulesSortBy, getSchedules } from "@/services/schedule/schedule.service";
 import { useTicketingStore } from "@/stores/client";
-import { StepSection } from "@/components/ticketing";
-import { Button, Loader } from "@/components/ui";
+import type { ScheduleListEntry } from "@/types";
 import { date, fmt } from "@/utils/date";
 import clsx from "clsx";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
-import { ComponentPropsWithoutRef, MouseEventHandler, useCallback, useEffect, useMemo } from "react";
+import { ComponentPropsWithoutRef, MouseEventHandler, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 export interface ScheduleRadioProps extends ComponentPropsWithoutRef<"a"> {

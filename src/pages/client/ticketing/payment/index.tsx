@@ -8,7 +8,7 @@ import { deleteTicket } from "@/services/ticket/ticket.service";
 import { useUser } from "@/services/user/user.application";
 import { getMe } from "@/services/user/user.service";
 import { useTicketingStore } from "@/stores/client";
-import { PaymentCreation, PaymentMethod } from "@/types";
+import { PaymentCreation, PaymentMethod, UserRole } from "@/types";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { FormEventHandler, useCallback, useEffect, useMemo } from "react";
@@ -91,23 +91,27 @@ function PaymentForm({ className }: BaseProps) {
       onSubmit={doOnSubmit}
     >
       <table className="hq-form-table col-8 mx-a">
-        <tr>
-          <th>
-            <label htmlFor="payedPoint">포인트</label>
-            <p>
-              (사용 가능 포인트:{" "}
-              {UserDetail.loading
-                ? "불러오고 있어요"
-                : UserDetail.error
-                ? "불러올 수 없어요"
-                : UserDetail.data?.point.toLocaleString()}
-              )
-            </p>
-          </th>
-          <td>
-            <Form.Input type="number" inputId="payedPoint" />
-          </td>
-        </tr>
+        {currentUser.userRole !== UserRole.nonmember && (
+          <>
+            <tr>
+              <th>
+                <label htmlFor="payedPoint">포인트</label>
+                <p>
+                  (사용 가능 포인트:{" "}
+                  {UserDetail.loading
+                    ? "불러오고 있어요"
+                    : UserDetail.error
+                    ? "불러올 수 없어요"
+                    : UserDetail.data?.point.toLocaleString()}
+                  )
+                </p>
+              </th>
+              <td>
+                <Form.Input type="number" inputId="payedPoint" />
+              </td>
+            </tr>
+          </>
+        )}
         <tr>
           <th>
             <label htmlFor="paymentMethodType">결제 방법</label>

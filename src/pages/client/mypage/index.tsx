@@ -7,7 +7,7 @@ import { createContext, useContext } from "react";
 import { getMe } from "@/services/user/user.service";
 import { NeedSignError, useUser } from "@/services/user/user.application";
 import { SortDirection, useGetApi } from "@/services/api";
-import { User } from "@/types";
+import { User, UserRole } from "@/types";
 import { GetTicketsSortBy, getTickets } from "@/services/ticket/ticket.service";
 import { date, fmt } from "@/utils/date";
 
@@ -144,8 +144,12 @@ export default function MyPage() {
           <div className="container">
             <div className="row">
               <div className="col">
-                <ProfileSection />
-                <ProfileMenuSection className="mt-6" />
+                {currentUser.userRole !== UserRole.nonmember && (
+                  <>
+                    <ProfileSection />
+                    <ProfileMenuSection className="mt-6" />
+                  </>
+                )}
               </div>
               <div className="col">
                 <TicketsSection />

@@ -44,13 +44,11 @@ const CREATION_HEADS: CreationHeadEntry<ActorCreation>[] = [
   {
     key: "imgUrl",
     label: "이미지",
-    editable: true,
     editType: "image_url",
   },
   {
     key: "name",
     label: "이름",
-    editable: true,
     editType: "text",
   },
 ];

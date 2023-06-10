@@ -32,6 +32,7 @@ export type MovieListEntry = {
 };
 
 export type MovieCreation = {
+  poster: string; // URL
   actorNumList: number[];
   directorNumList: number[];
   distNum: number;
@@ -43,6 +44,10 @@ export type MovieCreation = {
   runningTime: number;
   title: string;
 };
+
+export type MovieUpdating = Partial<MovieCreation> & {
+  movieNum: number;
+}
 
 export type MovieSelectionState = MovieListEntry;
 

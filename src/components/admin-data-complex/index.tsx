@@ -24,11 +24,11 @@ type DetailHeadEntryBase<D extends object> = {
   label: string;
   key: keyof D;
   value?: (item: D) => ReactNode;
-}
-export type DetailHeadEntry<D extends object> = (DetailHeadEntryBase<D>|((item: D) => ReactNode));
+};
+export type DetailHeadEntry<D extends object> = DetailHeadEntryBase<D> | ((item: D) => ReactNode);
 
 export type EditHeadEntry<E extends object> = DetailHeadEntryBase<E> & {
-  setValue?: (value: unknown) => string | number,
+  setValue?: (value: any) => string | number | Array<string|number>;
   editType?: "text" | "number" | "image_url" | "date" | "datetime" | { value: string; display: string }[];
 };
 
@@ -118,7 +118,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   const doOnClickListItem = useCallback(
     async (item: L) => {
-      onClickListItem && await onClickListItem(item);
+      onClickListItem && (await onClickListItem(item));
       detailHead && showDetail(item);
     },
     [detailHead, onClickListItem, showDetail]

@@ -2,7 +2,7 @@ import { useUserStore } from "@/stores/user.store";
 import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import jwt_decode from "jwt-decode";
-import { requestSignInMember, requestSignInNonmember } from "./user.service";
+import { requestSignInMember, requestSignInNonmember, signUpNonmember } from "./user.service";
 import { User, UserRole } from "@/types";
 import { useNavigate } from "react-router-dom";
 
@@ -72,10 +72,11 @@ export function useUserActions() {
     [signIn]
   );
 
-  const signInNonmember = useCallback(
-    async (id: string, pw: string, phoneNum: string) => {
+  const signInUpNonmember = useCallback(
+    async (name: string, pw: string, phoneNum: string) => {
       setLoading(true);
-      return requestSignInNonmember({ id, pw, phoneNum })
+      await signUpNonmember({ name, pw, phoneNum });
+      return requestSignInNonmember({ name, pw, phoneNum })
         .then(signIn)
         .finally(() => {
           setLoading(false);
@@ -93,7 +94,7 @@ export function useUserActions() {
     loading,
     currentUser,
     signInMember,
-    signInNonmember,
+    signInUpNonmember,
     signOut,
   };
 }

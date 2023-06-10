@@ -18,6 +18,15 @@ export type User = {
 
 export type UserListEntry = User;
 
+export type UserCreation = {
+  name: string;
+  phoneNum: string;
+  id: string;
+  pw: string;
+  residentNum: string;
+  role: UserRole;
+}
+
 export type UserEditing = {
   name?: string;
   phoneNum?: string;
@@ -30,7 +39,7 @@ export type UserSignInMember = {
 };
 
 export type UserSignInNonmember = {
-  id: string;
+  name: string;
   pw: string;
   phoneNum: string;
 };

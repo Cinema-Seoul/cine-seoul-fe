@@ -8,7 +8,7 @@ function DataBody() {
   return <AdminDataComplex listHead={listHead}
    onGetList={(page, size) => getTickets({ page, size })}
    detailHead={detailHead}
-   onGetDetail={({  }) => getTicket}
+  //  onGetDetail={({  }) => getTicket}
     />;
 }
 
