@@ -1,4 +1,4 @@
-import { ListResponse, TicketCreation, TicketListEntry } from "@/types";
+import { ListResponse, TicketCreation, TicketDetail, TicketListEntry } from "@/types";
 import { PagableRequest, SortableRequest } from "../api";
 import axios from "axios";
 
@@ -39,12 +39,16 @@ export async function getTickets({
 /** POST /ticket/auth */
 
 export async function createTicket(body: TicketCreation): Promise<TicketListEntry> {
-  return axios.post("/ticket/auth", { ...body }).then((res) => res.data);
+  return axios.post("/ticket/auth", { ...body }).then((res) => res.data.data);
 }
 
 /** PUT /ticket/auth */
 
 /** GET /ticket/auth/{num} */
+
+export async function getTicketDetail(ticketNum: number): Promise<TicketDetail> {
+  return axios.get(`/ticket/auth/${ticketNum}`).then((res) => res.data);
+}
 
 /** DELETE /ticket/auth/{num} */
 

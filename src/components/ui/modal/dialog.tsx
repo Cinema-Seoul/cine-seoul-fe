@@ -43,7 +43,7 @@ export function DialogContainer({ dim = true, onCloseRequest, children }: Dialog
         onClick={onCloseRequest}
         onKeyDown={doOnKeyDown}
       ></div>
-      <div className="z-48" style={{ maxWidth: "960px" }}>
+      <div className="z-48 overflow-hidden p-8">
         {children}
       </div>
     </motion.div>
@@ -53,7 +53,7 @@ export function DialogContainer({ dim = true, onCloseRequest, children }: Dialog
 export function DialogSheet({ children }: PropsWithChildren) {
   return (
     <motion.div
-      className="rounded-lg out-1 outline-neutral-6 shadow-xl bg-neutral-2 max-w-148 min-w-48"
+      className="rounded-lg out-1 outline-neutral-6 shadow-xl bg-neutral-2 container px-none overflow-hidden h-full"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.6 }}
@@ -64,7 +64,7 @@ export function DialogSheet({ children }: PropsWithChildren) {
 }
 
 export function DialogLayout({ children }: PropsWithChildren) {
-  return <div className="flex flex-col items-stretch">{children}</div>;
+  return <div className="flex flex-col items-stretch overflow-hidden h-full">{children}</div>;
 }
 
 export interface DialogHeaderProps {
@@ -74,7 +74,7 @@ export interface DialogHeaderProps {
 
 export function DialogHeader({ title, subtitle }: DialogHeaderProps) {
   return (
-    <div className="flex flex-row border-b border-solid border-neutral-6">
+    <div className="flex flex-row flex-0 border-b border-solid border-neutral-6">
       {(title || subtitle) && (
         <div className="p-4">
           {title && <h2 className="text-lg font-bold">{title}</h2>}
@@ -86,12 +86,12 @@ export function DialogHeader({ title, subtitle }: DialogHeaderProps) {
 }
 
 export function DialogBody({ className, children }: PropsWithChildren<BaseProps>) {
-  return <div className={clsx(className, "px-4 py-6 overflow-y-auto")}>{children}</div>;
+  return <div className={clsx(className, "flex-1 px-4 py-6 overflow-y-auto")}>{children}</div>;
 }
 
 export function DialogFooter({ className, children }: PropsWithChildren<BaseProps>) {
   return (
-    <div className={clsx(className, "p-4 overflow-y-auto border-t border-solid border-neutral-6")}>{children}</div>
+    <div className={clsx(className, "flex-0 p-4 overflow-y-auto border-t border-solid border-neutral-6")}>{children}</div>
   );
 }
 

@@ -42,7 +42,7 @@ export function date(src: any): Date {
   if (typeof src === "number" || typeof src === "string") {
     return new Date(src);
   } else if (Array.isArray(src)) {
-    return new Date(src[0], src[1], src[2], src[3], src[4], src[5]); //마지막은 버림
+    return new Date(src[0], src[1], src[2], src[3], src[4]); //마지막은 버림
   }
 
   // return null;

@@ -1,7 +1,7 @@
 import { useGetApiWithPagination } from "@/services/api";
 import { ListResponse } from "@/types";
 import clsx from "clsx";
-import { ReactNode, useCallback } from "react";
+import { DependencyList, ReactNode, useCallback } from "react";
 import { IoAdd } from "react-icons/io5";
 import PaginationBar from "../pagination/pagination-bar";
 import { Button, Loader } from "../ui";
@@ -10,31 +10,29 @@ import { useEditDialog } from "./edit";
 
 export type OnGetListFunc<T> = (page: number, size: number) => Promise<ListResponse<T>>;
 export type OnGetDetailFunc<L, D> = (item: L) => Promise<D>;
-export type OnSetEdited<E, D> = (result: E, detail: D) => Promise<unknown>;
-export type OnSetCreated<C, D> = OnSetEdited<C, D>;
-
-export type EditableEntry = {
-  label: string;
-  inputId: string;
-  input?: ReactNode;
-};
+export type OnSetEdited<E> = (result: E) => Promise<unknown>;
+export type OnSetCreated<C> = OnSetEdited<C>;
 
 export type ListHeadEntry<L extends object> = {
-  label: string;
+  label?: string;
   key: keyof L;
   value?: (item: L) => ReactNode;
   sortBy?: string;
 };
 
-export type DetailHeadEntry<D extends object> = {
+type DetailHeadEntryBase<D extends object> = {
   label: string;
   key: keyof D;
   value?: (item: D) => ReactNode;
-  editable?: boolean;
-  editType?: "text" | "number" | "image_url" | { value: string; display: string }[];
+}
+export type DetailHeadEntry<D extends object> = (DetailHeadEntryBase<D>|((item: D) => ReactNode));
+
+export type EditHeadEntry<E extends object> = DetailHeadEntryBase<E> & {
+  setValue?: (value: unknown) => string | number,
+  editType?: "text" | "number" | "image_url" | "date" | "datetime" | { value: string; display: string }[];
 };
 
-export type CreationHeadEntry<C extends object> = DetailHeadEntry<C>;
+export type CreationHeadEntry<C extends object> = EditHeadEntry<C>;
 
 export type AdminDataComplexProps<
   L extends object,
@@ -45,34 +43,42 @@ export type AdminDataComplexProps<
   //List
   listHead: ListHeadEntry<L>[];
   onGetList: OnGetListFunc<L>;
-  onClickListItem?: (item: L) => void;
+  listDeps?: DependencyList;
+  onClickListItem?: (item: L) => void | PromiseLike<any>;
 
   //DetailDialog
   detailHead?: DetailHeadEntry<D>[];
   onGetDetail?: OnGetDetailFunc<L, D>;
 
   //Edit
-  onSubmitEdit?: OnSetEdited<E, D>;
+  editHead?: EditHeadEntry<E>[];
+  onSubmitEdit?: OnSetEdited<E>;
 
   //Create
   creationHead?: CreationHeadEntry<C>[];
-  onSubmitCreate?: OnSetCreated<C, D>;
+  onSubmitCreate?: OnSetCreated<C>;
 };
 
 export default function AdminDataComplex<L extends object, D extends object, E extends object, C extends object>({
   className,
-  onGetList,
+  //L
   listHead,
+  onGetList,
+  listDeps,
   onClickListItem,
+  //D
   detailHead,
   onGetDetail,
+  //E
+  editHead,
   onSubmitEdit,
+  //C
   creationHead,
   onSubmitCreate,
 }: AdminDataComplexProps<L, D, E, C>) {
   /* --------------------------------- Create --------------------------------- */
 
-  const showCreateRaw = useEditDialog<D, C>();
+  const showCreateRaw = useEditDialog<C>();
 
   const showCreate = useCallback(() => {
     if (creationHead && onSubmitCreate) {
@@ -82,15 +88,15 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   /* ---------------------------------- Edit ---------------------------------- */
 
-  const showEditRaw = useEditDialog<D, E>();
+  const showEditRaw = useEditDialog<E>();
 
   const showEdit = useCallback(
     (item: D) => {
-      if (detailHead && onSubmitEdit) {
-        showEditRaw(detailHead, onSubmitEdit, { ...item } as any);
+      if (editHead && onSubmitEdit) {
+        showEditRaw(editHead, onSubmitEdit, { ...item } as any);
       }
     },
-    [detailHead, onSubmitEdit, showEditRaw]
+    [editHead, onSubmitEdit, showEditRaw]
   );
 
   /* --------------------------------- Detail --------------------------------- */
@@ -99,9 +105,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   const showDetail = useCallback(
     (item: L) => {
-      if (!detailHead || !onGetDetail) {
-        return;
-      } else {
+      if (detailHead && onGetDetail) {
         showDetailRaw(item, detailHead, onGetDetail, "상세 정보");
       }
     },
@@ -110,11 +114,11 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   /* ---------------------------------- List ---------------------------------- */
 
-  const List = useGetApiWithPagination(onGetList, { initialPage: 0, pageSize: 20 });
+  const List = useGetApiWithPagination(onGetList, { initialPage: 0, pageSize: 20 }, listDeps);
 
   const doOnClickListItem = useCallback(
-    (item: L) => {
-      onClickListItem && onClickListItem(item);
+    async (item: L) => {
+      onClickListItem && await onClickListItem(item);
       detailHead && showDetail(item);
     },
     [detailHead, onClickListItem, showDetail]
@@ -146,7 +150,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
       )}
       <table className="hq-data-table flex-1 w-full h-full">
         <thead>
-          {listHead.map(({ key, label, sortBy }) => (
+          {listHead.map(({ key, label }) => (
             <th key={key.toString()}>{label}</th>
           ))}
         </thead>

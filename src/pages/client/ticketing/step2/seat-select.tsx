@@ -11,7 +11,7 @@ import { ScheduleDetail, Seat, TicketAudienceType } from "@/types";
 import { fmt } from "@/utils/date";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { IoChevronForward, IoRemove } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -21,12 +21,13 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
   const showLoading = useLoadingDialog();
   const alertDialog = useAlertDialog();
 
-  const { selectedSchedule, clearSelectedSchedule, selectedSeats, toggleSelectedSeat, removeSelectedSeat } =
+  const { selectedSchedule, clearSelectedSchedule, selectedSeats, toggleSelectedSeat, removeSelectedSeat, setTicket } =
     useTicketingStore();
 
   const schedule = useGetApi(() => getScheduleDetail(selectedSchedule?.schedNum as any), [selectedSchedule], {
     enabled: !!selectedSchedule,
   });
+
   const stdPrice: number = useMemo(
     () => selectedSeats.reduce<number>((acc, seat) => acc + seat.seatPrice, 0),
     [selectedSeats]
@@ -53,11 +54,12 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
         seatNumList: selectedSeats.map((s) => s.seatNum),
         stdPrice: stdPrice,
       })
-      .finally(() => {
-        closeLoading();
-      })
-        .then(() => {
+        .then((ticket) => {
+          setTicket(ticket);
           navigate("/ticketing/payment");
+        })
+        .finally(() => {
+          closeLoading();
         })
         .catch((e) => {
           alertDialog(

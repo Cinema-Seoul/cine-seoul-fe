@@ -22,8 +22,6 @@ export default function DateSelectSubpage({ className }: BaseProps) {
         onSelect={updateDate}
         locale={ko}
         classNames={{
-          ...datePickerStyles,
-          root: clsx(datePickerStyles.root),
           month: "flex-1",
           table: "w-full"
         }}

@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/router";
 
 /** Global Styles */
+import 'react-day-picker/dist/style.css';
 import "@/styles/global.css";
 import "@/styles/theme-colors.css";
 import "@unocss/reset/tailwind-compat.css";

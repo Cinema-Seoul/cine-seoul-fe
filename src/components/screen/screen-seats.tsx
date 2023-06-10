@@ -30,7 +30,7 @@ function SeatBox({ className, selected = false, disabled = false, onClick, data 
         "w-8 h-8 text-center leading-8 text-xs cursor-pointer",
         selected && selectedSeatColors[data.seatGrade],
         disabled && "bg-neutral-9 opacity-25",
-        selected || disabled || seatColors[data.seatGrade],
+        selected || disabled || seatColors[data.seatGrade]
       )}
       aria-disabled={disabled}
       aria-selected={selected}
@@ -42,9 +42,9 @@ function SeatBox({ className, selected = false, disabled = false, onClick, data 
 }
 
 export interface ScreenSeatsProps extends BaseProps {
-  seats?: ScheduleSeat[],
-  selectedSeats?: Seat[],
-  onClickSeat: (seat: Seat) => void
+  seats?: ScheduleSeat[];
+  selectedSeats?: Seat[];
+  onClickSeat?: (seat: Seat) => void;
 }
 
 export default function ScreenSeats({ className, seats = [], selectedSeats = [], onClickSeat }: ScreenSeatsProps) {
@@ -63,8 +63,6 @@ export default function ScreenSeats({ className, seats = [], selectedSeats = [],
     return ret;
   }, [seats]);
 
-
-
   return (
     <div className={className}>
       <div className="bg-neutral-3 leading-6 rounded text-center">화면</div>
@@ -77,10 +75,8 @@ export default function ScreenSeats({ className, seats = [], selectedSeats = [],
                 <SeatBox
                   className=""
                   disabled={isOccupied === Is.True}
-                  selected={selectedSeats.some(o => o.seatNum === seat.seatNum)}
-                  onClick={(e) => {
-                    onClickSeat(seat);
-                  }}
+                  selected={selectedSeats.some((o) => o.seatNum === seat.seatNum)}
+                  onClick={onClickSeat && ((e) => onClickSeat(seat))}
                   data={seat}
                 />
               </td>

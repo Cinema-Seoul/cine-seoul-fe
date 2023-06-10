@@ -1,20 +1,29 @@
-import { ScheduleSeat, User } from ".";
+import { ScheduleListEntry, ScheduleSeat, Seat, User } from ".";
 
 export enum TicketState {
-  True = "Y",
-  False = "N",
+  Issued = "I",
+  Payed = "P",
+  Pending = "N",
   Canceled = "C",
 }
 
 export type TicketListEntry = {
   createdAt: Date;
-  salePrice: number;
-  scheduleSeats: ScheduleSeat[];
   stdPrice: number;
+  salePrice: number;
+  ticketSeats: ScheduleSeat[];
   ticketNum: number;
   ticketState: TicketState;
   user: User;
+  schedule: ScheduleListEntry;
+  audienceTypes: {
+    audienceType: string;
+    count: number;
+    displayName: string;
+  }[];
+};
 
+export type TicketDetail = {
   // audienceTypes: [
   //   {
   //     audienceType: "D";
@@ -22,63 +31,14 @@ export type TicketListEntry = {
   //     displayName: "string";
   //   }
   // ];
-  // createdAt: "2023-06-08T16:04:48.809Z";
-  // reservationSeats: [
-  //   {
-  //     seat: {
-  //       col: "string";
-  //       row: "string";
-  //       screenNum: 0;
-  //       seatGrade: "A";
-  //       seatNum: 0;
-  //       seatPrice: 0;
-  //     };
-  //   }
-  // ];
-  // salePrice: 0;
-  // schedule: {
-  //   emptySeat: 0;
-  //   movie: {
-  //     distName: "string";
-  //     genreList: [
-  //       {
-  //         genreCode: "string";
-  //         name: "string";
-  //       }
-  //     ];
-  //     gradeName: "string";
-  //     info: "string";
-  //     isShowing: "N";
-  //     movieNum: 0;
-  //     poster: "string";
-  //     releaseDate: "string";
-  //     runningTime: 0;
-  //     ticketCount: 0;
-  //     title: "string";
-  //   };
-  //   order: 0;
-  //   schedNum: 0;
-  //   schedTime: "2023-06-08T16:04:48.810Z";
-  //   screen: {
-  //     name: "string";
-  //     screenNum: 0;
-  //     totalSeat: 0;
-  //   };
-  // };
-  // stdPrice: 0;
-  // ticketNum: 0;
-  // ticketState: "C";
-  // user: {
-  //   createdAt: "2023-06-08T16:04:48.810Z";
-  //   id: "string";
-  //   name: "string";
-  //   phoneNum: "string";
-  //   point: 0;
-  //   pw: "string";
-  //   residentNum: "string";
-  //   role: "A";
-  //   userNum: 0;
-  // };
+  createdAt: Date;
+  salePrice: number;
+  schedule: ScheduleListEntry;
+  stdPrice: number;
+  ticketNum: number;
+  ticketSeats: Omit<ScheduleSeat, 'isOccupied'>[];
+  ticketState: TicketState;
+  user: User;
 };
 
 export enum TicketAudienceType {
@@ -90,4 +50,18 @@ export type TicketCreation = {
   schedNum: number;
   seatNumList: number[];
   stdPrice: number;
+};
+
+export type TicketUpdating = {
+  salePrice: number;
+  ticketNum: number;
+  ticketState: TicketState;
+};
+
+export type TicketReset = {
+  createTicketAudienceDTOList: { audienceType: TicketAudienceType; count: number }[];
+  schedNum: number;
+  seatNumList: number[];
+  stdPrice: number;
+  ticketNum: number;
 };

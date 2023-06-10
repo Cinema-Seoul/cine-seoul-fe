@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import type { MovieListEntry, MovieSelectionState, ScheduleListEntry, Seat } from "@/types";
+import type { MovieListEntry, MovieSelectionState, ScheduleListEntry, Seat, TicketListEntry } from "@/types";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 
 export type TicketingStoreState = {
@@ -8,6 +8,9 @@ export type TicketingStoreState = {
   selectedMovie?: MovieSelectionState;
   selectedSchedule?: ScheduleListEntry;
   selectedSeats: Seat[];
+
+  ticket?: TicketListEntry;
+  payedPoint: number;
 };
 
 export type TicketingStoreActions = {
@@ -27,6 +30,12 @@ export type TicketingStoreActions = {
   removeSelectedSeat: (seat: number | Seat) => void;
   toggleSelectedSeat: (seat: Seat) => void;
 
+  //Ticketing
+  setTicket: (ticket?: TicketListEntry) => void;
+
+  //Pay
+  setPayedPoint: (point: number) => void;
+
   resetAll: () => void;
 };
 
@@ -35,6 +44,8 @@ export const initialTicketingStore: TicketingStoreState = {
   selectedMovie: undefined,
   selectedSchedule: undefined,
   selectedSeats: [],
+  ticket: undefined,
+  payedPoint: 0,
 };
 
 export const useTicketingStore = create<TicketingStoreState & TicketingStoreActions>()(
@@ -104,6 +115,14 @@ export const useTicketingStore = create<TicketingStoreState & TicketingStoreActi
           ? old.filter((s) => s.seatNum !== seat.seatNum)
           : [...old, seat],
       }));
+    },
+
+    setTicket: (ticket) => {
+      set({ ticket });
+    },
+
+    setPayedPoint: (payedPoint) => {
+      set({ payedPoint });
     },
 
     resetAll: () => {

@@ -6,6 +6,35 @@ import MainLayout from "../_layouts/main-layout";
 import { GetMoviesSortBy, GetMoviesType, getMovies } from "@/services/movie/movie.service";
 import MovieCardWrap from "@/components/movies/movie-card-wrap";
 import clsx from "clsx";
+import { getCurrentEvents } from "@/services/event.service";
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+
+function EventBanner() {
+  const navigate = useNavigate();
+
+  const Events = useGetApi(getCurrentEvents);
+
+  const doOnClickBanner = useCallback((eventNum: number) => {
+    navigate(`/b/event/${eventNum}`);
+  }, [navigate]);
+
+  return (
+    <section className="bg-neutral-5">
+      <div className="container text-center py-8 h-48">
+        {
+          Events.loading ? <Loader className="w-16 h-16" /> : Events.data ? (
+            Events.data.map(({ banner, eventNum }) => (
+              <div key={eventNum} onClick={() => doOnClickBanner(eventNum)}>
+                <img src={banner} />
+              </div>
+            ))
+          ) : null
+        }
+      </div>
+    </section>
+  );
+}
 
 export default function IndexPage() {
   const topMovies = useGetApi(() =>
@@ -20,9 +49,7 @@ export default function IndexPage() {
 
   return (
     <MainLayout>
-      <section className="bg-neutral-5">
-        <div className="container text-center py-8 h-48">BANNER</div>
-      </section>
+      {/* <EventBanner /> */}
       <HomeSubbar />
       <section about="Box Office" className="">
         <h2 className="text-7 leading-8 font-bold text-center pt-18 pb-6">예매량 TOP</h2>

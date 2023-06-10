@@ -3,7 +3,7 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { requestSignInMember, requestSignInNonmember } from "./user.service";
-import { UserRole } from "@/types";
+import { User, UserRole } from "@/types";
 import { useNavigate } from "react-router-dom";
 
 export function useUser() {
@@ -12,18 +12,19 @@ export function useUser() {
 
 export const NeedSignError = new Error("로그인이 필요합니다.");
 
-export function useAuthGuard(needSign = true, needAdmin = false) {
+export function useAuthGuard(needAdmin = false) {
   const currentUser = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (needSign && !currentUser) {
-      throw NeedSignError;
-      // navigate("/signin");
-    } else if (needAdmin && currentUser?.userRole !== UserRole.admin) {
+    if (needAdmin && currentUser?.userRole !== UserRole.admin) {
       throw Error("권한이 없습니다!");
     }
   }, [currentUser]);
+
+  if (!currentUser) throw NeedSignError;
+
+  return currentUser;
 }
 
 function decodeToken(token: string) {

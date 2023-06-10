@@ -55,16 +55,15 @@ export async function getScheduleDetail(scheduleNum: number): Promise<ScheduleDe
   return axios.get<ScheduleDetail>(`/schedule/${scheduleNum}`, {}).then((res) => res.data);
 }
 
-/** DELETE /schedule/{num} */
-// TODO: 어드민으로 제한해야 맞지 않을까
-
-export async function deleteSchedule(scheduleNum: number): Promise<EntResponse> {
-  return axios.delete<EntResponse>(`/schedule/${scheduleNum}`, {}).then((res) => res.data);
-}
-
 /* -------------------------------------------------------------------------- */
 /*                              Schedule (Admin)                              */
 /* -------------------------------------------------------------------------- */
+
+/** DELETE /schedule/admin/{num} */
+
+export async function deleteSchedule(scheduleNum: number): Promise<EntResponse> {
+  return axios.delete<EntResponse>(`/schedule/admin/${scheduleNum}`, {}).then((res) => res.data);
+}
 
 /** POST /schedule/admin */
 

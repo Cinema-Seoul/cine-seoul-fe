@@ -1,16 +1,13 @@
+import axios, { AxiosError } from "axios";
 import { DependencyList, useCallback, useEffect, useState } from "react";
-import axios, { AxiosError, AxiosResponseTransformer } from "axios";
-import { useLocation, useSearchParams } from "react-router-dom";
 import { useUser } from "./user/user.application";
 
+/** API 호출을 위한 기본 설정 초기화 */
 export function initApiFetcher() {
   axios.defaults.baseURL = "http://localhost:8080";
-  // axios.defaults.baseURL = "/api";
-  // axios.defaults.withCredentials = true;
-  // axios.defaults.headers.common['Accept'] = '*';
-  // axios.defaults.headers.common['Content-Type'] = 'application/json;charset=utf-8';
 }
 
+/** API 호출에 사용되는 헤더 설정 (JWToken) */
 export function setDefaultHeader({ accessToken }: { accessToken: string }) {
   axios.defaults.headers.common.Authorization = `${accessToken}`;
 }
@@ -28,30 +25,30 @@ export type SortableRequest<SORT_BY> = {
   sortDir?: SortDirection;
 };
 
-function useFetchApi<T, E>(fetchAction: (...args: any[]) => Promise<T>) {
+function useFetchApi<T, E, ARGS extends Array<unknown>>(fetchAction: (...args: ARGS) => Promise<T>) {
   /** Header Update */
-
   const currentUser = useUser();
 
   if (currentUser) {
     setDefaultHeader({ accessToken: currentUser.accessToken });
   }
 
+  /** States */
   const [data, setData] = useState<T>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<E | null>(null);
-  const invalidate = useCallback(
-    (...args: Parameters<typeof fetchAction>) => {
-      if (loading) {
-        return;
-      }
-      console.log("API call is now invalidated!");
+
+  /** 값을 무효화하고 다시 Fetching */
+  const invalidate: typeof fetchAction = useCallback(
+    (...args) => {
       setLoading(true);
       setError(null);
       setData(undefined);
+
       const promised = fetchAction(...args);
 
-      promised?.then((d) => {
+      promised
+        .then((d) => {
           setData(d);
           return d;
         })
@@ -61,7 +58,6 @@ function useFetchApi<T, E>(fetchAction: (...args: any[]) => Promise<T>) {
           setError(e);
         })
         .finally(() => {
-          console.log("HHH");
           setLoading(false);
         });
 
@@ -77,12 +73,17 @@ export interface UseGetApiOptions {
   enabled?: any;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   GETTER                                   */
+/* -------------------------------------------------------------------------- */
+
+/** Single Object or Single Page */
 export function useGetApi<T, E = AxiosError>(
   fetchAction: () => Promise<T>,
   deps: DependencyList = [],
   { enabled = true }: UseGetApiOptions = {}
 ) {
-  const fetched = useFetchApi<T, E>(fetchAction);
+  const fetched = useFetchApi<T, E, []>(fetchAction);
 
   useEffect(() => {
     if (enabled) {
@@ -95,6 +96,7 @@ export function useGetApi<T, E = AxiosError>(
   };
 }
 
+/** With Pagination */
 export function useGetApiWithPagination<T, E = AxiosError>(
   fetchAction: (page: number, size: number) => Promise<T>,
   options: {
@@ -118,8 +120,12 @@ export function useGetApiWithPagination<T, E = AxiosError>(
   } as const;
 }
 
-export function useSetApi<T, E = AxiosError>(fetchAction: (...args: any[]) => Promise<T>) {
-  const { invalidate: apiAction, ...fetched } = useFetchApi<T, E>(fetchAction);
+/* -------------------------------------------------------------------------- */
+/*                                   SETTER                                   */
+/* -------------------------------------------------------------------------- */
+
+export function useSetApi<T, ARGS extends unknown[], E = AxiosError>(fetchAction: (...args: ARGS) => Promise<T>) {
+  const { invalidate: apiAction, ...fetched } = useFetchApi<T, E, ARGS>(fetchAction);
 
   return {
     apiAction,

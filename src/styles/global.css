@@ -39,6 +39,7 @@ input[type="search"],
 input[type="number"],
 input[type="tel"],
 input[type="password"],
+textarea,
 select {
   @apply rounded px-2 leading-loose
   bg-neutral-2
@@ -90,4 +91,19 @@ table.hq-form-table td {
 }
 
 table.hq-form-table select {
+}
+
+/* Day Picker */
+
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: theme("colors.primary.9");
+  --rdp-background-color: theme("colors.neutral.2");
+  /* Switch to dark colors for dark themes */
+  --rdp-accent-color-dark: theme("colors.primary.9");
+  --rdp-background-color-dark: theme("colors.neutral.2");
+  /* Outline border for focused elements */
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  /* Outline border for focused and selected elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
 }

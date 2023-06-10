@@ -21,17 +21,17 @@ export function useModal() {
 
   const showModal = useCallback(
     (element: ReactNode) => {
-      console.log("modal open");
       context.setElement(element);
       context.setShowing(true);
+      console.log("modal open");
     },
     [context]
-    );
-    
-    const closeModal = useCallback(() => {
-    console.log("modal closed");
-    context.setShowing(false);
+  );
+
+  const closeModal = useCallback(() => {
     context.setElement(null);
+    context.setShowing(false);
+    console.log("modal closed");
   }, [context]);
 
   return {
@@ -42,7 +42,7 @@ export function useModal() {
 
 export function ModalProvider({ children }: PropsWithChildren) {
   const [showing, setShowing] = useState<boolean>(false);
-  const [element, setElement] = useState<ReactNode>();
+  const [element, setElement] = useState<ReactNode>(null);
 
   return (
     <ModalContext.Provider
@@ -54,7 +54,9 @@ export function ModalProvider({ children }: PropsWithChildren) {
       }}
     >
       <ModalPortal>
-        <AnimatePresence>{showing && element}</AnimatePresence>
+        {/* <AnimatePresence> */}
+        {showing && <Fragment key={new Date().getTime()}>{element}</Fragment>}
+        {/* </AnimatePresence> */}
       </ModalPortal>
       <>{children}</>
     </ModalContext.Provider>

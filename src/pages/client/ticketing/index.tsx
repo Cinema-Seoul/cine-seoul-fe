@@ -35,7 +35,7 @@ export default function TicketingPage() {
                 iconStart={<IoClose />}
                 onClick={doRedirect}
               >
-                모두 취소
+                닫기
               </Button>
             </div>
           </div>

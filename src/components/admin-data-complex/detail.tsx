@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { ReactNode, useCallback } from "react";
 import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
 import { DetailHeadEntry, ListHeadEntry, OnGetDetailFunc } from ".";
 import { useGetApi } from "@/services/api";
@@ -54,15 +54,21 @@ function DetailDialogContent<L extends object, D extends object>({
     <DialogSheet>
       <DialogLayout>
         <DialogHeader title={title} subtitle={subtitle} />
-        <DialogBody className="">
+        <DialogBody className="flex">
           <table className="hq-form-table">
             {data &&
-              detailHead.map(({ key, label, value }) => (
-                <tr key={key.toString()}>
-                  <th>{label}</th>
-                  <td>{value ? value(data) : `${data[key]}`}</td>
-                </tr>
-              ))}
+              detailHead.map((entry) =>
+                typeof entry === "function" ? (
+                  <tr key={entry.name}>
+                    <td colSpan={2}>{entry(data)}</td>
+                  </tr>
+                ) : (
+                  <tr key={entry.key.toString()}>
+                    <th>{entry.label}</th>
+                    <td>{entry.value ? entry.value(data) : `${data[entry.key]}`}</td>
+                  </tr>
+                )
+              )}
           </table>
         </DialogBody>
         <DialogFooter className="flex flex-row justify-end space-x-2">

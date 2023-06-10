@@ -27,7 +27,10 @@ const MenuItems: {
   },
   {
     title: "극장 시설",
-    items: [{ display: "상영관 관리", path: "/admin/screen" }],
+    items: [
+      { display: "상영관 관리", path: "/admin/screen" },
+      { display: "상영일정 관리", path: "/admin/schedule" },
+    ],
   },
   {
     title: "극장 이용",
@@ -51,8 +54,8 @@ function SignedMenu({ className }: BaseProps) {
     if (currentUser.userRole === UserRole.admin) {
       return (
         <div className={clsx(className, "flex flex-row items-center")}>
-          <div className="flex-1">전호균 (직원)</div>
-          <Button className="flex-0" iconStart={<IoLogOut />} />
+          <div className="flex-1">{currentUser.name ?? currentUser.userId} (직원)</div>
+          <Button className="flex-0" iconStart={<IoLogOut />} onClick={signOut} />
         </div>
       );
     } else {

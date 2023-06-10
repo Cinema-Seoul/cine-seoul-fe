@@ -41,7 +41,7 @@ const FormContext = createContext<FormContext>({
 });
 
 export type FormConditionalProps = {
-  render?: (context: FormContext) => ReactNode;
+  render?: (context: FormContext) => JSX.Element;
 };
 
 function FormConditional({ render }: FormConditionalProps) {
@@ -267,16 +267,16 @@ function FormSelect({
 /*                                  RootForm                                  */
 /* -------------------------------------------------------------------------- */
 
-export type FormSubmitFunc<T extends Record<string, string>> = (e: FormEvent<HTMLFormElement>, values: T) => void;
+export type FormSubmitFunc<T extends Record<string, any>> = (e: FormEvent<HTMLFormElement>, values: T) => void;
 
-type FormRootPropsBase<T extends Record<string, string>> = Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> & {
+type FormRootPropsBase<T extends Record<string, any>> = Omit<ComponentPropsWithoutRef<"form">, "onSubmit"> & {
   onSubmit: FormSubmitFunc<T>;
 };
-export type FormRootProps<T extends Record<string, string>> = FormRootPropsBase<T> & {
+export type FormRootProps<T extends Record<string, any>> = FormRootPropsBase<T> & {
   initialValues: T;
 };
 
-function FormRoot<T extends Record<string, string>>({ className, children, initialValues, onSubmit, ...restProps }: FormRootProps<T>) {
+function FormRoot<T extends Record<string, any>>({ className, children, initialValues, onSubmit, ...restProps }: FormRootProps<T>) {
   const [values, setValues] = useState<T>({
     ...initialValues,
   });

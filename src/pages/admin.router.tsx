@@ -3,18 +3,15 @@ import { Route, Routes } from "react-router-dom";
 import AdminErrorPage from "./admin/_error";
 import AdminRoot from "./admin/_root";
 import AdminIndexPage from "./admin/home";
-import AdminMovieListPage from "./admin/movie/list";
-import AdminScheduleListPage from "./admin/schedule/list";
-import AdminDataComplex from "@/components/admin-data-complex";
-import { getTickets } from "@/services/ticket/ticket.service";
-import { getUsers } from "@/services/user/user.service";
-import AdminSignInPage from "./admin/sign-in";
-import AdminScreenListPage from "./admin/screen/list";
 import AdminActorListPage from "./admin/movie-meta/actor";
 import AdminDirectorListPage from "./admin/movie-meta/director";
 import AdminDistributorListPage from "./admin/movie-meta/distributor";
-import AdminTicketListPage from "./admin/ticket/list";
+import AdminMovieListPage from "./admin/movie/list";
 import AdminPaymentListPage from "./admin/payment/list";
+import AdminSchedulePage from "./admin/schedule";
+import AdminScreenListPage from "./admin/screen/list";
+import AdminSignInPage from "./admin/sign-in";
+import AdminTicketListPage from "./admin/ticket/list";
 import AdminUserListPage from "./admin/user/list";
 
 const AdminRoutes = () => (
@@ -28,7 +25,7 @@ const AdminRoutes = () => (
       <Route path="movie/director" element={<AdminDirectorListPage />} />
       <Route path="movie/distributor" element={<AdminDistributorListPage />} />
       <Route path="screen" element={<AdminScreenListPage />} />
-      <Route path="sched" element={<AdminScheduleListPage />} />
+      <Route path="schedule" element={<AdminSchedulePage />} />
       <Route path="ticket" element={<AdminTicketListPage />} />
       <Route path="payment" element={<AdminPaymentListPage />} />
       <Route path="*" element={<AdminErrorPage noRoute />} />

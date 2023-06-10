@@ -20,7 +20,7 @@ const mainMenuItems: MainMenuItem[] = [
     label: "극장",
     href: "/theatre",
   },
-  { label: "이벤트", href: "#" },
+  // { label: "이벤트", href: "#" },
   { label: "바로 예매", href: "/ticketing", accent: true },
   { label: "내 정보 · 티켓", href: "/my", accent: true },
 ];
@@ -34,12 +34,7 @@ const Brand = ({ className }: BaseProps) => (
 );
 
 const UserSignMenu = ({ className }: BaseProps) => {
-  const navigate = useNavigate();
-
-  const {
-    currentUser,
-    signOut,
-  } = useUserActions();
+  const { currentUser, signOut } = useUserActions();
 
   const rootStyle = clsx(
     className,
@@ -51,7 +46,7 @@ const UserSignMenu = ({ className }: BaseProps) => {
     return (
       <div className={rootStyle}>
         <p>
-          안녕하세요, <u>{currentUser.name ?? "고객"}</u>님!
+          안녕하세요, <u>{currentUser.userId}</u>님!
         </p>
         <a className="pressable-opacity" onClick={signOut}>
           로그아웃
@@ -62,7 +57,7 @@ const UserSignMenu = ({ className }: BaseProps) => {
     // Not Signed In
     return (
       <div className={rootStyle}>
-        <Link className="pressable-opacity" to="/signin" >
+        <Link className="pressable-opacity" to="/signin">
           로그인/회원가입
         </Link>
       </div>

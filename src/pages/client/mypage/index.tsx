@@ -1,13 +1,15 @@
 import clsx from "clsx";
 import MainLayout from "../../_layouts/main-layout";
 import { IoChevronForward, IoPencil } from "react-icons/io5";
-import { Button } from "@/components/ui";
+import { Button, Loader } from "@/components/ui";
 import { Link } from "react-router-dom";
 import { createContext, useContext } from "react";
 import { getMe } from "@/services/user/user.service";
-import { useUser } from "@/services/user/user.application";
-import { useGetApi } from "@/services/api";
+import { NeedSignError, useUser } from "@/services/user/user.application";
+import { SortDirection, useGetApi } from "@/services/api";
 import { User } from "@/types";
+import { GetTicketsSortBy, getTickets } from "@/services/ticket/ticket.service";
+import { date, fmt } from "@/utils/date";
 
 function LocalHeader({ title }: { title: string }) {
   return (
@@ -24,7 +26,7 @@ function LocalHeader({ title }: { title: string }) {
 function ProfileSection({ className }: BaseProps) {
   const { UserDetail } = useContext(MyPageContext);
 
-  if(!UserDetail) return null;
+  if (!UserDetail) return null;
 
   return (
     <section className={clsx(className, "rounded bg-primary-2 out-1 outline-primary-6")}>
@@ -59,27 +61,46 @@ function ProfileMenuSection({ className }: BaseProps) {
 }
 
 function TicketsSection({ className }: BaseProps) {
+  const currentUser = useUser();
+
+  if (!currentUser) {
+    throw NeedSignError;
+  }
+
+  const Tickets = useGetApi(() =>
+    getTickets({
+      userNum: currentUser.userNum,
+      page: 0,
+      size: 4,
+      sortBy: GetTicketsSortBy.createdDate,
+      sortDir: SortDirection.desc,
+    })
+  );
+
   return (
     <section className={clsx(className, "rounded bg-neutral-2 out-1 outline-neutral-6")}>
       <div className="p-4 border-b border-solid border-neutral-6">
         <h2 className="text-xl font-bold">내 티켓</h2>
       </div>
       <div className="">
+        {Tickets.loading && <Loader className="mx-a my-8 w-16 h-16" />}
         <ul className="">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <li key={i} className="border-b border-solid border-neutral-6 pressable-opacity">
+          {Tickets.data?.list?.length === 0 && <div className="m-8 text-center">티켓이 없습니다.</div>}
+          {Tickets.data?.list.map(({ ticketNum, ticketSeats, schedule: { schedTime, screen, movie } }) => (
+            <li key={ticketNum} className="border-b border-solid border-neutral-6 pressable-opacity">
               <div className="cursor-pointer p-4 flex flex-row items-center">
                 <div className="flex-1">
-                  <div className="font-bold">미드소마</div>
+                  <div className="font-bold">{movie.title}</div>
                   <div className="text-sm space-x-4">
                     <span>
-                      상영관 <strong>A</strong>
+                      상영관 <strong>{screen.name}</strong>
                     </span>
                     <span>
-                      상영 시각 <strong>wer</strong>
+                      상영 시각 <strong>{fmt(date(schedTime), "Pp")}</strong>
                     </span>
                     <span>
-                      상영 시각 <strong>wer</strong>
+                      상영 시각{" "}
+                      <strong>{ticketSeats.map(({ seat: { col, row } }) => `${row}${col}`).join(", ")}</strong>
                     </span>
                   </div>
                 </div>
@@ -91,7 +112,9 @@ function TicketsSection({ className }: BaseProps) {
           ))}
         </ul>
         <div className="p-4">
-          <Button as={Link} to="/my/ticket" variant="text">더 보기</Button>
+          <Button as={Link} to="/my/ticket" variant="text">
+            더 보기
+          </Button>
         </div>
       </div>
     </section>
@@ -99,8 +122,8 @@ function TicketsSection({ className }: BaseProps) {
 }
 
 type MyPageContextProps = {
-  UserDetail?: ReturnType<typeof useGetApi<User>>
-}
+  UserDetail?: ReturnType<typeof useGetApi<User>>;
+};
 
 const MyPageContext = createContext<MyPageContextProps>({});
 
@@ -108,28 +131,28 @@ export default function MyPage() {
   const currentUser = useUser();
 
   if (!currentUser) {
-    throw Error("로그인이 필요한 서비스예요");
+    throw NeedSignError;
   }
 
-  const UserDetail = useGetApi(() => getMe(currentUser.userNum));
+  const UserDetail = useGetApi(() => getMe());
 
   return (
     <MainLayout>
       <MyPageContext.Provider value={{ UserDetail }}>
-      <LocalHeader title="내 정보" />
-      <main className="bg-neutral-1 py-6 border-t border-solid border-neutral-6">
-        <div className="container">
-          <div className="row">
-            <div className="col">
-              <ProfileSection />
-              <ProfileMenuSection className="mt-6" />
-            </div>
-            <div className="col">
-              <TicketsSection />
+        <LocalHeader title="내 정보" />
+        <main className="bg-neutral-1 py-6 border-t border-solid border-neutral-6">
+          <div className="container">
+            <div className="row">
+              <div className="col">
+                <ProfileSection />
+                <ProfileMenuSection className="mt-6" />
+              </div>
+              <div className="col">
+                <TicketsSection />
+              </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
       </MyPageContext.Provider>
     </MainLayout>
   );
