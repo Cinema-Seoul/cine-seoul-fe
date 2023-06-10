@@ -40,7 +40,7 @@ function ProfileSection({ className }: BaseProps) {
         <ul className="flex flex-col text-right items-end">
           <li className="col-12 md:col-6">
             <span className="float-left">포인트</span>
-            <span className="font-bold">{UserDetail.data?.point.toLocaleString()}</span>원
+            <span className="font-bold">{UserDetail.data?.point?.toLocaleString()}</span>원
           </li>
         </ul>
       </div>

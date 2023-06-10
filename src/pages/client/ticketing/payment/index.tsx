@@ -102,7 +102,7 @@ function PaymentForm({ className }: BaseProps) {
                     ? "불러오고 있어요"
                     : UserDetail.error
                     ? "불러올 수 없어요"
-                    : UserDetail.data?.point.toLocaleString()}
+                    : UserDetail.data?.point?.toLocaleString()}
                   )
                 </p>
               </th>

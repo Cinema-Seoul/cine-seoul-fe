@@ -182,7 +182,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
                 <div className="flex-0 flex flex-col justify-end border-l border-solid border-neutral-7 pl-4 ml-4">
                   <div className="text-right py-2">
                     <span className="text-sm mr-2">예상 금액</span>
-                    <span className="font-bold">{stdPrice.toLocaleString("ko-KR")}원</span>
+                    <span className="font-bold">{stdPrice?.toLocaleString("ko-KR")}원</span>
                   </div>
                   <Button
                     className=""
