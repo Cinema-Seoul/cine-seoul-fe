@@ -10,18 +10,7 @@ import { SortDirection, useGetApi } from "@/services/api";
 import { User, UserRole } from "@/types";
 import { GetTicketsSortBy, getTickets } from "@/services/ticket/ticket.service";
 import { date, fmt } from "@/utils/date";
-
-function LocalHeader({ title }: { title: string }) {
-  return (
-    <header className="bg-neutral-2">
-      <div className="container pt-32">
-        <div className="py-6">
-          <h2 className="text-2xl font-bold text-primary-11">{title}</h2>
-        </div>
-      </div>
-    </header>
-  );
-}
+import PageHeader from "@/components/header/page-header";
 
 function ProfileSection({ className }: BaseProps) {
   const { UserDetail } = useContext(MyPageContext);
@@ -139,7 +128,7 @@ export default function MyPage() {
   return (
     <MainLayout>
       <MyPageContext.Provider value={{ UserDetail }}>
-        <LocalHeader title="내 정보" />
+        <PageHeader title="내 정보" />
         <main className="bg-neutral-1 py-6 border-t border-solid border-neutral-6">
           <div className="container">
             <div className="row">
