@@ -12,3 +12,5 @@ export type Seat = {
   seatPrice: number;
   screenNum: number;
 }
+
+export type SeatCreation = Omit<Seat, 'seatNum'>;

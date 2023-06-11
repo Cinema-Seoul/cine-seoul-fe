@@ -35,6 +35,7 @@ export type MovieCreation = {
   poster: string; // URL
   actorNumList: number[];
   directorNumList: number[];
+  countryList: Country[];
   distNum: number;
   genreCodeList: string[];
   gradeCode: string;

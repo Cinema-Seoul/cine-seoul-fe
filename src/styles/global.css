@@ -63,7 +63,6 @@ table.hq-data-table th,
 table.hq-data-table td {
   @apply border-b border-solid border-neutral-6 p-2;
 }
-
 table.hq-data-table th:not(:last-child),
 table.hq-data-table td:not(:last-child) {
   border-right: 1px solid theme("colors.neutral.6");
@@ -75,22 +74,34 @@ table.hq-data-table td:not(:last-child) {
 table.hq-form-table {
   @apply table-fixed
   @apply border-separate border-spacing-4;
+  word-wrap: break-word;
 }
 
-table.hq-form-table th,
-table.hq-form-table td {
+table.hq-form-table > tr,
+table.hq-form-table > thead > tr,
+table.hq-form-table > tbody > tr {
+  @apply w-full;
+}
+
+table.hq-form-table > tr > th,
+table.hq-form-table > thead > tr > th,
+table.hq-form-table > tbody > tr > th,
+table.hq-form-table > tr > td,
+table.hq-form-table > thead > tr > td,
+table.hq-form-table > tbody > tr > td {
   @apply p-2;
 }
 
-table.hq-form-table th {
-  @apply text-right;
+table.hq-form-table > tr > th,
+table.hq-form-table > thead > tr > th,
+table.hq-form-table > tbody > tr > th {
+  @apply text-right w-32;
 }
 
-table.hq-form-table td {
+table.hq-form-table > tr > td,
+table.hq-form-table > thead > tr > td,
+table.hq-form-table > tbody > tr > td {
   @apply text-left;
-}
-
-table.hq-form-table select {
 }
 
 /* Day Picker */

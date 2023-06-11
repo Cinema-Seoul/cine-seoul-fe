@@ -19,8 +19,8 @@ export const listHead: ListHeadEntry<Screen>[] = [
 
 export const detailHead: DetailHeadEntry<Screen>[] = [
   ({ seats }) => (
-    <div className="overflow-x-hidden">
-      <ScreenSeats seats={seats.map((seat) => ({ isOccupied: Is.False, seat }))} />
+    <div className="overflow-x-auto w-full">
+      <ScreenSeats className="" seats={seats.map((seat) => ({ isOccupied: Is.False, seat }))} />
     </div>
   ),
   {
@@ -40,7 +40,8 @@ export const detailHead: DetailHeadEntry<Screen>[] = [
 export const editHead: EditHeadEntry<Screen>[] = [
   {
     key: "screenNum",
-    label: "",
+    label: "번호",
+    editType: 'inherit',
   },
   {
     key: "name",

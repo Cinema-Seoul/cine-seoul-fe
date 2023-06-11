@@ -29,7 +29,7 @@ const MenuItems: {
     title: "극장 시설",
     items: [
       { display: "이벤트 관리", path: "/admin/event" },
-      { display: "상영관 관리", path: "/admin/screen" },
+      { display: "상영관/좌석 관리", path: "/admin/screen" },
       { display: "상영일정 관리", path: "/admin/schedule" },
     ],
   },

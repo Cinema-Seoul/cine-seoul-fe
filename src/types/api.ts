@@ -10,6 +10,11 @@ export type EntResponse<T = any> = {
 };
 
 export enum Is {
-  True = 'Y',
-  False = 'N',
+  True = "Y",
+  False = "N",
 }
+
+export const nameIs: Record<Is, string> = {
+  [Is.True]: "참",
+  [Is.False]: "거짓",
+};

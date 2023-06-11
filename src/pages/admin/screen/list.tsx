@@ -5,6 +5,17 @@ import { createScreen, editScreen, getScreenDetail, getScreens } from "@/service
 import { Is, Screen } from "@/types";
 import { useCallback } from "react";
 import { creationHead, detailHead, editHead, listHead } from "./display";
+import { Button } from "@/components/ui";
+import { IoAccessibility } from "react-icons/io5";
+import useScreenSeatsEditDialog from "./seat/edit";
+
+function DetailActions({ screenNum }: { screenNum: number }) {
+  const showScreenSeatsEditDialog = useScreenSeatsEditDialog(screenNum);
+
+  return <>
+    <Button variant="contained" tint="primary" iconStart={<IoAccessibility />} onClick={showScreenSeatsEditDialog}>이 상영관 좌석 관리</Button>
+  </>
+}
 
 function DataBody() {
   const alertDialog = useAlertDialog();
@@ -28,6 +39,7 @@ function DataBody() {
       //D
       detailHead={detailHead}
       onGetDetail={({ screenNum }) => getScreenDetail(screenNum)}
+      renderDetailActions={(item) => <DetailActions screenNum={item.screenNum} />}
       //E
       editHead={editHead}
       onSubmitEdit={(result) => editScreen(result as any)}

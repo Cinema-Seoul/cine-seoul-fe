@@ -1,4 +1,12 @@
-import { ChangeEventHandler, FormEventHandler, MouseEventHandler, useCallback, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
 import { DetailHeadEntry, EditHeadEntry, ListHeadEntry, OnGetDetailFunc, OnSetEdited } from ".";
 import { useGetApi, useSetApi } from "@/services/api";
@@ -7,30 +15,28 @@ import { IoClose, IoPencil } from "react-icons/io5";
 import { useAlertDialog } from "../ui/modal/dialog-alert";
 import { date } from "@/utils/date";
 
-type EditDialogContentProps<E extends object> = {
+type EditDialogContentProps<E extends object, D extends object = object> = {
   initialValues: { [key in keyof E]: string | string[] | number | undefined };
   onClose: () => void;
 
   title?: string;
   subtitle?: string;
 
-  editHead: EditHeadEntry<E>[];
+  editHead: EditHeadEntry<E, D>[];
   onSetEdited: OnSetEdited<E>;
 };
 
-function EditDialogContent<E extends object>({
+function EditDialogContent<E extends object, D extends object = object>({
   initialValues,
   editHead,
   title,
   subtitle,
   onClose,
   onSetEdited,
-}: EditDialogContentProps<E>) {
+}: EditDialogContentProps<E, D>) {
   const alertDialog = useAlertDialog();
 
   const { apiAction, data, error, loading } = useSetApi(onSetEdited);
-
-  console.log(initialValues);
 
   const [values, setValues] = useState<E>({} as any);
 
@@ -48,22 +54,44 @@ function EditDialogContent<E extends object>({
   const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
-      apiAction(values)
+      const par = { ...values };
+
+      editHead.forEach(({ setValue, key }) => {
+        if (setValue) {
+          par[key] = setValue(values[key]) as any;
+        }
+      });
+
+      apiAction(par)
         ?.then(() => {
           alertDialog("성공적으로 작업을 마무리했어요");
           onClose();
         })
         .catch((e) => {
-          alertDialog(
-            <>
-              오류가 발생했습니다.
-              <br />
-              {e.response?.data?.message ?? e.toString()}
-            </>
-          );
+          // alertDialog(
+          //   <>
+          //     오류가 발생했습니다.
+          //     <br />
+          //     {e.response?.data?.message ?? e.toString()}
+          //   </>
+          // );
+          alert(e.response?.data?.message ?? e.toString());
         });
     },
     [alertDialog, apiAction, onClose, values]
+  );
+
+  const defaultVals = useMemo(
+    () =>
+      editHead.reduce((acc, { key, initialValue, editType }) => {
+        const d = initialValue ? initialValue(initialValues[key] as any) : initialValues[key];
+        acc[key] = d;
+        if (editType === "inherit") {
+          setValues((o) => ({ ...o, [key]: d }));
+        }
+        return acc;
+      }, {} as Partial<E>),
+    [editHead, initialValues]
   );
 
   if (loading) {
@@ -72,81 +100,76 @@ function EditDialogContent<E extends object>({
         <Loader className="w-8 h-8" />
       </div>
     );
-  } else if (error) {
-    // throw error;
-    return null;
   }
 
   return (
     <DialogSheet>
       <DialogLayout>
         <DialogHeader title={title} subtitle={subtitle} />
-        <form onSubmit={doOnSubmit}>
+        <form onSubmit={doOnSubmit} className="overflow-y-auto">
           <DialogBody className="">
             <table className="hq-form-table">
               {editHead.map(({ key, label, editType }) => {
-                if (editType === "inherit") {
-                  if (!values[key] && values[key] !== initialValues[key]) {
-                    setValues((o) => ({ ...o, [key]: initialValues[key] }));
-                  }
-                  return null;
-                }
-
+                const defaultVal = defaultVals[key] as any;
                 return (
                   <tr key={key.toString()}>
                     <th>
                       <label htmlFor={key.toString()}>{label}</label>
                     </th>
                     <td>
-                      {
-                        // editType === 'inherit' ? (
+                      {editType === "inherit" ? (
                         // <input onChange={handleChangeValue} name={key.toString()} value={initialValues[key]} type="hidden" />
-                        // ) :
-                        editType === "number" ? (
-                          <input
-                            type="number"
-                            onChange={handleChangeValue}
-                            name={key.toString()}
-                            defaultValue={initialValues[key]}
-                          />
-                        ) : editType === "image_url" ? (
-                          <input
-                            type="text"
-                            onChange={handleChangeValue}
-                            name={key.toString()}
-                            defaultValue={initialValues[key]}
-                          />
-                        ) : editType === "date" ? (
-                          <input
-                            type="date"
-                            onChange={handleChangeValue}
-                            name={key.toString()}
-                            defaultValue={initialValues[key] && date(initialValues[key])?.toISOString()}
-                          />
-                        ) : editType === "datetime" ? (
-                          <input
-                            type="datetime-local"
-                            onChange={handleChangeValue}
-                            name={key.toString()}
-                            defaultValue={initialValues[key] && date(initialValues[key])?.toISOString()}
-                          />
-                        ) : Array.isArray(editType) ? (
-                          <select onChange={handleChangeValue} name={key.toString()}>
-                            {editType.map(({ value, display }) => (
-                              <option key={value} value={value}>
-                                {display}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            onChange={handleChangeValue}
-                            name={key.toString()}
-                            defaultValue={initialValues[key]}
-                          />
-                        )
-                      }
+                        <input name={key.toString()} value={defaultVal} disabled />
+                      ) : editType === "number" ? (
+                        <input
+                          type="number"
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal}
+                        />
+                      ) : editType === "image_url" ? (
+                        <input
+                          type="text"
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal}
+                        />
+                      ) : editType === "date" ? (
+                        <input
+                          type="date"
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal && date(defaultVal)?.toISOString()}
+                        />
+                      ) : editType === "datetime" ? (
+                        <input
+                          type="datetime-local"
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal && date(defaultVal)?.toISOString()}
+                        />
+                      ) : Array.isArray(editType) ? (
+                        <select
+                          key={key.toString()}
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal}
+                        >
+                          {!defaultVal && <option disabled>선택해주세요</option>}
+                          {editType.map(({ value, display }) => (
+                            <option key={value} value={value}>
+                              {display}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          onChange={handleChangeValue}
+                          name={key.toString()}
+                          defaultValue={defaultVal}
+                        />
+                      )}
                     </td>
                   </tr>
                 );
@@ -167,12 +190,12 @@ function EditDialogContent<E extends object>({
   );
 }
 
-export function useEditDialog<E extends object>() {
+export function useEditDialog<E extends object, D extends object = object>() {
   const { showDialog, closeDialog } = useDialog();
 
   const showEdit = useCallback(
     (
-      editHead: EditHeadEntry<E>[],
+      editHead: EditHeadEntry<E, D>[],
       onSetEdited: OnSetEdited<E>,
       initialValues: { [key in keyof E]: string | string[] | number | undefined }
     ) => {

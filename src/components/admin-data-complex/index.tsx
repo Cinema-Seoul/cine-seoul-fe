@@ -1,7 +1,7 @@
 import { useGetApiWithPagination } from "@/services/api";
 import { ListResponse } from "@/types";
 import clsx from "clsx";
-import { DependencyList, ReactNode, useCallback } from "react";
+import { DependencyList, ReactElement, ReactNode, useCallback } from "react";
 import { IoAdd, IoRefresh } from "react-icons/io5";
 import PaginationBar from "../pagination/pagination-bar";
 import { Button, Loader } from "../ui";
@@ -27,8 +27,11 @@ type DetailHeadEntryBase<D extends object> = {
 };
 export type DetailHeadEntry<D extends object> = DetailHeadEntryBase<D> | ((item: D) => ReactNode);
 
-export type EditHeadEntry<E extends object> = DetailHeadEntryBase<E> & {
-  setValue?: (value: any) => string | number | Array<string | number>;
+export type EditHeadEntry<E extends object, D extends object = object> = {
+  label?: string;
+  key: keyof E;
+  initialValue?: (initialValues?: D) => any;
+  setValue?: (value: any) => string | number | Array<string | number> | undefined;
   editType: "text" | "number" | "image_url" | "date" | "datetime" | "inherit" | { value: string; display: string }[];
 };
 
@@ -49,9 +52,10 @@ export type AdminDataComplexProps<
   //DetailDialog
   detailHead?: DetailHeadEntry<D>[];
   onGetDetail?: OnGetDetailFunc<L, D>;
+  renderDetailActions?: (item: D) => ReactElement;
 
   //Edit
-  editHead?: EditHeadEntry<E>[];
+  editHead?: EditHeadEntry<E, D>[];
   onSubmitEdit?: OnSetEdited<E>;
 
   //Create
@@ -69,6 +73,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
   //D
   detailHead,
   onGetDetail,
+  renderDetailActions,
   //E
   editHead,
   onSubmitEdit,
@@ -88,7 +93,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   /* ---------------------------------- Edit ---------------------------------- */
 
-  const showEditRaw = useEditDialog<E>();
+  const showEditRaw = useEditDialog<E, D>();
 
   const showEdit = useCallback(
     (item: D) => {
@@ -106,7 +111,7 @@ export default function AdminDataComplex<L extends object, D extends object, E e
   const showDetail = useCallback(
     (item: L) => {
       if (detailHead && onGetDetail) {
-        showDetailRaw(item, detailHead, onGetDetail, "상세 정보");
+        showDetailRaw(item, detailHead, onGetDetail, renderDetailActions, "상세 정보");
       }
     },
     [detailHead, onGetDetail, showDetailRaw]

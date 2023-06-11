@@ -50,13 +50,22 @@ export interface ScreenSeatsProps extends BaseProps {
 export default function ScreenSeats({ className, seats = [], selectedSeats = [], onClickSeat }: ScreenSeatsProps) {
   const items = useMemo(() => {
     const ret = [];
+
+    const tempSeats = [...seats];
     for (let r = 65; r <= 90; r++) {
       const row = String.fromCharCode(r);
+
       const cols = seats.filter(({ seat }) => seat.row === row);
-      if (cols.length) {
+
+      const cs = cols.reduce<(ScheduleSeat | undefined)[]>((acc, cur) => {
+        acc[parseInt(cur.seat.col)] = cur;
+        return acc;
+      }, []);
+
+      if (cs.length) {
         ret.push({
           row,
-          cols,
+          cols: cs,
         });
       }
     }
@@ -66,21 +75,33 @@ export default function ScreenSeats({ className, seats = [], selectedSeats = [],
   return (
     <div className={className}>
       <div className="bg-neutral-3 leading-6 rounded text-center">화면</div>
-      <table className="mx-a mt-4 border-separate border-spacing-2">
+      <table className="mx-a mt-4 border-separate border-spacing-2 table-fixed">
         {items.map(({ row, cols }) => (
           <tr key={row}>
             <th className="text-sm font-normal">{row}</th>
-            {cols.map(({ isOccupied, seat }, i) => (
-              <td key={seat.seatNum}>
-                <SeatBox
-                  className=""
-                  disabled={isOccupied === Is.True}
-                  selected={selectedSeats.some((o) => o.seatNum === seat.seatNum)}
-                  onClick={onClickSeat && ((e) => onClickSeat(seat))}
-                  data={seat}
-                />
-              </td>
-            ))}
+            {Array.from({ length: cols.length }).map((_, i) => {
+              if (i === 0) {
+                return null;
+              }
+
+              const s = cols[i];
+
+              if (s) {
+                return (
+                  <td key={s.seat.seatNum} className="p-0">
+                    <SeatBox
+                      className=""
+                      disabled={s.isOccupied === Is.True}
+                      selected={selectedSeats.some((o) => o.seatNum === s.seat.seatNum)}
+                      onClick={onClickSeat && (() => onClickSeat(s.seat))}
+                      data={s.seat}
+                    />
+                  </td>
+                );
+              } else {
+                return <td key={0x99 + i}></td>;
+              }
+            })}
           </tr>
         ))}
       </table>

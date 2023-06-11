@@ -5,6 +5,12 @@ export enum UserRole {
   admin = "A",
 }
 
+export const nameUserRole: Record<UserRole, string> = {
+  [UserRole.member]: "회원",
+  [UserRole.nonmember]: "비회원",
+  [UserRole.admin]: "관리자",
+};
+
 export type User = {
   userNum: UserNum;
   createdAt: Date;
@@ -18,6 +24,8 @@ export type User = {
 
 export type UserListEntry = User;
 
+export type UserDetail = User;
+
 export type UserCreation = {
   name: string;
   phoneNum: string;
@@ -25,7 +33,7 @@ export type UserCreation = {
   pw: string;
   residentNum: string;
   role: UserRole;
-}
+};
 
 export type UserEditing = {
   name?: string;

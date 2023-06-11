@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from "react";
+import { ReactElement, ReactNode, useCallback } from "react";
 import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
 import { DetailHeadEntry, ListHeadEntry, OnGetDetailFunc } from ".";
 import { useGetApi } from "@/services/api";
@@ -16,6 +16,7 @@ type DetailDialogContentProps<L extends object, D extends object> = {
 
   detailHead: DetailHeadEntry<D>[];
   onGetDetail: OnGetDetailFunc<L, D>;
+  renderActions?: (item: D) => ReactElement;
 };
 
 function DetailDialogContent<L extends object, D extends object>({
@@ -26,6 +27,7 @@ function DetailDialogContent<L extends object, D extends object>({
   subtitle,
   detailHead,
   onGetDetail,
+  renderActions,
 }: DetailDialogContentProps<L, D>) {
   const { data, error, loading } = useGetApi(() => onGetDetail(item));
 
@@ -55,7 +57,7 @@ function DetailDialogContent<L extends object, D extends object>({
       <DialogLayout>
         <DialogHeader title={title} subtitle={subtitle} />
         <DialogBody className="flex">
-          <table className="hq-form-table">
+          <table className="hq-form-table w-full">
             {data &&
               detailHead.map((entry) =>
                 typeof entry === "function" ? (
@@ -72,6 +74,7 @@ function DetailDialogContent<L extends object, D extends object>({
           </table>
         </DialogBody>
         <DialogFooter className="flex flex-row justify-end space-x-2">
+          {renderActions && data && renderActions(data)}
           {onClickEditRaw && (
             <Button onClick={onClickEdit} variant="contained" tint="primary" iconStart={<IoPencil />}>
               편집
@@ -94,6 +97,7 @@ export function useDetailDialog<L extends object, D extends object>(onClickEdit?
       item: L,
       detailHead: DetailHeadEntry<D>[],
       onGetDetail: OnGetDetailFunc<L, D>,
+      renderActions?: (item: D) => ReactElement,
       title?: string,
       subtitle?: string
     ) => {
@@ -106,6 +110,7 @@ export function useDetailDialog<L extends object, D extends object>(onClickEdit?
           subtitle={subtitle}
           detailHead={detailHead}
           onGetDetail={onGetDetail}
+          renderActions={renderActions}
         />
       );
     },
