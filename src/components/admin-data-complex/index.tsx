@@ -2,7 +2,7 @@ import { useGetApiWithPagination } from "@/services/api";
 import { ListResponse } from "@/types";
 import clsx from "clsx";
 import { DependencyList, ReactNode, useCallback } from "react";
-import { IoAdd } from "react-icons/io5";
+import { IoAdd, IoRefresh } from "react-icons/io5";
 import PaginationBar from "../pagination/pagination-bar";
 import { Button, Loader } from "../ui";
 import { useDetailDialog } from "./detail";
@@ -28,8 +28,8 @@ type DetailHeadEntryBase<D extends object> = {
 export type DetailHeadEntry<D extends object> = DetailHeadEntryBase<D> | ((item: D) => ReactNode);
 
 export type EditHeadEntry<E extends object> = DetailHeadEntryBase<E> & {
-  setValue?: (value: any) => string | number | Array<string|number>;
-  editType?: "text" | "number" | "image_url" | "date" | "datetime" | { value: string; display: string }[];
+  setValue?: (value: any) => string | number | Array<string | number>;
+  editType: "text" | "number" | "image_url" | "date" | "datetime" | "inherit" | { value: string; display: string }[];
 };
 
 export type CreationHeadEntry<C extends object> = EditHeadEntry<C>;
@@ -141,13 +141,14 @@ export default function AdminDataComplex<L extends object, D extends object, E e
 
   return (
     <div className={className}>
-      {creationHead && onSubmitCreate && (
-        <div className="p-2">
+      <div className="p-2 flex flex-row space-x-2">
+        <Button onClick={List.invalidate} className="ml-a" variant="tonal" tint="primary" iconStart={<IoRefresh />} />
+        {creationHead && onSubmitCreate && (
           <Button onClick={showCreate} className="ml-a" variant="contained" tint="primary" iconStart={<IoAdd />}>
             추가
           </Button>
-        </div>
-      )}
+        )}
+      </div>
       <table className="hq-data-table flex-1 w-full h-full">
         <thead>
           {listHead.map(({ key, label }) => (

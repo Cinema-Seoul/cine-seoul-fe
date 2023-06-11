@@ -13,6 +13,7 @@ import AdminScreenListPage from "./admin/screen/list";
 import AdminSignInPage from "./admin/sign-in";
 import AdminTicketListPage from "./admin/ticket/list";
 import AdminUserListPage from "./admin/user/list";
+import AdminEventListPage from "./admin/event";
 
 const AdminRoutes = () => (
   <Routes>
@@ -24,6 +25,7 @@ const AdminRoutes = () => (
       <Route path="movie/actor" element={<AdminActorListPage />} />
       <Route path="movie/director" element={<AdminDirectorListPage />} />
       <Route path="movie/distributor" element={<AdminDistributorListPage />} />
+      <Route path="event" element={<AdminEventListPage />} />
       <Route path="screen" element={<AdminScreenListPage />} />
       <Route path="schedule" element={<AdminSchedulePage />} />
       <Route path="ticket" element={<AdminTicketListPage />} />

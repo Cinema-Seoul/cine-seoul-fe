@@ -1,10 +1,11 @@
-import { FormEventHandler, useCallback } from "react";
+import { ChangeEventHandler, FormEventHandler, MouseEventHandler, useCallback, useState } from "react";
 import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
 import { DetailHeadEntry, EditHeadEntry, ListHeadEntry, OnGetDetailFunc, OnSetEdited } from ".";
 import { useGetApi, useSetApi } from "@/services/api";
 import { Button, Loader } from "../ui";
 import { IoClose, IoPencil } from "react-icons/io5";
 import { useAlertDialog } from "../ui/modal/dialog-alert";
+import { date } from "@/utils/date";
 
 type EditDialogContentProps<E extends object> = {
   initialValues: { [key in keyof E]: string | string[] | number | undefined };
@@ -29,11 +30,22 @@ function EditDialogContent<E extends object>({
 
   const { apiAction, data, error, loading } = useSetApi(onSetEdited);
 
+  console.log(initialValues);
+
+  const [values, setValues] = useState<E>({} as any);
+
+  const handleChangeValue: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback((e) => {
+    const name = e.currentTarget.name;
+    const v = e.currentTarget.value;
+    console.log(name, v);
+    setValues((o) => ({ ...o, [name]: v }));
+    console.log(values);
+  }, [values]);
+
   const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      apiAction(Object.fromEntries(formData.entries()) as any)
+      apiAction(values)
         ?.then(() => {
           alertDialog("성공적으로 작업을 마무리했어요");
           onClose();
@@ -43,12 +55,12 @@ function EditDialogContent<E extends object>({
             <>
               오류가 발생했습니다.
               <br />
-              {e.response?.data?.message}
+              {e.response?.data?.message ?? e.toString()}
             </>
           );
         });
     },
-    [alertDialog, apiAction, onClose]
+    [alertDialog, apiAction, onClose, values]
   );
 
   if (loading) {
@@ -69,44 +81,73 @@ function EditDialogContent<E extends object>({
         <form onSubmit={doOnSubmit}>
           <DialogBody className="">
             <table className="hq-form-table">
-              {editHead.map(({ key, label, editType }) => (
-                <tr key={key.toString()}>
-                  <th>
-                    <label htmlFor={key.toString()}>{label}</label>
-                  </th>
-                  <td>
-                    {!editType ? (
-                      <input name={key.toString()} value={initialValues[key]} type="hidden" />
-                    ) : editType === "number" ? (
-                      <input type="number" name={key.toString()} defaultValue={initialValues[key]} />
-                    ) : editType === "image_url" ? (
-                      <input type="text" name={key.toString()} defaultValue={initialValues[key]} />
-                    ) : editType === "date" ? (
-                      <input
-                        type="date"
-                        name={key.toString()}
-                        defaultValue={initialValues[key]}
-                      />
-                    ) : editType === "datetime" ? (
-                      <input
-                        type="datetime-local"
-                        name={key.toString()}
-                        defaultValue={initialValues[key]}
-                      />
-                    ) : Array.isArray(editType) ? (
-                      <select name={key.toString()}>
-                        {editType.map(({ value, display }) => (
-                          <option key={value} value={value}>
-                            {display}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <input type="text" name={key.toString()} defaultValue={initialValues[key]} />
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {editHead.map(({ key, label, editType }) => {
+                if (editType === "inherit") {
+                  if (!values[key] && values[key] !== initialValues[key]) {
+                    setValues((o) => ({ ...o, [key]: initialValues[key] }));
+                  }
+                  return null;
+                }
+
+                return (
+                  <tr key={key.toString()}>
+                    <th>
+                      <label htmlFor={key.toString()}>{label}</label>
+                    </th>
+                    <td>
+                      {
+                        // editType === 'inherit' ? (
+                        // <input onChange={handleChangeValue} name={key.toString()} value={initialValues[key]} type="hidden" />
+                        // ) :
+                        editType === "number" ? (
+                          <input
+                            type="number"
+                            onChange={handleChangeValue}
+                            name={key.toString()}
+                            defaultValue={initialValues[key]}
+                          />
+                        ) : editType === "image_url" ? (
+                          <input
+                            type="text"
+                            onChange={handleChangeValue}
+                            name={key.toString()}
+                            defaultValue={initialValues[key]}
+                          />
+                        ) : editType === "date" ? (
+                          <input
+                            type="date"
+                            onChange={handleChangeValue}
+                            name={key.toString()}
+                            defaultValue={date(initialValues[key]).toISOString()}
+                          />
+                        ) : editType === "datetime" ? (
+                          <input
+                            type="datetime-local"
+                            onChange={handleChangeValue}
+                            name={key.toString()}
+                            defaultValue={date(initialValues[key]).toISOString()}
+                          />
+                        ) : Array.isArray(editType) ? (
+                          <select onChange={handleChangeValue} name={key.toString()}>
+                            {editType.map(({ value, display }) => (
+                              <option key={value} value={value}>
+                                {display}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            onChange={handleChangeValue}
+                            name={key.toString()}
+                            defaultValue={initialValues[key]}
+                          />
+                        )
+                      }
+                    </td>
+                  </tr>
+                );
+              })}
             </table>
           </DialogBody>
           <DialogFooter className="flex flex-row justify-end space-x-2">
