@@ -13,7 +13,11 @@ export async function getCurrentEvents(): Promise<EventCurrentListEntry[]> {
 
 export async function createEvent(body: EventCreation): Promise<number> {
   return axios
-    .post("/event", { ...body, startAt: body.startAt.toISOString(), endAt: body.endAt.toISOString() })
+    .post("/event", {
+      ...body,
+      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : undefined,
+      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : undefined,
+    })
     .then((res) => res.data);
 }
 
@@ -23,9 +27,9 @@ export async function editEvent(body: EventUpdating): Promise<number> {
   return axios
     .put("/event", {
       ...body,
-      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : undefined,
-      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : undefined,
-      })
+      startAt: body.startAt ? new Date(body.startAt)?.toISOString() : undefined,
+      endAt: body.endAt ? new Date(body.endAt)?.toISOString() : undefined,
+    })
     .then((res) => res.data);
 }
 

@@ -34,13 +34,16 @@ function EditDialogContent<E extends object>({
 
   const [values, setValues] = useState<E>({} as any);
 
-  const handleChangeValue: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback((e) => {
-    const name = e.currentTarget.name;
-    const v = e.currentTarget.value;
-    console.log(name, v);
-    setValues((o) => ({ ...o, [name]: v }));
-    console.log(values);
-  }, [values]);
+  const handleChangeValue: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback(
+    (e) => {
+      const name = e.currentTarget.name;
+      const v = e.currentTarget.value;
+      console.log(name, v);
+      setValues((o) => ({ ...o, [name]: v }));
+      console.log(values);
+    },
+    [values]
+  );
 
   const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
@@ -118,14 +121,14 @@ function EditDialogContent<E extends object>({
                             type="date"
                             onChange={handleChangeValue}
                             name={key.toString()}
-                            defaultValue={date(initialValues[key]).toISOString()}
+                            defaultValue={initialValues[key] && date(initialValues[key])?.toISOString()}
                           />
                         ) : editType === "datetime" ? (
                           <input
                             type="datetime-local"
                             onChange={handleChangeValue}
                             name={key.toString()}
-                            defaultValue={date(initialValues[key]).toISOString()}
+                            defaultValue={initialValues[key] && date(initialValues[key])?.toISOString()}
                           />
                         ) : Array.isArray(editType) ? (
                           <select onChange={handleChangeValue} name={key.toString()}>

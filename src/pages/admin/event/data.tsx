@@ -1,5 +1,5 @@
-import { DetailHeadEntry, EditHeadEntry, ListHeadEntry } from "@/components/admin-data-complex";
-import { EventDetail, EventListEntry, EventUpdating } from "@/types/event";
+import { CreationHeadEntry, DetailHeadEntry, EditHeadEntry, ListHeadEntry } from "@/components/admin-data-complex";
+import { EventCreation, EventDetail, EventListEntry, EventUpdating } from "@/types/event";
 import { date, fmt } from "@/utils/date";
 
 /* -------------------------------------------------------------------------- */
@@ -99,6 +99,43 @@ export const editHead: EditHeadEntry<EventUpdating>[] = [
     label: '',
     editType: 'inherit',
   },
+  {
+    key: 'title',
+    label: '제목',
+    editType: 'text',
+  },
+  {
+    key: 'startAt',
+    label: '시작일',
+    editType: 'datetime',
+  },
+  {
+    key: 'endAt',
+    label: '종료일',
+    editType: 'datetime',
+  },
+  {
+    key: 'banner',
+    label: '배너이미지',
+    editType: 'text',
+  },
+  {
+    key: 'contents',
+    label: '본문',
+    editType: 'text',
+  },
+  {
+    key: 'image',
+    label: '본문이미지',
+    editType: 'text',
+  },
+];
+
+/* -------------------------------------------------------------------------- */
+/*                                   CREATE                                   */
+/* -------------------------------------------------------------------------- */
+
+export const createHead: CreationHeadEntry<EventCreation>[] = [
   {
     key: 'title',
     label: '제목',

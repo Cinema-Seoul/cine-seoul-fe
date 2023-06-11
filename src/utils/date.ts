@@ -33,6 +33,7 @@ export function fmt(date: Date, form: string) {
 /** Date 타입으로 확실히 만들기 위해 / API 응답에서 Date가 number[7]으로 오는데, 그걸 처리 */
 // T+9로 들어온다고 가정
 export function date(src: any): Date {
+  console.log(src);
   if (src === null || src === undefined) {
     // return null;
   } else if (src instanceof Date) {
@@ -42,7 +43,7 @@ export function date(src: any): Date {
   if (typeof src === "number" || typeof src === "string") {
     return new Date(src);
   } else if (Array.isArray(src)) {
-    return new Date(src[0], src[1], src[2], src[3], src[4]); //마지막은 버림
+    return new Date(src[0], src[1] - 1, src[2], src[3], src[4]); //마지막은 버림
   }
 
   // return null;

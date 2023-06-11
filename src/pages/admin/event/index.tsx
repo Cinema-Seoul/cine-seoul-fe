@@ -1,6 +1,6 @@
 import AdminDataComplex from "@/components/admin-data-complex";
-import { detailHead, editHead, listHead } from "./data";
-import { editEvent, getEventDetail, getEvents } from "@/services/event.service";
+import { createHead, detailHead, editHead, listHead } from "./data";
+import { createEvent, editEvent, getEventDetail, getEvents } from "@/services/event.service";
 
 export default function AdminEventListPage() {
   return (
@@ -15,8 +15,8 @@ export default function AdminEventListPage() {
       editHead={editHead}
       onSubmitEdit={(result) => editEvent(result)}
       //C
-      // creationHead={}
-      // onSubmitCreate={}
+      creationHead={createHead}
+      onSubmitCreate={(result) => createEvent(result)}
     />
   );
 }
