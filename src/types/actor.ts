@@ -10,6 +10,11 @@ export type ActorListEntry = {
   name: string;
 }
 
+export type ActorUpdating = {
+  actNum: number;
+  imgUrl?: string;
+  name?: string;
+}
 export type ActorCreation = {
   imgUrl?: string;
   name: string;

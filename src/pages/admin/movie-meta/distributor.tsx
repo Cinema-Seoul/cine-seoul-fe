@@ -1,20 +1,19 @@
 import AdminDataComplex, { ListHeadEntry } from "@/components/admin-data-complex";
-import { getDistributors } from "@/services/movie-meta/distributor.service";
+import { createDistributor, getDistributorDetail, getDistributors } from "@/services/movie-meta/distributor.service";
 import { DistributorListEntry } from "@/types";
-
-const LIST_HEADS: ListHeadEntry<DistributorListEntry>[] = [
-  {
-    key: "distNum",
-    label: "배급사 번호",
-  },
-  {
-    key: "name",
-    label: "이름",
-  },
-];
+import { createHead, detailHead, listHead } from "./distributor-data";
 
 function DataBody() {
-  return <AdminDataComplex listHead={LIST_HEADS} onGetList={(page, size) => getDistributors({ page, size })} />;
+  return (
+    <AdminDataComplex
+      listHead={listHead}
+      onGetList={(page, size) => getDistributors({ page, size })}
+      detailHead={detailHead}
+      onGetDetail={({ distNum }) => getDistributorDetail(distNum)}
+      creationHead={createHead}
+      onSubmitCreate={(result) => createDistributor(result)}
+    />
+  );
 }
 
 export default function AdminDistributorListPage() {
