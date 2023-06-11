@@ -129,7 +129,7 @@ export default function MyPage() {
     <MainLayout>
       <MyPageContext.Provider value={{ UserDetail }}>
         <PageHeader title="내 정보" />
-        <main className="bg-neutral-1 py-6 border-t border-solid border-neutral-6">
+        <main className="bg-neutral-1 py-6">
           <div className="container">
             <div className="row">
               <div className="col">
