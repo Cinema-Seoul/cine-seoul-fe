@@ -18,6 +18,8 @@ import TicketingPage from "./client/ticketing";
 import MyProfileEditPage from "./client/mypage/edit-profile";
 import SearchMovieListPage from "./client/movie-list/search";
 import SignInNonmemberPage from "./client/sign-in-nonmember";
+import EventListPage from "./client/event/list";
+import EventDetailpage from "./client/event/detail";
 
 const ClientRoutes = () => (
   <Suspense>
@@ -25,6 +27,10 @@ const ClientRoutes = () => (
       <Route path="/" element={<Root />} errorElement={<ClientErrorPage />}>
         <Route index element={<IndexPage />} />
         <Route path="theatre" element={<TheatreInfoPage />} />
+        <Route path="b/event">
+          <Route index element={<EventListPage />} />
+          <Route path=":eventNum" element={<EventDetailpage />} />
+        </Route>
         <Route path="movie">
           <Route index element={<MovieListPage />} />
           <Route path="s" element={<SearchMovieListPage />} />

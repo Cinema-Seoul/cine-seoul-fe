@@ -9,6 +9,7 @@ import { getCurrentEvents } from "@/services/event.service";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "@/pages/_layouts/main-layout";
+import EventBanner from "./event-banner";
 
 export default function IndexPage() {
   const topMovies = useGetApi(() =>
@@ -23,7 +24,7 @@ export default function IndexPage() {
 
   return (
     <MainLayout>
-      {/* <EventBanner /> */}
+      <EventBanner />
       <HomeSubbar />
       <section about="Box Office" className="">
         <h2 className="text-7 leading-8 font-bold text-center pt-18 pb-6">예매량 TOP</h2>

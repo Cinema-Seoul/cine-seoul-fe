@@ -20,7 +20,7 @@ const mainMenuItems: MainMenuItem[] = [
     label: "극장",
     href: "/theatre",
   },
-  // { label: "이벤트", href: "#" },
+  { label: "이벤트", href: "/b/event" },
   { label: "바로 예매", href: "/ticketing", accent: true },
   { label: "내 정보 · 티켓", href: "/my", accent: true },
 ];
