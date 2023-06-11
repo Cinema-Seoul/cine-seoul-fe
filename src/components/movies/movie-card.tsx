@@ -54,11 +54,10 @@ export default function MovieCard({ className, onClick, onClickTicketing, noInte
               )}
             >
               <div className="p-4 flex-1 overflow-y-hidden text-base text-neutral-12">{data.summary}</div>
-              <div className="p-4 flex-shrink-0 text-sm border-t border-solid border-neutral-11 border-opacity-20">
+              {/* <div className="p-4 flex-shrink-0 text-sm border-t border-solid border-neutral-11 border-opacity-20">
                 <span className="font-normal me-2">관람객 평점</span>
-                {/* <span className="font-bold">4.5</span> */}
                 <span className="font-bold">{null}NULL</span>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
