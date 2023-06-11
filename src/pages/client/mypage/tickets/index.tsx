@@ -5,7 +5,7 @@ import PaginationBar from "@/components/pagination/pagination-bar";
 import { DialogBody, DialogFooter, DialogLayout, DialogSheet, useDialog } from "@/components/ui/modal/dialog";
 import { useCallback } from "react";
 import { Button, Loader } from "@/components/ui";
-import { TicketListEntry } from "@/types";
+import { TicketListEntry, displayTicketState } from "@/types";
 import clsx from "clsx";
 import { getTicketDetail, getTickets } from "@/services/ticket/ticket.service";
 import { useAuthGuard } from "@/services/user/user.application";
@@ -32,7 +32,7 @@ function TicketDetailDialog({ ticketNum }: { ticketNum: number }) {
                 </tr>
                 <tr>
                   <th className="text-right pr-2">결제상태</th>
-                  <td>{TicketDetail.data.ticketState}</td>
+                  <td>{displayTicketState[TicketDetail.data.ticketState]}</td>
                 </tr>
                 <tr>
                   <th className="text-right pr-2">영화</th>

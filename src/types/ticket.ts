@@ -7,6 +7,13 @@ export enum TicketState {
   Canceled = "C",
 }
 
+export const displayTicketState: Record<TicketState, string> = {
+  [TicketState.Issued]: "발권 완료",
+  [TicketState.Payed]: "결제 완료",
+  [TicketState.Pending]: "결제 대기",
+  [TicketState.Canceled]: "취소"
+}
+
 export type TicketListEntry = {
   createdAt: Date;
   stdPrice: number;
