@@ -14,6 +14,7 @@ import AdminSignInPage from "./admin/sign-in";
 import AdminTicketListPage from "./admin/ticket/list";
 import AdminUserListPage from "./admin/user/list";
 import AdminEventListPage from "./admin/event";
+import AdminSignUpPage from "./admin/add-auth/sign-up-admin";
 
 const AdminRoutes = () => (
   <Routes>
@@ -21,6 +22,7 @@ const AdminRoutes = () => (
     <Route element={<AdminRoot />} ErrorBoundary={AdminErrorPage}>
       <Route index element={<AdminIndexPage />} />
       <Route path="user" element={<AdminUserListPage />} />
+      <Route path="signup" element={<AdminSignUpPage />} />
       <Route path="movie" element={<AdminMovieListPage />} />
       <Route path="movie/actor" element={<AdminActorListPage />} />
       <Route path="movie/director" element={<AdminDirectorListPage />} />
