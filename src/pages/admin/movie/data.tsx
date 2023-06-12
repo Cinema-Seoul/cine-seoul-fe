@@ -1,6 +1,6 @@
 import { CreationHeadEntry, DetailHeadEntry, EditHeadEntry, ListHeadEntry } from "@/components/admin-data-complex";
 import { Is, MovieCreation, MovieDetail, MovieListEntry, MovieUpdating } from "@/types";
-import { date, fmt, parse8DigitDateString } from "@/utils/date";
+import { date, fmt, parse8DigitDateString, toLocalISOString } from "@/utils/date";
 
 /* -------------------------------------------------------------------------- */
 /*                                    LIST                                    */
@@ -194,7 +194,7 @@ export const createHead: CreationHeadEntry<MovieCreation>[] = [
     key: "releaseDate",
     label: "개봉일",
     editType: "date",
-    setValue: (value: Date) => value?.toISOString().slice(0, 10).replaceAll("-", ""),
+    setValue: (value: Date) => toLocalISOString(value).slice(0, 10).replaceAll("-", ""),
   },
   {
     key: "isShowing",

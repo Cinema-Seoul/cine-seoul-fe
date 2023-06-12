@@ -37,7 +37,7 @@ interface UnoFileContentCompiled extends UnoFileContent {
 }
 
 (async function () {
-  if (process.argv.length < 3) {
+  if (process.argv?.length < 3) {
     console.error("사용: node compile-uno-files.js <outDir>");
     return;
   }
@@ -50,7 +50,7 @@ interface UnoFileContentCompiled extends UnoFileContent {
     cwd: process.cwd(),
   })) as Partial<UnoFileContent>[];
 
-  console.log("총 ", sources.length, "개의 *.uno.js를 찾았습니다.");
+  console.log("총 ", sources?.length, "개의 *.uno.js를 찾았습니다.");
 
   const compiled: UnoFileContentCompiled = {
     safelist: [],

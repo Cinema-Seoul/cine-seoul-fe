@@ -108,13 +108,13 @@ export const editHead: EditHeadEntry<EventUpdating, EventDetail>[] = [
     key: 'startAt',
     label: '시작일',
     editType: 'datetime',
-    // initialValue: (detail) => date(detail?.startAt)?.toISOString(), 
+    // initialValue: (detail) => date(detail?.startAt)?.toLocalISOString(), 
   },
   {
     key: 'endAt',
     label: '종료일',
     editType: 'datetime',
-    // initialValue: (detail) => date(detail?.endAt)?.toISOString(), 
+    // initialValue: (detail) => date(detail?.endAt)?.toLocalISOString(), 
   },
   {
     key: 'banner',

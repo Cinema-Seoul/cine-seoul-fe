@@ -30,7 +30,7 @@ export function useForm<V extends object>(
     (e) => {
       e.preventDefault();
 
-      if (Object.values(inputErrors).filter(o => o).length) {
+      if (Object.values(inputErrors).filter(o => o)?.length) {
         return;
       }
 

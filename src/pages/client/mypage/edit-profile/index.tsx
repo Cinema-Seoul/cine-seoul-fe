@@ -32,7 +32,7 @@ function EditForm({ className }: BaseProps) {
   const doOnSubmit: FormSubmitFunc<EditProfileFormValues> = useCallback(
     (e, values) => {
       e.preventDefault();
-      const hasPw = values.pw ? values.pw.length > 0 : false;
+      const hasPw = values.pw ? values.pw?.length > 0 : false;
       Edit.apiAction({
         name: values.name,
         phoneNum: values.phoneNum,

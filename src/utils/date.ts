@@ -51,3 +51,10 @@ export function date(src: any): Date {
 
   return src;
 }
+
+export function toLocalISOString(date: Date): string {
+  const offset = date.getTimezoneOffset() * 60000;
+  const newDate = new Date(date.getTime() - offset);
+  // console.log(date, '->', newDate.toISOString());
+  return newDate.toISOString();
+}

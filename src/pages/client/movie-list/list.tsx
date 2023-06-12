@@ -15,7 +15,7 @@ export default function MovieList({ items, itemHeadContent }: MovieListProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.ul className="row gy-6" initial={{ opacity: 0.5 }} animate={{ opacity: 1 }}>
-        {items.length > 0 ? (
+        {items?.length > 0 ? (
           items.map((item) => (
             <li key={item.movieNum} className="col-3">
               <MovieCardWrap

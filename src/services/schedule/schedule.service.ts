@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PagableRequest, SortableRequest } from "../api";
-import { fmt } from "@/utils/date";
+import { fmt, toLocalISOString } from "@/utils/date";
 import {
   EntResponse,
   ListResponse,
@@ -68,11 +68,15 @@ export async function deleteSchedule(scheduleNum: number): Promise<EntResponse> 
 /** POST /schedule/admin */
 
 export async function createSchedule(sched: ScheduleCreation): Promise<unknown> {
-  return axios.post<unknown>("/schedule/admin", { ...sched }).then((res) => res.data);
+  return axios
+    .post<unknown>("/schedule/admin", { ...sched, schedTime: sched.schedTime && toLocalISOString(sched.schedTime) })
+    .then((res) => res.data);
 }
 
 /** PUT /schedule/admin */
 
 export async function updateSchedule(sched: Partial<ScheduleUpdating>): Promise<unknown> {
-  return axios.put<unknown>("/schedule/admin", { ...sched }).then((res) => res.data);
+  return axios
+    .put<unknown>("/schedule/admin", { ...sched, schedTime: sched.schedTime && toLocalISOString(sched.schedTime) })
+    .then((res) => res.data);
 }

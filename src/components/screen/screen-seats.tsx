@@ -62,7 +62,7 @@ export default function ScreenSeats({ className, seats = [], selectedSeats = [],
         return acc;
       }, []);
 
-      if (cs.length) {
+      if (cs?.length) {
         ret.push({
           row,
           cols: cs,
@@ -79,7 +79,7 @@ export default function ScreenSeats({ className, seats = [], selectedSeats = [],
         {items.map(({ row, cols }) => (
           <tr key={row}>
             <th className="text-sm font-normal">{row}</th>
-            {Array.from({ length: cols.length }).map((_, i) => {
+            {Array.from({ length: cols?.length }).map((_, i) => {
               if (i === 0) {
                 return null;
               }

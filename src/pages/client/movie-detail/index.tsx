@@ -64,7 +64,7 @@ export default function MovieDetailPage() {
 
     const ret = {} as Record<string, ReactNode | ReactNode[]>;
 
-    if (movieDetail.genreList.length) {
+    if (movieDetail.genreList?.length) {
       ret["장르"] = movieDetail.genreList.map(({ name }) => (
         <a className="hover:underline" href="#">
           {name}
@@ -72,7 +72,7 @@ export default function MovieDetailPage() {
       ));
     }
 
-    if (movieDetail.directorList.length) {
+    if (movieDetail.directorList?.length) {
       ret["감독"] = movieDetail.directorList.map(({ dirNum, name }) => (
         <Link className="hover:underline" to={`/m/director/${dirNum}`}>
           {name}
@@ -80,7 +80,7 @@ export default function MovieDetailPage() {
       ));
     }
 
-    if (movieDetail.actorList.length) {
+    if (movieDetail.actorList?.length) {
       ret["출연"] = movieDetail.actorList.map(({ actNum, name }) => (
         <Link className="hover:underline" to={`/m/actor/${actNum}`}>
           {name}

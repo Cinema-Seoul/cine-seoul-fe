@@ -73,7 +73,7 @@ export default function ScheduleSelectSubpage({ className }: BaseProps) {
       const filtered = ret.filter(
         (e) => e.movie.movieNum === sched.movie.movieNum && e.screen.screenNum === sched.screen.screenNum
       );
-      if (filtered.length > 0) {
+      if (filtered?.length > 0) {
         filtered[0].schedules.push(sched);
       } else {
         ret.push({
@@ -98,7 +98,7 @@ export default function ScheduleSelectSubpage({ className }: BaseProps) {
           <div className="flex h-full justify-center items-center">
             <Loader className="w-16 h-16" />
           </div>
-        ) : schedulesByScreenAndMovie.length ? (
+        ) : schedulesByScreenAndMovie?.length ? (
           schedulesByScreenAndMovie.map(({ movie, screen, schedules }) => (
             <div className="">
               <div className="py-2 mt-4">

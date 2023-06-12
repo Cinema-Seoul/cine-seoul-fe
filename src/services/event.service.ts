@@ -2,6 +2,7 @@ import { EventCreation, EventCurrentListEntry, EventDetail, EventListEntry, Even
 import axios from "axios";
 import { PagableRequest } from "./api";
 import { ListResponse } from "@/types";
+import { toLocalISOString } from "@/utils/date";
 
 /** GET /event */
 
@@ -15,8 +16,8 @@ export async function createEvent(body: EventCreation): Promise<number> {
   return axios
     .post("/event", {
       ...body,
-      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : body.startAt,
-      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : body.endAt,
+      startAt: body.startAt instanceof Date ? toLocalISOString(body.startAt) : body.startAt,
+      endAt: body.endAt instanceof Date ? toLocalISOString(body.endAt) : body.endAt,
     })
     .then((res) => res.data);
 }
@@ -24,13 +25,13 @@ export async function createEvent(body: EventCreation): Promise<number> {
 /** PUT /event */
 
 export async function editEvent(body: EventUpdating): Promise<number> {
-  return axios
-  .put("/event", {
-      ...body,
-      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : body.startAt,
-      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : body.endAt,
-    })
-    .then((res) => res.data);
+  const data = {
+    ...body,
+    startAt: body.startAt instanceof Date ? toLocalISOString(body.startAt) : body.startAt,
+    endAt: body.endAt instanceof Date ? toLocalISOString(body.endAt) : body.endAt,
+  };
+  console.log(data);
+  return axios.put("/event", data).then((res) => res.data);
 }
 
 /** GET /event/{num} */

@@ -84,7 +84,7 @@ function TicketsList() {
         ))}
       </ul>
 
-      {tickets.data.list.length === 0 && <div className="m-8 text-center">티켓이 없습니다.</div>}
+      {tickets.data.list?.length === 0 && <div className="m-8 text-center">티켓이 없습니다.</div>}
 
       <PaginationBar className="my-4" pageCount={tickets.data?.totalPages} currentPageIndex={tickets.page} />
     </>

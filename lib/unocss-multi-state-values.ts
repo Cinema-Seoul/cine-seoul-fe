@@ -26,7 +26,7 @@ export default function transformerMultiStateValues({
 
       // console.log("matches", matches);
 
-      if (!matches.length) return;
+      if (!matches?.length) return;
 
       for (const match of matches) {
         if (!match.index) continue;
@@ -36,7 +36,7 @@ export default function transformerMultiStateValues({
         const replacement: string[] = [];
 
         rawValues.split(split).forEach((value, i) => {
-          if (!value.length) return;
+          if (!value?.length) return;
           const variant = variants[i];
           replacement.push(
             `${variant ? `${variant}:` : ""}${prefix}${value}${suffix}`
@@ -45,11 +45,11 @@ export default function transformerMultiStateValues({
 
         console.log(
           "overwrited: ",
-          code.toString().substring(start, start + match[0].length),
+          code.toString().substring(start, start + match[0]?.length),
           ": => :",
           replacement.join(" ")
         );
-        code.overwrite(start, start + match[0].length, replacement.join(" "));
+        code.overwrite(start, start + match[0]?.length, replacement.join(" "));
       }
     },
   };

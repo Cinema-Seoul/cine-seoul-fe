@@ -30,7 +30,7 @@ export default function EventDetailpage() {
         ) : (
           GetEvent.data && (
             <table className="w-full table-auto">
-              {GetEvent.data.contents.length && (
+              {GetEvent.data.contents?.length && (
                 <tr>
                   <td colSpan={4}>
                     <img className="w-full h-32 object-cover rounded-lg" src={GetEvent.data.banner} />
@@ -60,14 +60,14 @@ export default function EventDetailpage() {
                   <span>{GetEvent.data.views}</span>
                 </td>
               </tr>
-              {GetEvent.data.contents.length && (
+              {GetEvent.data.contents?.length && (
                 <tr>
                   <td colSpan={4} className="pt-8 pb-4">
                     <div>{GetEvent.data.contents}</div>
                   </td>
                 </tr>
               )}
-              {GetEvent.data.image.length && (
+              {GetEvent.data.image?.length && (
                 <tr>
                   <td colSpan={4}>
                     <img src={GetEvent.data.image} className="w-full" />

@@ -1,19 +1,11 @@
-import {
-  ChangeEventHandler,
-  FormEventHandler,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
-import { DetailHeadEntry, EditHeadEntry, ListHeadEntry, OnGetDetailFunc, OnSetEdited } from ".";
-import { useGetApi, useSetApi } from "@/services/api";
-import { Button, Loader } from "../ui";
+import { useSetApi } from "@/services/api";
+import { date, toLocalISOString } from "@/utils/date";
+import { ChangeEventHandler, FormEventHandler, useCallback, useMemo, useState } from "react";
 import { IoClose, IoPencil } from "react-icons/io5";
+import { EditHeadEntry, OnSetEdited } from ".";
+import { Button, Loader } from "../ui";
+import { DialogBody, DialogFooter, DialogHeader, DialogLayout, DialogSheet, useDialog } from "../ui/modal/dialog";
 import { useAlertDialog } from "../ui/modal/dialog-alert";
-import { date, fmt } from "@/utils/date";
 
 type EditDialogContentProps<E extends object, D extends object = object> = {
   initialValues: { [key in keyof E]: string | string[] | number | undefined };
@@ -40,32 +32,30 @@ function EditDialogContent<E extends object, D extends object = object>({
 
   const [values, setValues] = useState<E>({} as any);
 
-  const handleChangeValue: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback(
-    (e) => {
-      const name = e.currentTarget.name;
-      const v = e.currentTarget.value;
-      setValues((o) => ({ ...o, [name]: v }));
-    },
-    []
-  );
+  const handleChangeValue: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback((e) => {
+    const name = e.currentTarget.name;
+    const v = e.currentTarget.value;
+    setValues((o) => ({ ...o, [name]: v }));
+  }, []);
 
   const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
       const par = { ...values };
-      console.log("PAR", par);
-      
+      console.log("PAR1", par);
+
       editHead.forEach(({ setValue, key, editType }) => {
-        if (editType === 'date' || editType === 'datetime') {
+        if (!par[key]) return;
+
+        if (editType === "date" || editType === "datetime") {
           par[key] = new Date(par[key] as string) as any;
-          console.log("PAR", par);
         }
         if (setValue) {
           par[key] = setValue(par[key]) as any;
         }
       });
 
-      console.log("PAR", par);
+      console.log("PAR2", par);
 
       apiAction(par)
         ?.then(() => {
@@ -117,12 +107,12 @@ function EditDialogContent<E extends object, D extends object = object>({
               {editHead.map(({ key, label, editType }) => {
                 let defaultVal = defaultVals[key] as any;
 
-                if (editType === 'date' || editType === 'datetime') {
+                if (editType === "date" || editType === "datetime") {
                   defaultVal = date(defaultVal);
                 }
 
                 if (defaultVal instanceof Date) {
-                  defaultVal = defaultVal.toISOString().replace(/\..*[zZ]$/, "");
+                  defaultVal = toLocalISOString(defaultVal).replace(/\..*[zZ]$/, "");
                 }
 
                 return (

@@ -138,7 +138,7 @@ export default function ReviewListSection({ movieNum, className }: ReviewListSec
         )}
         <ul>
           {data &&
-            (data.list.length === 0 && Reviews.page === 0 ? (
+            (data.list?.length === 0 && Reviews.page === 0 ? (
               <li className="text-center p-8 mb-8">
                 <div>아직 아무도 평을 남기지 않았어요.</div>
               </li>

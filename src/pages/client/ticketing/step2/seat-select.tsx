@@ -68,7 +68,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
         audienceTypeDTOList: [
           {
             audienceType: TicketAudienceType.Disabled,
-            count: selectedSeats.length,
+            count: selectedSeats?.length,
           },
         ],
         schedNum: schedule.data.schedNum,
@@ -210,7 +210,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
                     variant="contained"
                     tint="primary"
                     iconEnd={<IoChevronForward />}
-                    disabled={selectedSeats.length <= 0}
+                    disabled={selectedSeats?.length <= 0}
                     onClick={doOnClickNext}
                   >
                     확인

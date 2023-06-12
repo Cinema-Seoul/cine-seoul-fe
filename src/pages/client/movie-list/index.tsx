@@ -74,7 +74,7 @@ const TYPE_ITEMS: {
   displayName: string;
 }[] = [
   { code: GetMoviesType.all, displayName: "모든 영화" },
-  { code: GetMoviesType.showing, displayName: "개봉작만" },
+  { code: GetMoviesType.showing, displayName: "상영 중" },
   { code: GetMoviesType.upcoming, displayName: "개봉 예정" },
 ];
 
