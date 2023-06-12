@@ -53,10 +53,12 @@ function EditDialogContent<E extends object, D extends object = object>({
     (e) => {
       e.preventDefault();
       const par = { ...values };
-
+      console.log("PAR", par);
+      
       editHead.forEach(({ setValue, key, editType }) => {
         if (editType === 'date' || editType === 'datetime') {
           par[key] = new Date(par[key] as string) as any;
+          console.log("PAR", par);
         }
         if (setValue) {
           par[key] = setValue(par[key]) as any;

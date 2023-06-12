@@ -194,7 +194,7 @@ export const createHead: CreationHeadEntry<MovieCreation>[] = [
     key: "releaseDate",
     label: "개봉일",
     editType: "date",
-    setValue: (value: string) => value.replaceAll("-", ""),
+    setValue: (value: Date) => value?.toISOString().slice(0, 10).replaceAll("-", ""),
   },
   {
     key: "isShowing",
