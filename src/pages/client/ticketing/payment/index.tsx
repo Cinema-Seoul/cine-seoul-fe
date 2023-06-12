@@ -1,27 +1,27 @@
 import Form, { FormConditional, FormRootProps, FormSubmitFunc } from "@/components/form/primitive";
 import { StepSection } from "@/components/ticketing";
-import { Button } from "@/components/ui";
+import { Button, Loader } from "@/components/ui";
 import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 import { useGetApi, useSetApi } from "@/services/api";
 import { createPayment } from "@/services/payment.service";
-import { deleteTicket } from "@/services/ticket/ticket.service";
+import { getTicketDetail } from "@/services/ticket/ticket.service";
 import { useUser } from "@/services/user/user.application";
 import { getMe } from "@/services/user/user.service";
 import { useTicketingStore } from "@/stores/client";
-import { PaymentCreation, PaymentMethod, UserRole } from "@/types";
+import { PaymentCreation, PaymentMethod, TicketDetail, UserRole } from "@/types";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { FormEventHandler, useCallback, useEffect, useMemo } from "react";
 import { IoChevronForward } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-function PaymentForm({ className }: BaseProps) {
+function PaymentForm({ className, ticket }: BaseProps & { ticket: TicketDetail }) {
   const alertDialog = useAlertDialog();
   const navigate = useNavigate();
 
-  const { setPayedPoint, ticket } = useTicketingStore();
+  const { setPayedPoint, ticketNum, resetAll } = useTicketingStore();
 
-  if (!ticket) {
+  if (!ticketNum) {
     throw Error("잘못된 접근입니다. 티켓 정보가 없습니다.");
   }
 
@@ -34,6 +34,7 @@ function PaymentForm({ className }: BaseProps) {
   const SubmitPayment = useSetApi(((...args) =>
     createPayment(...args)
       .then(() => {
+        resetAll();
         alertDialog("결제가 완료됐어요. 즐거운 영화관람 되세요!");
         navigate("/my/ticket");
       })
@@ -67,7 +68,7 @@ function PaymentForm({ className }: BaseProps) {
         cardNum: values.cardNum,
       });
     },
-    [SubmitPayment, alertDialog]
+    [SubmitPayment, ticket.stdPrice, ticket.ticketNum]
   );
 
   const doOnChangeForm: FormEventHandler<HTMLFormElement> = useCallback(
@@ -159,7 +160,7 @@ function PaymentForm({ className }: BaseProps) {
         />
       </table>
 
-      <PriceCard className="col-10 mx-a items-center mt-8" />
+      <PriceCard ticket={ticket} className="col-10 mx-a items-center mt-8" />
       <div className="col-10 mx-a mt-6">
         <Button
           type="submit"
@@ -176,16 +177,16 @@ function PaymentForm({ className }: BaseProps) {
   );
 }
 
-function PriceCard({ className }: BaseProps) {
-  const { ticket, payedPoint } = useTicketingStore();
+function PriceCard({ className, ticket }: BaseProps & { ticket: TicketDetail }) {
+  const { payedPoint } = useTicketingStore();
 
-  const totalPrice = useMemo(() => ticket && Number(ticket.stdPrice) - payedPoint, [payedPoint, ticket]);
+  const totalPrice = useMemo(() => Number(ticket.stdPrice) - payedPoint, [payedPoint, ticket.stdPrice]);
 
   return (
     <div className={clsx(className, "card flex flex-row")}>
       <div className="flex-1 text-center p-4">
         <div className="text-sm">총 금액</div>
-        <div className="text-xl font-bold">{ticket?.stdPrice}원</div>
+        <div className="text-xl font-bold">{ticket.stdPrice}원</div>
       </div>
       <div className="flex-0 w-8 h-8 leading-8 text-center text-2xl rounded-full bg-neutral-9 text-neutral-1">-</div>
       <div className="flex-1 text-center p-4">
@@ -204,9 +205,9 @@ function PriceCard({ className }: BaseProps) {
 export default function TicketingPaymentPage() {
   const navigate = useNavigate();
 
-  const { ticket, setTicket, setPayedPoint } = useTicketingStore();
+  const { ticketNum, setTicket, setPayedPoint } = useTicketingStore();
 
-  if (!ticket) {
+  if (!ticketNum) {
     throw Error("잘못된 접근입니다! 결제할 티켓 정보가 없습니다.");
   }
 
@@ -214,13 +215,19 @@ export default function TicketingPaymentPage() {
     setPayedPoint(0);
   }, [setPayedPoint]);
 
-  const CancelTicket = useSetApi(deleteTicket);
+  const GetTicket = useGetApi(() => getTicketDetail(ticketNum));
 
-  const doOnClickBack = useCallback(() => {
-    CancelTicket.apiAction(ticket.ticketNum)
-      .then(() => setTicket(undefined))
-      .finally(() => navigate(-1));
-  }, [CancelTicket, navigate, setTicket, ticket.ticketNum]);
+  // const doOnClickBack = useCallback(() => {
+  //   CancelTicket.apiAction(ticket.ticketNum)
+  //     .then(() => setTicket(undefined))
+  //     .finally(() => navigate(-1));
+  // }, [CancelTicket, navigate, setTicket, ticket.ticketNum]);
+
+  const doOnClickBack = () => navigate(-1);
+
+  if (GetTicket.loading) {
+    return <Loader className="w-16 h-16 m-16" />;
+  }
 
   return (
     <motion.div className="container py-6 h-full flex flex-row">
@@ -230,9 +237,11 @@ export default function TicketingPaymentPage() {
         bodyClass="flex flex-row flex-1 items-stretch"
         onClickBack={doOnClickBack}
       >
-        <div className="relative flex-1 p-4 overflow-y-auto">
-          <PaymentForm />
-        </div>
+        {GetTicket.data && (
+          <div className="relative flex-1 p-4 overflow-y-auto">
+            <PaymentForm ticket={GetTicket.data} />
+          </div>
+        )}
       </StepSection>
     </motion.div>
   );

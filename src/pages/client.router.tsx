@@ -20,6 +20,7 @@ import SearchMovieListPage from "./client/movie-list/search";
 import SignInNonmemberPage from "./client/sign-in-nonmember";
 import EventListPage from "./client/event/list";
 import EventDetailpage from "./client/event/detail";
+import TicketDetailPage from "./client/mypage/tickets/detail";
 
 const ClientRoutes = () => (
   <Suspense>
@@ -44,6 +45,7 @@ const ClientRoutes = () => (
         <Route path="signup" element={<SignUpPage />} />
         <Route path="my" element={<MyPage />} />
         <Route path="my/ticket" element={<MyTicketsPage />} />
+        <Route path="my/ticket/d/:ticketNum" element={<TicketDetailPage />} />
         <Route path="my/edit" element={<MyProfileEditPage />} />
         <Route path="ticketing/*" element={<TicketingPage />} />
         <Route path="*" element={<ClientErrorPage noRoute />} />

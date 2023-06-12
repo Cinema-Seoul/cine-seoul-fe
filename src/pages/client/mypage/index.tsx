@@ -7,7 +7,7 @@ import { createContext, useContext } from "react";
 import { getMe } from "@/services/user/user.service";
 import { NeedSignError, useUser } from "@/services/user/user.application";
 import { SortDirection, useGetApi } from "@/services/api";
-import { User, UserRole } from "@/types";
+import { TicketState, User, UserRole } from "@/types";
 import { GetTicketsSortBy, getTickets } from "@/services/ticket/ticket.service";
 import { date, fmt } from "@/utils/date";
 import PageHeader from "@/components/header/page-header";
@@ -63,6 +63,7 @@ function TicketsSection({ className }: BaseProps) {
       size: 4,
       sortBy: GetTicketsSortBy.createdDate,
       sortDir: SortDirection.desc,
+      ticketState: TicketState.Payed,
     })
   );
 
@@ -70,6 +71,7 @@ function TicketsSection({ className }: BaseProps) {
     <section className={clsx(className, "rounded bg-neutral-2 out-1 outline-neutral-6")}>
       <div className="p-4 border-b border-solid border-neutral-6">
         <h2 className="text-xl font-bold">내 티켓</h2>
+        <div className="text-sm">결제 완료 상태인 티켓만 표시됩니다. 모든 티켓을 보려면 더보기 버튼을 클릭해주세요.</div>
       </div>
       <div className="">
         {Tickets.loading && <Loader className="mx-a my-8 w-16 h-16" />}
@@ -77,8 +79,8 @@ function TicketsSection({ className }: BaseProps) {
           {Tickets.data?.list?.length === 0 && <div className="m-8 text-center">티켓이 없습니다.</div>}
           {Tickets.data?.list.map(({ ticketNum, ticketSeats, schedule: { schedTime, screen, movie } }) => (
             <li key={ticketNum} className="border-b border-solid border-neutral-6 pressable-opacity">
-              <div className="cursor-pointer p-4 flex flex-row items-center">
-                <div className="flex-1">
+              <Link to={`/my/ticket/d/${ticketNum}`} className="cursor-pointer p-4 flex flex-row items-center">
+                <div className="flex-1 relative">
                   <div className="font-bold">{movie.title}</div>
                   <div className="text-sm space-x-4">
                     <span>
@@ -88,15 +90,14 @@ function TicketsSection({ className }: BaseProps) {
                       상영 시각 <strong>{fmt(date(schedTime), "Pp")}</strong>
                     </span>
                     <span>
-                      상영 시각{" "}
-                      <strong>{ticketSeats.map(({ seat: { col, row } }) => `${row}${col}`).join(", ")}</strong>
+                      좌석 <strong>{ticketSeats.map(({ seat: { col, row } }) => `${row}${col}`).join(", ")}</strong>
                     </span>
                   </div>
                 </div>
                 <div className="flex-0">
                   <IoChevronForward />
                 </div>
-              </div>
+              </Link>
             </li>
           ))}
         </ul>

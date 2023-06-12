@@ -9,7 +9,7 @@ export type TicketingStoreState = {
   selectedSchedule?: ScheduleListEntry;
   selectedSeats: Seat[];
 
-  ticket?: TicketListEntry;
+  ticketNum?: number;
   payedPoint: number;
 };
 
@@ -31,7 +31,7 @@ export type TicketingStoreActions = {
   toggleSelectedSeat: (seat: Seat) => void;
 
   //Ticketing
-  setTicket: (ticket?: TicketListEntry) => void;
+  setTicket: (ticketNum?: number) => void;
 
   //Pay
   setPayedPoint: (point: number) => void;
@@ -44,7 +44,7 @@ export const initialTicketingStore: TicketingStoreState = {
   selectedMovie: undefined,
   selectedSchedule: undefined,
   selectedSeats: [],
-  ticket: undefined,
+  ticketNum: undefined,
   payedPoint: 0,
 };
 
@@ -117,8 +117,8 @@ export const useTicketingStore = create<TicketingStoreState & TicketingStoreActi
       }));
     },
 
-    setTicket: (ticket) => {
-      set({ ticket });
+    setTicket: (ticketNum) => {
+      set({ ticketNum });
     },
 
     setPayedPoint: (payedPoint) => {

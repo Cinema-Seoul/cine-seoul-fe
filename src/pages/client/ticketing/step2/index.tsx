@@ -2,15 +2,16 @@ import { motion } from "framer-motion";
 import SeatSelectSubpage from "./seat-select";
 import { useAuthGuard, useUser } from "@/services/user/user.application";
 import NeedSignPage from "./need-sign";
+import { useEffect } from "react";
+import { useTicketingStore } from "@/stores/client";
 
 export interface PageProps {}
 
 export default function TicketingSecondaryPage() {
-
   const currentUser = useUser();
 
   if (!currentUser) {
-    return <NeedSignPage />
+    return <NeedSignPage />;
   }
 
   return (

@@ -4,10 +4,11 @@ import { Navigate, Route, Routes, redirect, useLocation, useNavigate, useSearchP
 
 import { Navbar } from "@/components";
 import { AnimatePresence, motion } from "framer-motion";
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import TicketingPaymentPage from "./payment";
 import TicketingFirstPage from "./step1";
 import TicketingSecondaryPage from "./step2";
+import { useTicketingStore } from "@/stores/client";
 
 export default function TicketingPage() {
   const location = useLocation();

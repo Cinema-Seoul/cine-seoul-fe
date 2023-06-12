@@ -1,4 +1,4 @@
-import { ListResponse, TicketCreation, TicketDetail, TicketListEntry } from "@/types";
+import { ListResponse, TicketCreation, TicketDetail, TicketListEntry, TicketState, TicketUpdating } from "@/types";
 import { PagableRequest, SortableRequest } from "../api";
 import axios from "axios";
 
@@ -14,6 +14,7 @@ export enum GetTicketsSortBy {
 
 export interface GetTicketsOptions extends PagableRequest, SortableRequest<GetTicketsSortBy> {
   userNum?: number;
+  ticketState?: TicketState;
 }
 
 export async function getTickets({
@@ -22,6 +23,7 @@ export async function getTickets({
   size = 12,
   sortBy,
   sortDir: sort_dir,
+  ticketState: ticket_state,
 }: GetTicketsOptions): Promise<ListResponse<TicketListEntry>> {
   return axios
     .get("/ticket/auth", {
@@ -31,6 +33,7 @@ export async function getTickets({
         size,
         sort_created_date: sortBy === GetTicketsSortBy.createdDate,
         sort_dir,
+        ticket_state,
       },
     })
     .then((res) => res.data);
@@ -44,6 +47,12 @@ export async function createTicket(body: TicketCreation): Promise<TicketListEntr
 
 /** PUT /ticket/auth */
 
+export async function cancelTicket(ticketNum: number): Promise<unknown> {
+  return axios
+    .put(`/ticket/auth/`, { ticketNum, ticketState: TicketState.Canceled } as TicketUpdating)
+    .then((res) => res.data);
+}
+
 /** GET /ticket/auth/{num} */
 
 export async function getTicketDetail(ticketNum: number): Promise<TicketDetail> {
@@ -52,6 +61,12 @@ export async function getTicketDetail(ticketNum: number): Promise<TicketDetail> 
 
 /** DELETE /ticket/auth/{num} */
 
-export async function deleteTicket(ticketNum: number): Promise<unknown> {
-  return axios.delete(`/ticket/auth/${ticketNum}`).then((res) => res.data);
+// export async function deleteTicket(ticketNum: number): Promise<unknown> {
+//   return axios.delete(`/ticket/auth/${ticketNum}`).then((res) => res.data);
+// }
+
+/** PUT /ticket/auth/cancelregister */
+
+export async function cancelAndRegisterTicket(ticketNum: number, body: TicketCreation): Promise<TicketListEntry> {
+  return axios.put("/ticket/auth/cancelregister", { ...body, ticketNum }).then((res) => res.data);
 }

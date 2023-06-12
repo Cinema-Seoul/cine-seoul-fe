@@ -5,9 +5,9 @@ import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 import { useLoadingDialog } from "@/components/ui/modal/dialog-loading";
 import { useGetApi, useSetApi } from "@/services/api";
 import { getScheduleDetail } from "@/services/schedule/schedule.service";
-import { createTicket } from "@/services/ticket/ticket.service";
+import { cancelAndRegisterTicket, createTicket } from "@/services/ticket/ticket.service";
 import { useTicketingStore } from "@/stores/client";
-import { ScheduleDetail, Seat, TicketAudienceType } from "@/types";
+import { Is, ScheduleDetail, ScheduleSeat, Seat, TicketAudienceType, TicketCreation } from "@/types";
 import { fmt } from "@/utils/date";
 import clsx from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
@@ -21,8 +21,15 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
   const showLoading = useLoadingDialog();
   const alertDialog = useAlertDialog();
 
-  const { selectedSchedule, clearSelectedSchedule, selectedSeats, toggleSelectedSeat, removeSelectedSeat, setTicket } =
-    useTicketingStore();
+  const {
+    selectedSchedule,
+    clearSelectedSchedule,
+    selectedSeats,
+    toggleSelectedSeat,
+    removeSelectedSeat,
+    setTicket,
+    ticketNum,
+  } = useTicketingStore();
 
   const schedule = useGetApi(() => getScheduleDetail(selectedSchedule?.schedNum as any), [selectedSchedule], {
     enabled: !!selectedSchedule,
@@ -33,6 +40,18 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
     [selectedSeats]
   );
 
+  // const refinedSeats = useMemo(() => {
+  //   if (!ticket) {
+  //     return schedule.data?.scheduleSeats;
+  //   } else {
+  //     return schedule.data?.scheduleSeats.map<ScheduleSeat>(({ isOccupied, seat }) =>
+  //       ticket.ticketSeats.some(({ seat: ticketSeat }) => seat.seatNum === ticketSeat.seatNum)
+  //         ? { isOccupied: Is.False, seat }
+  //         : { isOccupied, seat }
+  //     );
+  //   }
+  // }, [schedule.data, ticket]);
+
   const doOnClickSeat = useCallback(
     (seat: Seat) => {
       toggleSelectedSeat(seat);
@@ -40,10 +59,12 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
     [toggleSelectedSeat]
   );
 
+  const NewTicket = useSetApi(createTicket);
+
   const doOnClickNext = useCallback(() => {
     if (schedule.data) {
       const closeLoading = showLoading();
-      createTicket({
+      NewTicket.apiAction({
         audienceTypeDTOList: [
           {
             audienceType: TicketAudienceType.Disabled,
@@ -55,8 +76,8 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
         stdPrice: stdPrice,
       })
         .then((ticket) => {
-          setTicket(ticket);
-          navigate("/ticketing/payment");
+          setTicket(ticket.ticketNum);
+          navigate("/ticketing/payment", { replace: true });
         })
         .finally(() => {
           closeLoading();
@@ -71,7 +92,7 @@ export default function SeatSelectSubpage({ className }: BaseProps) {
           );
         });
     }
-  }, [alertDialog, navigate, schedule.data, stdPrice]);
+  }, [NewTicket, alertDialog, navigate, schedule.data, selectedSeats, setTicket, showLoading, stdPrice]);
 
   return (
     <StepSection
