@@ -4,6 +4,8 @@ import { Button } from "@/components/ui";
 import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 import { useGetApi, useGetApiWithPagination, useSetApi } from "@/services/api";
 import { GetReviewsSortBy, createReview, getReviewsOfMovie, recommendReview } from "@/services/review/review.service";
+import { useUser } from "@/services/user/user.application";
+import { UserRole } from "@/types";
 import { ReviewListEntry } from "@/types/review";
 import { date, fmt } from "@/utils/date";
 import { FormEventHandler, MouseEventHandler, useCallback, useDeferredValue, useState } from "react";
@@ -22,7 +24,7 @@ function ReviewTextArea({ className, movieNum, afterSubmit }: ReviewTextAreaProp
   const [contents, setContents] = useState<string>("");
   const [score, setScore] = useState<number>(5);
 
-  const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback((e) => {
+  const doOnSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
     SubmitReview.apiAction({
@@ -36,7 +38,7 @@ function ReviewTextArea({ className, movieNum, afterSubmit }: ReviewTextAreaProp
         alertDialog("관람평을 등록했어요.");
       })
       .then(afterSubmit);
-  }, []);
+  };
 
   return (
     <form className={className} onSubmit={doOnSubmit}>
@@ -110,6 +112,8 @@ export interface ReviewListSectionProps extends BaseProps {
 }
 
 export default function ReviewListSection({ movieNum, className }: ReviewListSectionProps) {
+  const currentUser = useUser();
+
   const SubmitRecommend = useSetApi(recommendReview);
 
   const Reviews = useGetApiWithPagination(
@@ -127,9 +131,11 @@ export default function ReviewListSection({ movieNum, className }: ReviewListSec
         <div className="text-sm">다른 사람들은 이 영화를 이렇게 평가했어요!</div>
       </div>
       <div className="container">
-        <div className="pb-4 mb-4 border-b border-solid border-neutral-6">
-          <ReviewTextArea movieNum={movieNum} className="w-full" afterSubmit={Reviews.invalidate} />
-        </div>
+        {(currentUser?.userRole === UserRole.admin || currentUser?.userRole === UserRole.member) && (
+          <div className="pb-4 mb-4 border-b border-solid border-neutral-6">
+            <ReviewTextArea movieNum={movieNum} className="w-full" afterSubmit={Reviews.invalidate} />
+          </div>
+        )}
         <ul>
           {data &&
             (data.list.length === 0 && Reviews.page === 0 ? (
