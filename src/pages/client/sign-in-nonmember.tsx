@@ -34,7 +34,8 @@ export default function SignInNonmemberPage() {
 
   const submitForm = async ({ name, pw, phoneNum }: UserSignInNonmember) => {
     await signInUpNonmember(name, pw, phoneNum).catch((e) => {
-      alertDialog("기존 등록된 정보가 있습니다. 전화번호 또는 비밀번호를 확인해주세요.");
+      // alertDialog("기존 등록된 정보가 있습니다. 전화번호 또는 비밀번호를 확인해주세요.");
+      alertDialog("기존 등록된 정보가 있습니다. " + e.response?.data?.message ?? e.toString() ?? "로그인에 실패했어요");
     });
   };
 

@@ -75,12 +75,17 @@ export function useUserActions() {
   const signInUpNonmember = useCallback(
     async (name: string, pw: string, phoneNum: string) => {
       setLoading(true);
-      await signUpNonmember({ name, pw, phoneNum });
-      return requestSignInNonmember({ name, pw, phoneNum })
-        .then(signIn)
-        .finally(() => {
-          setLoading(false);
-        });
+      return new Promise<void>((resolve, reject) => {
+        signUpNonmember({ name, pw, phoneNum }).finally(() =>
+          requestSignInNonmember({ name, pw, phoneNum })
+            .then(signIn)
+            .catch(reject)
+            .finally(() => {
+              setLoading(false);
+              resolve();
+            })
+        );
+      });
     },
     [signIn]
   );
