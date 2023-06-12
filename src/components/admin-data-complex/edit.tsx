@@ -13,7 +13,7 @@ import { useGetApi, useSetApi } from "@/services/api";
 import { Button, Loader } from "../ui";
 import { IoClose, IoPencil } from "react-icons/io5";
 import { useAlertDialog } from "../ui/modal/dialog-alert";
-import { date } from "@/utils/date";
+import { date, fmt } from "@/utils/date";
 
 type EditDialogContentProps<E extends object, D extends object = object> = {
   initialValues: { [key in keyof E]: string | string[] | number | undefined };
@@ -44,11 +44,9 @@ function EditDialogContent<E extends object, D extends object = object>({
     (e) => {
       const name = e.currentTarget.name;
       const v = e.currentTarget.value;
-      console.log(name, v);
       setValues((o) => ({ ...o, [name]: v }));
-      console.log(values);
     },
-    [values]
+    []
   );
 
   const doOnSubmit: FormEventHandler<HTMLFormElement> = useCallback(
@@ -56,11 +54,16 @@ function EditDialogContent<E extends object, D extends object = object>({
       e.preventDefault();
       const par = { ...values };
 
-      editHead.forEach(({ setValue, key }) => {
+      editHead.forEach(({ setValue, key, editType }) => {
+        if (editType === 'date' || editType === 'datetime') {
+          par[key] = new Date(par[key] as string) as any;
+        }
         if (setValue) {
-          par[key] = setValue(values[key]) as any;
+          par[key] = setValue(par[key]) as any;
         }
       });
+
+      console.log("PAR", par);
 
       apiAction(par)
         ?.then(() => {
@@ -78,13 +81,13 @@ function EditDialogContent<E extends object, D extends object = object>({
           alert(e.response?.data?.message ?? e.toString());
         });
     },
-    [alertDialog, apiAction, onClose, values]
+    [alertDialog, apiAction, editHead, onClose, values]
   );
 
   const defaultVals = useMemo(
     () =>
       editHead.reduce((acc, { key, initialValue, editType }) => {
-        const d = initialValue ? initialValue(initialValues[key] as any) : initialValues[key];
+        const d = initialValue ? initialValue(initialValues as any) : initialValues[key];
         acc[key] = d;
         if (editType === "inherit") {
           setValues((o) => ({ ...o, [key]: d }));
@@ -110,7 +113,16 @@ function EditDialogContent<E extends object, D extends object = object>({
           <DialogBody className="">
             <table className="hq-form-table">
               {editHead.map(({ key, label, editType }) => {
-                const defaultVal = defaultVals[key] as any;
+                let defaultVal = defaultVals[key] as any;
+
+                if (editType === 'date' || editType === 'datetime') {
+                  defaultVal = date(defaultVal);
+                }
+
+                if (defaultVal instanceof Date) {
+                  defaultVal = defaultVal.toISOString().replace(/\..*[zZ]$/, "");
+                }
+
                 return (
                   <tr key={key.toString()}>
                     <th>
@@ -139,14 +151,14 @@ function EditDialogContent<E extends object, D extends object = object>({
                           type="date"
                           onChange={handleChangeValue}
                           name={key.toString()}
-                          defaultValue={defaultVal && date(defaultVal)?.toISOString()}
+                          defaultValue={defaultVal}
                         />
                       ) : editType === "datetime" ? (
                         <input
                           type="datetime-local"
                           onChange={handleChangeValue}
                           name={key.toString()}
-                          defaultValue={defaultVal && date(defaultVal)?.toISOString()}
+                          defaultValue={defaultVal}
                         />
                       ) : Array.isArray(editType) ? (
                         <select

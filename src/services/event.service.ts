@@ -15,8 +15,8 @@ export async function createEvent(body: EventCreation): Promise<number> {
   return axios
     .post("/event", {
       ...body,
-      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : undefined,
-      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : undefined,
+      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : body.startAt,
+      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : body.endAt,
     })
     .then((res) => res.data);
 }
@@ -25,10 +25,10 @@ export async function createEvent(body: EventCreation): Promise<number> {
 
 export async function editEvent(body: EventUpdating): Promise<number> {
   return axios
-    .put("/event", {
+  .put("/event", {
       ...body,
-      startAt: body.startAt ? new Date(body.startAt)?.toISOString() : undefined,
-      endAt: body.endAt ? new Date(body.endAt)?.toISOString() : undefined,
+      startAt: body.startAt instanceof Date ? body.startAt?.toISOString() : body.startAt,
+      endAt: body.endAt instanceof Date ? body.endAt?.toISOString() : body.endAt,
     })
     .then((res) => res.data);
 }

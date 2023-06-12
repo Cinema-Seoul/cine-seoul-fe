@@ -93,7 +93,7 @@ export const detailHead: DetailHeadEntry<EventDetail>[] = [
 /*                                    EDIT                                    */
 /* -------------------------------------------------------------------------- */
 
-export const editHead: EditHeadEntry<EventUpdating>[] = [
+export const editHead: EditHeadEntry<EventUpdating, EventDetail>[] = [
   {
     key: 'eventNum',
     label: '',
@@ -108,11 +108,13 @@ export const editHead: EditHeadEntry<EventUpdating>[] = [
     key: 'startAt',
     label: '시작일',
     editType: 'datetime',
+    // initialValue: (detail) => date(detail?.startAt)?.toISOString(), 
   },
   {
     key: 'endAt',
     label: '종료일',
     editType: 'datetime',
+    // initialValue: (detail) => date(detail?.endAt)?.toISOString(), 
   },
   {
     key: 'banner',
