@@ -1,5 +1,5 @@
 import { CreationHeadEntry, DetailHeadEntry, EditHeadEntry, ListHeadEntry } from "@/components/admin-data-complex";
-import { ScheduleCreation, TicketListEntry, TicketState, TicketUpdating } from "@/types";
+import { ScheduleCreation, TicketListEntry, TicketState, TicketUpdating, displayTicketState } from "@/types";
 import { date, fmt } from "@/utils/date";
 
 export const listHead: ListHeadEntry<TicketListEntry>[] = [
@@ -23,10 +23,7 @@ export const listHead: ListHeadEntry<TicketListEntry>[] = [
   {
     key: "ticketState",
     label: "티켓 상태",
-  },
-  {
-    key: "ticketState",
-    label: "티켓 상태",
+    value: ({ ticketState }) => displayTicketState[ticketState],
   },
   {
     key: "ticketSeats",
