@@ -22,7 +22,7 @@ function isSeatCreation(src: any): src is SeatCreation {
 function SeatCardNew({ onComplete, screenNum }: { onComplete?: () => void; screenNum: number }) {
   const [values, setValues] = useState<Partial<SeatCreation>>({
     screenNum,
-    seatGrade: SeatGrade.C
+    seatGrade: SeatGrade.C,
   });
 
   console.log(JSON.stringify(values));
@@ -221,7 +221,7 @@ interface ScreenSeatsEditDialogContentsProps {
 
 function ScreenSeatsEditDialogContents({ title, subtitle, onClose, screenNum }: ScreenSeatsEditDialogContentsProps) {
   const GetSeats = useGetApi(() => getSeats({ screenNum }));
-  const [selectedSeats, setSelectedSeats] = useState<Seat[]>();
+  const [selectedSeat, setSelectedSeat] = useState<Seat>();
 
   const seats: ScheduleSeat[] | undefined = useMemo(
     () => GetSeats.data?.map((seat) => ({ isOccupied: Is.False, seat })),
@@ -230,33 +230,28 @@ function ScreenSeatsEditDialogContents({ title, subtitle, onClose, screenNum }: 
 
   const doOnClickSeatItem = useCallback(
     (seat: Seat) => {
-      if (selectedSeats?.some(({ seatNum }) => seat.seatNum === seatNum)) {
-        setSelectedSeats((o) => o?.filter((s) => s.seatNum !== seat.seatNum));
+      if (selectedSeat?.seatNum === seat.seatNum) {
+        setSelectedSeat(undefined);
       } else {
-        setSelectedSeats((o) => (o ? [...o, seat] : [seat]));
+        setSelectedSeat(seat);
       }
     },
-    [selectedSeats]
+    [selectedSeat?.seatNum]
   );
 
   // REMOVE
   const RemoveSeat = useSetApi(async () => {
-    const promiseQueue = selectedSeats?.map(({ seatNum }) =>
-      removeSeatByNum(seatNum).then(() => {
-        setSelectedSeats((o) => o?.filter((s) => s.seatNum !== seatNum));
-      })
-    );
-    return (
-      promiseQueue &&
-      Promise.all(promiseQueue)
+    if (selectedSeat) {
+      removeSeatByNum(selectedSeat.seatNum)
+        .then(() => {
+          setSelectedSeat(undefined);
+        })
         .catch((e) => {
           alert(`오류가 발생하였습니다. ${e.response?.data?.message ?? e.toString()}`);
         })
-        .then(GetSeats.invalidate)
-    );
+        .then(GetSeats.invalidate);
+    }
   });
-
-  // EDIT
 
   return (
     <DialogSheet>
@@ -265,21 +260,25 @@ function ScreenSeatsEditDialogContents({ title, subtitle, onClose, screenNum }: 
         <DialogBody className="flex flex-col">
           <div>
             {GetSeats.data && (
-              <ScreenSeats seats={seats} onClickSeat={doOnClickSeatItem} selectedSeats={selectedSeats} />
+              <ScreenSeats
+                seats={seats}
+                onClickSeat={doOnClickSeatItem}
+                selectedSeats={selectedSeat && [selectedSeat]}
+              />
             )}
           </div>
-          <div className="mt-4 border-t border-neutral-6">
-            <h6 className="text-lg font-bold py-4">선택 좌석 정보</h6>
-            <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
-              {selectedSeats?.map((seat) => (
-                <SeatCard seat={seat} onComplete={GetSeats.invalidate} />
-              ))}
+          <div className="flex flex-row">
+            <div className="flex-1 mt-4 border-t border-neutral-6">
+              <h6 className="text-lg font-bold py-4">선택 좌석 정보</h6>
+              <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
+                {selectedSeat && <SeatCard seat={selectedSeat} onComplete={GetSeats.invalidate} />}
+              </div>
             </div>
-          </div>
-          <div className="mt-4 border-t border-neutral-6">
-            <h6 className="text-lg font-bold py-4">새로운 좌석 추가</h6>
-            <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
-              <SeatCardNew onComplete={GetSeats.invalidate} screenNum={screenNum} />
+            <div className="flex-1 mt-4 border-t border-neutral-6">
+              <h6 className="text-lg font-bold py-4">새로운 좌석 추가</h6>
+              <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
+                <SeatCardNew onComplete={GetSeats.invalidate} screenNum={screenNum} />
+              </div>
             </div>
           </div>
         </DialogBody>
@@ -287,10 +286,10 @@ function ScreenSeatsEditDialogContents({ title, subtitle, onClose, screenNum }: 
           <Button
             tint="primary"
             iconStart={<IoTrash />}
-            disabled={!selectedSeats?.length || RemoveSeat.loading}
+            disabled={!selectedSeat || RemoveSeat.loading}
             onClick={RemoveSeat.apiAction}
           >
-            선택한 좌석 모두 삭제
+            선택한 좌석 삭제
           </Button>
           {/* <Button tint="primary" iconStart={<IoPencil />} disabled={!(selectedSeats?.length === 1)}>
             선택한 좌석 정보 수정
