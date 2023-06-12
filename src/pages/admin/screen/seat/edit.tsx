@@ -10,10 +10,93 @@ import {
 } from "@/components/ui/modal/dialog";
 import { useAlertDialog } from "@/components/ui/modal/dialog-alert";
 import { useGetApi, useSetApi } from "@/services/api";
-import { editSeat, getSeats, removeSeatByNum } from "@/services/seat.service";
+import { createSeat, editSeat, getSeats, removeSeatByNum } from "@/services/seat.service";
 import { Is, ScheduleSeat, Seat, SeatCreation, SeatGrade } from "@/types";
 import { ChangeEventHandler, FormEventHandler, useCallback, useMemo, useState } from "react";
-import { IoClose, IoPencil, IoRemove, IoTrash } from "react-icons/io5";
+import { IoAdd, IoClose, IoPencil, IoRemove, IoTrash } from "react-icons/io5";
+
+function isSeatCreation(src: any): src is SeatCreation {
+  return src.screenNum && src.col && src.row && src.seatGrade;
+}
+
+function SeatCardNew({ onComplete, screenNum }: { onComplete?: () => void; screenNum: number }) {
+  const [values, setValues] = useState<Partial<SeatCreation>>({
+    screenNum,
+    seatGrade: SeatGrade.C
+  });
+
+  console.log(JSON.stringify(values));
+
+  const CreateSeat = useSetApi(() => createSeat(values as any));
+
+  const handleInput: ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useCallback((e) => {
+    const k = e.currentTarget.name;
+    const v = e.currentTarget.value;
+    setValues((o) => ({ ...o, [k]: v }));
+  }, []);
+
+  const doOnSubmitEditForm: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (!isSeatCreation(values)) {
+      alert("값이 올바르지 않습니다!");
+      return;
+    }
+    CreateSeat.apiAction()
+      .then(() => {
+        setValues({
+          screenNum,
+          col: undefined,
+          row: undefined,
+          seatGrade: SeatGrade.C,
+        });
+        onComplete && onComplete();
+      })
+      .catch((e) => {
+        alert(`오류가 발생하였습니다.\n${e.reponse?.data?.message ?? e.toString()}`);
+      });
+  };
+
+  return (
+    <form className="card p-2" onSubmit={doOnSubmitEditForm}>
+      <table className="table-fixed w-48 border-spacing-2 border-separate [&_th]:(text-right)">
+        <tr>
+          <th>행</th>
+          <td>
+            <input name="row" className="w-full" type="text" value={values.row ?? ""} onChange={handleInput} />
+          </td>
+        </tr>
+        <tr>
+          <th>열</th>
+          <td>
+            <input name="col" className="w-full" type="text" value={values.col ?? ""} onChange={handleInput} />
+          </td>
+        </tr>
+        <tr>
+          <th>좌석 등급</th>
+          <td>
+            <select name="seatGrade" className="w-full" value={values.seatGrade} onChange={handleInput}>
+              <option value={SeatGrade.A}>A</option>
+              <option value={SeatGrade.B}>B</option>
+              <option value={SeatGrade.C}>C</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <div>
+        <Button
+          type="submit"
+          className="ml-a"
+          variant="contained"
+          tint="primary"
+          iconStart={<IoAdd />}
+          disabled={!isSeatCreation(values) || CreateSeat.loading}
+        >
+          추가
+        </Button>
+      </div>
+    </form>
+  );
+}
 
 function SeatCard({
   seat: { col, row, screenNum, seatGrade, seatNum, seatPrice },
@@ -67,18 +150,6 @@ function SeatCard({
             <th>열</th>
             <td>
               <input name="col" className="w-full" type="text" defaultValue={col} onChange={handleInput} />
-            </td>
-          </tr>
-          <tr>
-            <th>좌석 가격</th>
-            <td>
-              <input
-                name="seatPrice"
-                className="w-full"
-                type="number"
-                defaultValue={seatPrice}
-                onChange={handleInput}
-              />
             </td>
           </tr>
           <tr>
@@ -199,10 +270,16 @@ function ScreenSeatsEditDialogContents({ title, subtitle, onClose, screenNum }: 
           </div>
           <div className="mt-4 border-t border-neutral-6">
             <h6 className="text-lg font-bold py-4">선택 좌석 정보</h6>
-            <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 py-2">
+            <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
               {selectedSeats?.map((seat) => (
                 <SeatCard seat={seat} onComplete={GetSeats.invalidate} />
               ))}
+            </div>
+          </div>
+          <div className="mt-4 border-t border-neutral-6">
+            <h6 className="text-lg font-bold py-4">새로운 좌석 추가</h6>
+            <div className="flex flex-row flex-nowrap overflow-x-auto space-x-2 p-2">
+              <SeatCardNew onComplete={GetSeats.invalidate} screenNum={screenNum} />
             </div>
           </div>
         </DialogBody>

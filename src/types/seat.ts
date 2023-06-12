@@ -1,7 +1,7 @@
 export enum SeatGrade {
-  A = 'A',
-  B = 'B',
-  C = 'C',
+  A = "A",
+  B = "B",
+  C = "C",
 }
 
 export type Seat = {
@@ -11,6 +11,6 @@ export type Seat = {
   seatGrade: SeatGrade;
   seatPrice: number;
   screenNum: number;
-}
+};
 
-export type SeatCreation = Omit<Seat, 'seatNum'>;
+export type SeatCreation = Omit<Seat, "seatNum" | "seatPrice">;
