@@ -54,51 +54,50 @@ export const detailHead: DetailHeadEntry<ScheduleDetail>[] = [
     label: "잔여석 수",
     value: ({ emptySeat, screen: { totalSeat } }) => `${emptySeat} / ${totalSeat}`,
   },
-]
+];
 
 export const editHead: EditHeadEntry<ScheduleUpdating>[] = [
   {
-    key: 'schedNum',
-    label: '',
+    key: "schedNum",
+    label: "번호",
+    editType: "inherit",
   },
   {
-    key: 'order',
-    label: '상영회차',
-    editType: 'number',
+    key: "order",
+    label: "상영회차",
+    editType: "number",
   },
   {
-    key: 'schedTime',
-    label: '상영시각',
-    editType: 'datetime',
+    key: "schedTime",
+    label: "상영시각",
+    editType: "datetime",
   },
   {
-    key: 'screenNum',
-    label: '상영관 번호',
-    editType: 'number',
+    key: "screenNum",
+    label: "상영관 번호",
+    editType: "number",
   },
 ];
 
 export const createHead: CreationHeadEntry<ScheduleCreation>[] = [
   {
-    key: 'order',
-    label: '상영회차',
-    editType: 'number',
+    key: "order",
+    label: "상영회차",
+    editType: "number",
   },
   {
-    key: 'schedTime',
-    label: '상영시각',
-    editType: 'datetime',
+    key: "schedTime",
+    label: "상영시각",
+    editType: "datetime",
   },
   {
-    key: 'screenNum',
-    label: '상영관 번호',
-    editType: 'number',
+    key: "screenNum",
+    label: "상영관 번호",
+    editType: "number",
   },
   {
-    key: 'movieNum',
-    label: '영화번호',
-    editType: 'number',
+    key: "movieNum",
+    label: "영화번호",
+    editType: "number",
   },
 ];
-
-
