@@ -45,9 +45,7 @@ const UserSignMenu = ({ className }: BaseProps) => {
     // Signed In
     return (
       <div className={rootStyle}>
-        <p>
-          안녕하세요, <u>{currentUser.userId}</u>님!
-        </p>
+        <p>안녕하세요, {currentUser.userId?.length ? <u>{currentUser.userId}</u> : "고객"}님!</p>
         <a className="pressable-opacity" onClick={signOut}>
           로그아웃
         </a>
