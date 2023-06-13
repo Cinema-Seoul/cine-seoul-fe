@@ -65,11 +65,7 @@ export default function MovieDetailPage() {
     const ret = {} as Record<string, ReactNode | ReactNode[]>;
 
     if (movieDetail.genreList?.length) {
-      ret["장르"] = movieDetail.genreList.map(({ name }) => (
-        <a className="hover:underline" href="#">
-          {name}
-        </a>
-      ));
+      ret["장르"] = movieDetail.genreList.map(({ name }) => <span>{name}</span>);
     }
 
     if (movieDetail.directorList?.length) {
@@ -103,9 +99,7 @@ export default function MovieDetailPage() {
     }
 
     if (movieDetail.countryList?.length) {
-      ret["국가"] = movieDetail.countryList.map(({ countryCode, name })=> (
-        <span key={countryCode}>{name}</span>
-      ));
+      ret["국가"] = movieDetail.countryList.map(({ countryCode, name }) => <span key={countryCode}>{name}</span>);
     }
 
     return ret;
