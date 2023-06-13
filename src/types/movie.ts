@@ -1,6 +1,11 @@
 import { ActorListEntry, DirectorListEntry, Genre, Grade, Is } from ".";
 import { Country } from "./country";
 
+export type MovieActor = {
+  actor: 0;
+  role: "E";
+};
+
 export type MovieDetail = {
   actorList: ActorListEntry[];
   directorList: DirectorListEntry[];
@@ -33,7 +38,7 @@ export type MovieListEntry = {
 
 export type MovieCreation = {
   poster: string; // URL
-  actorNumList: number[];
+  actorNumList: MovieActor[];
   directorNumList: number[];
   countryList: Country[];
   distNum: number;
@@ -48,7 +53,7 @@ export type MovieCreation = {
 
 export type MovieUpdating = Partial<MovieCreation> & {
   movieNum: number;
-}
+};
 
 export type MovieSelectionState = MovieListEntry;
 

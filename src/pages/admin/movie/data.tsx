@@ -235,7 +235,8 @@ export const createHead: CreationHeadEntry<MovieCreation>[] = [
     key: "actorNumList",
     label: "주요 출연진",
     editType: "text",
-    setValue: (value: string) => value?.split(","),
+    // setValue: (value: string) => value?.split(","),
+    setValue: (value: string) => value?.split(",").map((actor) => ({ actor, role: "M" })) as any,
   },
   {
     key: "directorNumList",
