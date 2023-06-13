@@ -6,6 +6,7 @@ import { useTicketingStore } from "@/stores/client";
 import type { ScheduleListEntry } from "@/types";
 import { date, fmt } from "@/utils/date";
 import clsx from "clsx";
+import { isAfter, isBefore } from "date-fns";
 import { ComponentPropsWithoutRef, MouseEventHandler, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,9 +16,10 @@ export interface ScheduleRadioProps extends ComponentPropsWithoutRef<"a"> {
     schedule: ScheduleListEntry;
   };
   onClick?: MouseEventHandler;
+  disabled?: boolean;
 }
 
-const ScheduleRadio = ({ className, data, id = `${data.schedule.schedNum}`, ...restProps }: ScheduleRadioProps) => {
+const ScheduleRadio = ({ className, data, id = `${data.schedule.schedNum}`, disabled, onClick, ...restProps }: ScheduleRadioProps) => {
   const dateString: string = fmt(data.schedule.schedTime, "a p") ?? "";
 
   return (
@@ -25,9 +27,14 @@ const ScheduleRadio = ({ className, data, id = `${data.schedule.schedNum}`, ...r
       className={clsx(
         className,
         "block rounded out-1 outline-neutral-7",
-        "transition cursor-pointer bg-neutral-3 hover:(bg-neutral-4) active:(bg-neutral-5) focus:(outline-neutral-8)",
-        "p-2"
+        "transition cursor-pointer bg-neutral-3",
+        "p-2",
+        {
+          "hover:(bg-neutral-4) active:(bg-neutral-5) focus:(outline-neutral-8)": !disabled,
+          "opacity-50": disabled,
+        }
       )}
+      onClick={disabled ? undefined : onClick}
       {...restProps}
     >
       <>
@@ -59,6 +66,8 @@ export default function ScheduleSelectSubpage({ className }: BaseProps) {
     [selectedDate, selectedMovie]
   );
 
+  const today = useMemo(() => new Date(), []);
+
   const schedulesByScreenAndMovie: {
     screen: ScheduleListEntry["screen"];
     movie: ScheduleListEntry["movie"];
@@ -66,23 +75,27 @@ export default function ScheduleSelectSubpage({ className }: BaseProps) {
   }[] = useMemo(() => {
     const ret: typeof schedulesByScreenAndMovie = [];
 
-    schedules.data?.list?.forEach((sched) => {
-      //Date 타입으로
-      sched.schedTime = date(sched.schedTime) ?? new Date(0);
+    // const today = new Date();
 
-      const filtered = ret.filter(
-        (e) => e.movie.movieNum === sched.movie.movieNum && e.screen.screenNum === sched.screen.screenNum
-      );
-      if (filtered?.length > 0) {
-        filtered[0].schedules.push(sched);
-      } else {
-        ret.push({
-          screen: sched.screen,
-          movie: sched.movie,
-          schedules: [sched],
-        });
-      }
-    });
+    schedules.data?.list
+      // ?.filter(({ schedTime }) => isAfter(date(schedTime), today))
+      .forEach((sched) => {
+        //Date 타입으로
+        sched.schedTime = date(sched.schedTime) ?? new Date(0);
+
+        const filtered = ret.filter(
+          (e) => e.movie.movieNum === sched.movie.movieNum && e.screen.screenNum === sched.screen.screenNum
+        );
+        if (filtered?.length > 0) {
+          filtered[0].schedules.push(sched);
+        } else {
+          ret.push({
+            screen: sched.screen,
+            movie: sched.movie,
+            schedules: [sched],
+          });
+        }
+      });
 
     return ret;
   }, [schedules.data]);
@@ -111,6 +124,7 @@ export default function ScheduleSelectSubpage({ className }: BaseProps) {
                 {schedules.map((schedule) => (
                   <li key={schedule.schedNum} className="col-4">
                     <ScheduleRadio
+                      disabled={isBefore(schedule.schedTime, today)}
                       data={{ schedule }}
                       onClick={() => {
                         navigate("/ticketing/seat");
