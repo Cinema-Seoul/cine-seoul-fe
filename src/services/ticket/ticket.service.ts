@@ -1,5 +1,5 @@
 import { ListResponse, TicketCreation, TicketDetail, TicketListEntry, TicketState, TicketUpdating } from "@/types";
-import { PagableRequest, SortableRequest } from "../api";
+import { PagableRequest, SortDirection, SortableRequest } from "../api";
 import axios from "axios";
 
 /* -------------------------------------------------------------------------- */
@@ -21,8 +21,8 @@ export async function getTickets({
   userNum,
   page = 0,
   size = 12,
-  sortBy,
-  sortDir: sort_dir,
+  sortBy = GetTicketsSortBy.createdDate,
+  sortDir: sort_dir = SortDirection.desc,
   ticketState: ticket_state,
 }: GetTicketsOptions): Promise<ListResponse<TicketListEntry>> {
   return axios

@@ -7,7 +7,7 @@ import {
   ListResponse,
   MovieCreation,
 } from "@/types";
-import { PagableRequest, SortableRequest } from "../api";
+import { PagableRequest, SortDirection, SortableRequest } from "../api";
 
 /* -------------------------------------------------------------------------- */
 /*                                    Movie                                   */
@@ -38,8 +38,8 @@ export async function getMovies({
   type,
   page = 0,
   size = 12,
-  sortBy: sort_by,
-  sortDir: sort_dir,
+  sortBy: sort_by = GetMoviesSortBy.movieNum,
+  sortDir: sort_dir = SortDirection.desc,
   genre,
 }: GetMoviesOptions): Promise<ListResponse<MovieListEntry>> {
   return axios

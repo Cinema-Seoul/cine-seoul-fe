@@ -17,7 +17,7 @@ export interface GetDistributorsOptions extends PagableRequest, SortableRequest<
 export function getDistributors({
   page = 0,
   size = 12,
-  sortBy,
+  sortBy = GetDistributorsSortBy.name,
   sortDir: sort_dir,
 }: GetDistributorsOptions): Promise<ListResponse<DistributorListEntry>> {
   return axios

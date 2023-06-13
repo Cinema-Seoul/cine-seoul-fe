@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PagableRequest, SortableRequest } from "../api";
+import { PagableRequest, SortDirection, SortableRequest } from "../api";
 import { fmt, toLocalISOString } from "@/utils/date";
 import {
   EntResponse,
@@ -28,8 +28,8 @@ export interface GetSchedulesOptions extends PagableRequest, SortableRequest<Get
 export async function getSchedules({
   page = 0,
   size = 12,
-  sortBy,
-  sortDir: sort_dir,
+  sortBy = GetSchedulesSortBy.order,
+  sortDir: sort_dir = SortDirection.asc,
   date: dateRaw,
   movieNum,
 }: GetSchedulesOptions): Promise<ListResponse<ScheduleListEntry>> {

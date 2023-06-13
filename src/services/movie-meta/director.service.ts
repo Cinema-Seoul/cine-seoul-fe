@@ -17,7 +17,7 @@ export interface GetDirectorsOptions extends PagableRequest, SortableRequest<Get
 export function getDirectors({
   page = 0,
   size = 12,
-  sortBy,
+  sortBy = GetDirectorsSortBy.name,
   sortDir: sort_dir,
 }: GetDirectorsOptions): Promise<ListResponse<DirectorListEntry>> {
   return axios

@@ -17,7 +17,7 @@ export interface GetActorsOptions extends PagableRequest, SortableRequest<GetAct
 export function getActors({
   page = 0,
   size = 12,
-  sortBy,
+  sortBy = GetActorsSortBy.name,
   sortDir: sort_dir,
 }: GetActorsOptions): Promise<ListResponse<ActorListEntry>> {
   return axios
