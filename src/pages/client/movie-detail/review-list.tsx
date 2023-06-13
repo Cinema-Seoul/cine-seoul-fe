@@ -8,8 +8,10 @@ import { useUser } from "@/services/user/user.application";
 import { UserRole } from "@/types";
 import { ReviewListEntry } from "@/types/review";
 import { date, fmt } from "@/utils/date";
+import clsx from "clsx";
 import { FormEventHandler, MouseEventHandler, useCallback, useDeferredValue, useState } from "react";
 import { IoPerson } from "react-icons/io5";
+import { useSearchParams } from "react-router-dom";
 
 interface ReviewTextAreaProps extends BaseProps {
   movieNum: number;
@@ -85,6 +87,19 @@ function ReviewItem({
   data: ReviewListEntry;
   onClickRecommend?: MouseEventHandler<HTMLAnchorElement>;
 }) {
+  const [hasRecommended, setHasRecommended] = useState<boolean>(false);
+  const doOnClickRecommend: MouseEventHandler<HTMLAnchorElement> = useCallback(
+    (e) => {
+      if (hasRecommended) {
+        return;
+      } else {
+        setHasRecommended(true);
+        onClickRecommend && onClickRecommend(e);
+      }
+    },
+    [hasRecommended, onClickRecommend]
+  );
+
   return (
     <div className="card mb-4 p-4">
       <div className="flex flex-row">
@@ -93,8 +108,8 @@ function ReviewItem({
           <span className="ml-2">{data.userId}</span>
         </h6>
         <div className="flex-0">
-          <a className="pressable-opacity" onClick={onClickRecommend}>
-            <span className="text-sm text-right mr-4">추천 {data.recommend}</span>
+          <a className={clsx(hasRecommended ? "text-primary-11" : "pressable-opacity")} onClick={doOnClickRecommend}>
+            <span className="text-sm text-right mr-4">추천 {hasRecommended ? data.recommend + 1 : data.recommend}</span>
           </a>
           <span className="text-sm text-right">{fmt(date(data.createdAt), "PPP에 작성됨")}</span>
         </div>
@@ -119,7 +134,7 @@ export default function ReviewListSection({ movieNum, className }: ReviewListSec
   const Reviews = useGetApiWithPagination(
     (p, s) => getReviewsOfMovie(movieNum, { page: p, size: s, sortBy: GetReviewsSortBy.Recommend }),
     { initialPage: 0, pageSize: 8 },
-    [SubmitRecommend.data]
+    []
   );
 
   const data = useDeferredValue(Reviews.data);
